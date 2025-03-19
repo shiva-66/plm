@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sreevaree UI Flow Diagram</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        h1 {
+           padding: 50px;
+
+        }
+        .dashboard {
+            width: 50%;
+            margin: 20px auto;
+            padding: 20px;
+            border: 2px solid black;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.3);
+            background-color: #fff;
+            border-radius: 10px;
+        }
+        .dashboard h2 {
+            margin-bottom: 20px;
+        }
+        .row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .box {
+            width: 40%;
+            padding: 15px;
+            border: 1px solid black;
+            text-align: center;
+            background-color: #87ceeb;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+            box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .box:hover {
+            background-color:#5fa9d1;
+            transform: scale(1.05);
+            box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        a {
+            text-decoration: none;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sreevaree</h1>
+    <div class="dashboard">
+        <h2>Dashboard</h2>
+        <div class="row">
+            <div class="box"><a href="stage1.html">Add New Product</a></div>
+            <div class="box"><a href="#">Search & Edit Product</a></div>
+        </div>
+        <div class="row">
+            <div class="box"><a href="#">Sell Products</a></div>
+            <div class="box"><a href="#">Sales Report</a></div>
+        </div>
+    </div>
+</body>
+</html>
