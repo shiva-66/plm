@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stage 3</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            text-align: center;
+        }
+        .accordion {
+            background-color: #f2f2f2;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 16px;
+            transition: 0.4s;
+            position: relative;
+        }
+        .accordion::after {
+            content: '\25BC';
+            font-size: 16px;
+            position: absolute;
+            right: 10px;
+            transition: transform 0.4s;
+        }
+        .active::after {
+            transform: rotate(180deg);
+        }
+        .active, .accordion:hover {
+            background-color: #ccc;
+        }
+        .panel {
+            padding: 10px;
+            display: none;
+            overflow: hidden;
+            background-color: white;
+            text-align: left;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+            width: 50%;
+        }
+        th {
+            background-color: #f2f2f2;
+            color: black;
+        }
+        input {
+            width: 90%;
+            padding: 5px;
+        }
+        .submit {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #0066b2;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+            width: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>STAGE-3. SLABS Production</h2>
+        <form id="inventoryForm">
+            <button type="button" class="accordion">General Information</button>
+            <div class="panel">
+                <table>
+                    <tr><th>Date of Production</th><td><input type="date" name="date_of_production" id="date_of_production"></td></tr>
+                    <tr><th>Block No.</th><td><input type="text" name="block_no" id="block_no"></td></tr>
+                    <tr><th>Block Colour</th><td><input type="text" name="block_colour" id="block_colour"></td></tr>
+                    <tr><th>Block Parts</th><td><input type="text" name="block_parts" id="block_parts"></td></tr>
+                    <tr><th>Block Qty. (CBM)</th><td><input type="number" step="0.001" name="block_qty" id="block_qty"></td></tr>
+                    <tr><th>Slabs Expected Qty.</th><td><input type="text" name="slabs_expected_qty" id="slabs_expected_qty"></td></tr>
+                    <tr><th>Blade M/c No.</th><td><input type="text" name="blade_mc_no" id="blade_mc_no"></td></tr>
+                </table>
+            </div>
+            
+            <button type="button" class="accordion">SLABS Production Qty (SFT)</button>
+            <div class="panel">
+                <table>
+                    <tr><th>Thickness (18mm/20mm/etc)</th><td><input type="text" name="thickness" id="thickness"></td></tr>
+                    <tr><th>Length (After Chipping & Grinding)</th><td><input type="number" name="length" id="length"></td></tr>
+                    <tr><th>Height (After Chipping & Grinding)</th><td><input type="number" name="height" id="height"></td></tr>
+                </table>
+            </div>
+
+            <button type="button" class="accordion">Production Qty</button>
+            <div class="panel">
+                <table>
+                    <tr><th>Production (PCS)</th><td><input type="number" name="pcs" id="pcs"></td></tr>
+                    <tr><th>Production (SFT)</th><td><input type="number" step="0.001" name="sft" id="sft"></td></tr>
+                </table>
+            </div>
+
+            <button type="button" class="accordion">Incharge Information</button>
+            <div class="panel">
+                <table>
+                    <tr><th>Operator Name</th><td><input type="text" name="operator_name" id="operator_name"></td></tr>
+                    <tr><th>Tekedar Name</th><td><input type="text" name="tekedar_name" id="tekedar_name"></td></tr>
+                </table>
+            </div>
+            
+            <br>
+            <input type="submit" class="submit" value="Submit">
+        </form>
+    </div>
+
+    <script>
+        var acc = document.getElementsByClassName("accordion");
+        for (var i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var panel = this.nextElementSibling;
+                if (panel.style.display === "block") {
+                    panel.style.display = "none";
+                } else {
+                    panel.style.display = "block";
+                }
+            });
+        }
+		
+		document.getElementById("inventoryForm").addEventListener("submit", function(event) {
+			event.preventDefault(); 
+			let isValid = true;
+
+			this.querySelectorAll('input[required]').forEach(input => {
+				if (!input.value.trim()) {
+					isValid = false;
+					input.classList.add("error");
+				} else {
+					input.classList.remove("error");
+				}
+			});
+
+			if (isValid) {
+				submitForm();
+				alert("Submit form has got triggered!");
+			} else {
+				alert("Please fill all required fields.");
+			}
+		});
+		
+	function submitForm(){
+		event.preventDefault();
+		let recordId = "67d7ccaaf223471c00001c91"; // Replace with the actual record ID
+
+		fetch(`https://shivadb-f348.restdb.io/rest/plm-products-db/${recordId}`, {
+			method: "GET",
+			headers: {
+				"x-api-key": "657c53fe63ede92cdbf17208",
+				"Content-Type": "application/json"
+			}
+		})
+		.then(response => response.json())
+		.then(existingData => {
+			let updatedData = {};
+			
+			function updateIfEmpty(fieldValue, path) {
+				let currentValue = path.reduce((obj, key) => (obj && obj[key] !== undefined ? obj[key] : ""), existingData);
+				if (!currentValue || currentValue.trim() === "") {
+					let target = updatedData;
+					for (let i = 0; i < path.length - 1; i++) {
+						if (!target[path[i]]) target[path[i]] = {};
+						target = target[path[i]];
+					}
+					target[path[path.length - 1]] = fieldValue;
+				}
+			}
+
+			// Ensure `children` array exists
+			if (!existingData.children || !Array.isArray(existingData.children)) {
+				alert("Error: children array not found.");
+				return;
+			}
+
+			// Update only the first child (children[0])
+			let childIndex = 1 // Change this to update a different child
+			let updatedChildren = [...existingData.children]; // Clone the array
+
+			let updatedChild = { ...updatedChildren[childIndex] }; // Clone the first child
+			if (!updatedChild.blade_mc_no) updatedChild.blade_mc_no = getValue("blade_mc_no");
+			if (!updatedChild.pcs) updatedChild.pcs = getValue("pcs");
+			if (!updatedChild.sft) updatedChild.sft = getValue("sft");
+
+			updatedChildren[childIndex] = updatedChild; // Replace the first child with updated data
+			updatedData.children = updatedChildren; // Set updated children array
+
+			// If there are updates, send a PATCH request
+			if (Object.keys(updatedData).length > 0) {
+				fetch(`https://shivadb-f348.restdb.io/rest/plm-products-db/${recordId}`, {
+					method: "PATCH",
+					headers: {
+						"x-api-key": "657c53fe63ede92cdbf17208",
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify(updatedData)
+				})
+				.then(response => response.json())
+				.then(data => {
+					alert("Stage-3 empty values updated successfully!");
+				})
+				.catch(error => {
+					alert("Error updating Stage-3 data.");
+				});
+			} else {
+				alert("No empty fields were found to update.");
+			}
+		})
+		.catch(error => {
+			alert("Error fetching existing data.");
+		});
+	}
+		
+	function getValue(id) {
+		return document.getElementById(id)?.value || "";
+	}
+    </script>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stage 4</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 90%;
+            margin: auto;
+            text-align: center;
+        }
+        .accordion {
+            background-color: #f2f2f2;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 16px;
+            transition: 0.4s;
+            position: relative;
+        }
+        .accordion::after {
+            content: '\25BC'; /* Down arrow */
+            font-size: 16px;
+            position: absolute;
+            right: 10px;
+            transition: transform 0.4s;
+        }
+        .active::after {
+            transform: rotate(180deg);
+        }
+        .active, .accordion:hover {
+            background-color: #ccc;
+        }
+        .panel {
+            padding: 10px;
+            display: none;
+            overflow: hidden;
+            background-color: white;
+            text-align: left;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+            word-wrap: break-word;
+        }
+        th {
+            background-color: #f2f2f2;
+            color: black;
+            font-weight: bold;
+        }
+        .child-row th {
+            background-color: #ffffff; /* White background for child rows */
+            color: black;
+            padding-left: 30px; /* Indent child rows */
+        }
+        input {
+            width: 90%;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+        .submit {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #0066b2;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+            width: 50%;
+        }
+        .scroll-table {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Stage-4 Slabs Auto Polishing</h2>
+        <form id="inventoryForm">
+			<!-- First Accordion: Production Details -->
+			<button type="button" class="accordion">Production Details</button>
+			<div class="panel">
+				<div class="scroll-table">
+					<table>
+						<tr>
+							<th>Date of Polishing</th>
+							<td><input type="date" name="date_of_polishing" id="date_of_polishing"></td>
+						</tr>
+						<tr>
+							<th>Block No.</th>
+							<td><input type="text" name="block_no" id="block_no"></td>
+						</tr>
+						<tr>
+							<th>Block Colour</th>
+							<td><input type="text" name="block_colour" id="block_colour"></td>
+						</tr>
+						<tr>
+							<th>Block Part</th>
+							<td><input type="text" name="block_part" id="block_part"></td>
+						</tr>
+						<tr>
+							<th colspan="2">
+								<fieldset>
+									<legend>Production After Grinding</legend>
+									<table>
+										<tr>
+											<th>No of Pcs</th>
+											<td><input type="number" step="0.01" name="production_no_of_pcs" id="production_no_of_pcs" min="0"></td>
+										</tr>
+										<tr>
+											<th>SFT</th>
+											<td><input type="number" step="0.001" name="production_sft" id="production_sft" min="0"></td>
+										</tr>
+									</table>
+								</fieldset>
+							</th>
+						</tr>
+						<tr>
+							<th>Thickness</th>
+							<td><input type="text" name="thickness" id="thickness"></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+
+			<!-- Second Accordion: Slabs Production (After Polishing) -->
+			<button type="button" class="accordion">Slabs Production (After Polishing)</button>
+			<div class="panel">
+				<div class="scroll-table">
+					<table>
+						<tr>
+							<th colspan="2">
+								<fieldset>
+									<legend>Slab Production (After Polishing)</legend>
+									<table>
+										<tr>
+											<th>Length</th>
+											<td><input type="number" step="0.01" name="polishing_length" id="polishing_length" min="0"></td>
+										</tr>
+										<tr>
+											<th>Height</th>
+											<td><input type="number" step="0.01" name="polishing_height" id="polishing_height" min="0"></td>
+										</tr>
+										<tr>
+											<th>No of Pcs</th>
+											<td><input type="number" step="0.01" name="polishing_no_of_pcs" id="polishing_no_of_pcs" min="0"></td>
+										</tr>
+										<tr>
+											<th>Qty (SFT)</th>
+											<td><input type="number" step="0.001" name="polishing_sft" id="polishing_sft" min="0"></td>
+										</tr>
+									</table>
+								</fieldset>
+							</th>
+						</tr>
+						<tr>
+							<th colspan="2">
+								<fieldset>
+									<legend>Short/Damage (Between Grinding and Polishing)</legend>
+									<table>
+										<tr>
+											<th>Short PCs</th>
+											<td><input type="number" step="0.01" name="polishing_short_pcs" id="polishing_short_pcs" min="0"></td>
+										</tr>
+										<tr>
+											<th>Short (SFT)</th>
+											<td><input type="number" step="0.001" name="polishing_short_sft" id="polishing_short_sft" min="0"></td>
+										</tr>
+									</table>
+								</fieldset>
+							</th>
+						</tr>
+					</table>
+				</div>
+			</div>
+
+			<!-- Third Accordion: Stock Summary -->
+			<button type="button" class="accordion">Stock Summary</button>
+			<div class="panel">
+				<div class="scroll-table">
+					<table>
+						<tr>
+							<th colspan="5">Marking/Sales Particulars</th>
+						</tr>
+						<tr>
+							<th>Type</th>
+							<th colspan="2">No of Pcs</th>
+							<th colspan="2">SFT</th>
+						</tr>
+						<tr>
+							<td>Fresh</td>
+							<td colspan="2"><input type="number" step="0.01" name="fresh_pcs" id="fresh_pcs"></td>
+							<td colspan="2"><input type="number" step="0.001" name="fresh_sft" id="fresh_sft"></td>
+						</tr>
+						<tr>
+							<td>Semi-Fresh</td>
+							<td colspan="2"><input type="number" step="0.01" name="semi_fresh_pcs" id="semi_fresh_pcs"></td>
+							<td colspan="2"><input type="number" step="0.001" name="semi_fresh_sft" id="semi_fresh_sft"></td>
+						</tr>
+						<tr>
+							<td>Commercial</td>
+							<td colspan="2"><input type="number" step="0.01" name="commercial_pcs" id="commercial_pcs"></td>
+							<td colspan="2"><input type="number" step="0.001" name="commercial_sft" id="commercial_sft"></td>
+						</tr>
+						<tr>
+							<td>Closing Stock/ Total Qty. (Before Sale) (SFT)</td>
+							<td colspan="2"><input type="number" step="0.01" name="closing_stock_qty" id="closing_stock_qty"></td>
+							<td colspan="2"><input type="number" step="0.001" name="closing_stock_sft" id="closing_stock_sft"></td>
+						</tr>
+						<!--<tr>
+							<td>Total Qty (SFT) Fresh/Semi + Commrl</td>
+							<td colspan="2"><input type="number" step="0.01" name="total_qty_sft" id="total_qty_sft"></td>
+							<td colspan="2"><input type="number" step="0.01" name="total_qty_sft_commrl" id="total_qty_sft_commrl"></td>
+						</tr>-->
+						<tr>
+							<th colspan="5">Short/Damage</th>
+						</tr>
+						<tr>
+							<th>Short PCs</th>
+							<td colspan="4"><input type="number" step="0.01" name="slabs_short_pcs" id="slabs_short_pcs"></td>
+						</tr>
+						<tr>
+							<th>Short (SFT)</th>
+							<td colspan="4"><input type="number" step="0.001" name="slabs_short_sft" id="slabs_short_sft"></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+
+		<br>
+		<input type="submit" class="submit" value="Submit">
+	</form>
+
+    </div>
+
+    <script>
+        var acc = document.getElementsByClassName("accordion");
+        for (var i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var panel = this.nextElementSibling;
+                if (panel.style.display === "block") {
+                    panel.style.display = "none";
+                } else {
+                    panel.style.display = "block";
+                }
+            });
+        }
+		
+		 document.addEventListener("DOMContentLoaded", function() {
+
+        function getValue(id) {
+            return parseFloat(document.getElementById(id)?.value) || 0;
+        }
+
+        function calculateSlabsProductionQty() {
+            let polishingLength = getValue("polishing_length");
+            let polishingWidth = getValue("polishing_height");
+            let polishedPcs = getValue("polishing_no_of_pcs");
+
+            let polishingSft = (polishingLength * polishingWidth * polishedPcs) / 144;
+            document.getElementById("polishing_sft").value = polishingSft.toFixed(3);
+
+            let productionPcs = getValue("production_no_of_pcs");
+            document.getElementById("polishing_short_pcs").value = Math.max(productionPcs - polishedPcs, 0);
+
+            let productionSft = getValue("production_sft");
+            document.getElementById("polishing_short_sft").value = Math.max(productionSft - polishingSft, 0).toFixed(3);
+        }
+
+        function calculateClosingStockDamage() {
+            let freshPcs = getValue("fresh_pcs");
+            let freshSft = getValue("fresh_sft");
+            let semiFreshPcs = getValue("semi_fresh_pcs");
+            let semiFreshSft = getValue("semi_fresh_sft");
+            let commercialPcs = getValue("commercial_pcs");
+            let commercialSft = getValue("commercial_sft");
+
+            let closingStockQty = freshPcs + semiFreshPcs + commercialPcs;
+            let closingStockSft = freshSft + semiFreshSft + commercialSft;
+
+            document.getElementById("closing_stock_qty").value = closingStockQty;
+            document.getElementById("closing_stock_sft").value = closingStockSft;
+
+            let polishedPcs = getValue("polishing_no_of_pcs");
+            let polishingSft = getValue("polishing_sft");
+
+            document.getElementById("slabs_short_pcs").value = Math.max(polishedPcs - closingStockQty, 0);
+            document.getElementById("slabs_short_sft").value = Math.max(polishingSft - closingStockSft, 0).toFixed(3);
+        }
+
+        function attachEventListeners() {
+            ["polishing_length", "polishing_height", "polishing_no_of_pcs"].forEach(id => {
+                document.getElementById(id).addEventListener("input", calculateSlabsProductionQty);
+            });
+
+            ["fresh_pcs", "fresh_sft", "semi_fresh_pcs", "semi_fresh_sft", "commercial_pcs", "commercial_sft"].forEach(id => {
+                document.getElementById(id).addEventListener("input", calculateClosingStockDamage);
+            });
+        }
+
+        attachEventListeners();
+
+        document.getElementById("inventoryForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            let isValid = true;
+
+            this.querySelectorAll('input[required]').forEach(input => {
+                if (!input.value.trim()) {
+                    isValid = false;
+                    input.classList.add("error");
+                } else {
+                    input.classList.remove("error");
+                }
+            });
+
+            if (isValid) {
+                //alert("Submit form has got triggered!");
+				submitForm();
+				
+            } else {
+                alert("Please fill all required fields.");
+            }
+        });
+		
+	});
+	
+	function submitForm(){
+		
+	}
+    </script>	
+</body>
+</html>

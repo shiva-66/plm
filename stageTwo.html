@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stage 2</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            text-align: center;
+        }
+        .accordion {
+            background-color: #f2f2f2;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 16px;
+            transition: 0.4s;
+            position: relative;
+        }
+        .accordion::after {
+            content: '\25BC';
+            font-size: 16px;
+            position: absolute;
+            right: 10px;
+            transition: transform 0.4s;
+        }
+        .active::after {
+            transform: rotate(180deg);
+        }
+        .active, .accordion:hover {
+            background-color: #ccc;
+        }
+        .panel {
+            padding: 10px;
+            display: none;
+            overflow: hidden;
+            background-color: white;
+            text-align: left;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        input {
+            width: 90%;
+            padding: 5px;
+        }
+        .submit {
+            width: 50%;
+            padding: 10px 20px;
+            font-size: 18px; 
+            background-color: #0066b2;
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .error {
+            border: 2px solid red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>STAGE-2. Blocks Dressing/Wiresaw Cutting</h2>
+        <form id="inventoryForm">
+            
+            <button type="button" class="accordion">General Information</button>
+            <div class="panel">
+                <table>
+                    <tr><th>Date of Marking</th><td><input type="date" name="date_of_marking" id="date_of_marking" required></td></tr>
+                    <tr><th>Block Recd Date</th><td><input type="date" name="block_recd_date" id="block_recd_date" required></td></tr>
+                    <tr><th>Block Cutting Date</th><td><input type="date" name="block_cutting_date" id="block_cutting_date" required></td></tr>
+                    <tr><th>Block No.</th><td><input type="text" name="block_no" id="block_no" required></td></tr>
+                    <tr><th>Block Colour</th><td><input type="text" name="block_colour" id="block_colour" required></td></tr>
+                    <tr><th>Net Qty</th><td><input type="number" step="0.01" name="net_qty" id="net_qty" required></td></tr>
+                </table>
+            </div>
+            
+            <button type="button" class="accordion">Net Measurement (Sameer Marking Qty.)</button>
+            <div class="panel">
+                <table>
+                    <tr><th>Part</th><th>Length</th><th>Height</th><th>Width</th><th>Total</th></tr>
+                    <tr><td>A Part</td><td><input type="number" step="0.01" name="a_length" id="a_length" required></td><td><input type="number" step="0.01" name="a_height" id="a_height" required></td><td><input type="number" step="0.01" name="a_width" id="a_width" required></td><td><input type="number" step="0.01" name="a_total" id="a_total" required></td></tr>
+                    <tr><td>B Part</td><td><input type="number" step="0.01" name="b_length" id="b_length"></td><td><input type="number" step="0.01" name="b_height" id="b_height"></td><td><input type="number" step="0.01" name="b_width" id="b_width"></td><td><input type="number" step="0.01" name="b_total" id="b_total"></td></tr>
+                    <tr><td>C Part</td><td><input type="number" step="0.01" name="c_length" id="c_length"></td><td><input type="number" step="0.01" name="c_height" id="c_height"></td><td><input type="number" step="0.01" name="c_width" id="c_width"></td><td><input type="number" step="0.01" name="c_total" id="c_total"></td></tr>
+                    <tr><td>Total</td><td colspan="4"><input type="number" step="0.01" name="total" id="total" required></td></tr>
+                    <tr><th>Normal Loss</th><td colspan="4"><input type="number" step="0.01" name="normal_loss" id="normal_loss"></td></tr>
+                </table>
+            </div>
+            
+            <button type="button" class="accordion">Incharge Information</button>
+            <div class="panel">
+                <table>
+                    <tr><th>Operator Name</th><td><input type="text" name="operator_name" id="operator_name" required></td></tr>
+                    <tr><th>Tekedar Name</th><td><input type="text" name="tekedar_name" id="tekedar_name" required></td></tr>
+                </table>
+            </div>
+            
+            <br>
+            <input type="submit" class="submit" value="Submit">
+        </form>
+    </div>
+
+    <script>
+    var acc = document.getElementsByClassName("accordion");
+    for (var i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            panel.style.display = (panel.style.display === "block") ? "none" : "block";
+        });
+    }
+
+    function calculateTotal(part) {
+        let length = parseFloat(document.getElementById(`${part}_length`).value) || 0;
+        let height = parseFloat(document.getElementById(`${part}_height`).value) || 0;
+        let width = parseFloat(document.getElementById(`${part}_width`).value) || 0;
+        let total = length * height * width / 1000000;
+        document.getElementById(`${part}_total`).value = total.toFixed(2);
+        calculateOverallTotal();
+    }
+
+    function calculateOverallTotal() {
+        let totalA = parseFloat(document.getElementById("a_total").value) || 0;
+        let totalB = parseFloat(document.getElementById("b_total").value) || 0;
+        let totalC = parseFloat(document.getElementById("c_total").value) || 0;
+        let grandTotal = totalA + totalB + totalC;
+        document.getElementById("total").value = grandTotal.toFixed(2);
+        let netQty = parseFloat(document.getElementById("net_qty").value);
+        let normalLoss = netQty - grandTotal;
+        document.getElementById("normal_loss").value = normalLoss.toFixed(2);
+    }
+
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+        input.addEventListener("input", function() {
+            let part = this.id.split("_")[0];
+            if (["a", "b", "c"].includes(part)) {
+                calculateTotal(part);
+            }
+        });
+    });
+
+    document.getElementById("inventoryForm").addEventListener("submit", function(event) {
+        event.preventDefault(); 
+        let isValid = true;
+
+        this.querySelectorAll('input[required]').forEach(input => {
+            if (!input.value.trim()) {
+                isValid = false;
+                input.classList.add("error");
+            } else {
+                input.classList.remove("error");
+            }
+        });
+
+        if (isValid) {
+            submitForm();
+            alert("Submit form has got triggered!");
+        } else {
+            alert("Please fill all required fields.");
+        }
+    });
+
+    function submitForm() {
+		
+		var data = JSON.stringify({
+		  "block_cutting_date": getValue("block_cutting_date"),
+		  "total_children_qty": getValue("total"),
+		  "normal_loss_children": getValue("normal_loss"),
+		  "operator_name": getValue("operator_name"),
+		  "tekedar_name": getValue("tekedar_name"),
+		  "children": [
+			{
+			  "part": "A",
+			  "a_length": getValue("a_length"),
+			  "a_height":getValue("a_height"),
+			  "a_width": getValue("a_width"),
+			  "a_total": getValue("a_total"),
+			  "slabs_expected_qty":"",
+			  "blade_mc_no":"",
+			  "pcs":"",
+			  "sft":""
+			},
+			{
+			  "part": "B",
+			  "b_length": getValue("b_length"),
+			  "b_height":getValue("b_height"),
+			  "b_width": getValue("b_width"),
+			  "b_total": getValue("b_total"),
+			  "slabs_expected_qty":"",
+			  "blade_mc_no":"",
+			  "thickness":"",
+			  "length":"",
+			  "height":"",
+			  "pcs":"",
+			  "sft":""
+			},
+			{
+			  "part": "C",
+			  "c_length": getValue("c_length"),
+			  "c_height":getValue("c_height"),
+			  "c_width": getValue("c_width"),
+			  "c_total": getValue("c_total"),
+			  "slabs_expected_qty":"",
+			  "blade_mc_no":"",
+			  "pcs":"",
+			  "sft":""
+			}
+		  ]
+		});
+
+		var xhr = new XMLHttpRequest();
+		//xhr.withCredentials = true;
+
+		xhr.addEventListener("readystatechange", function() {
+		  if(this.readyState === 4) {
+			console.log(this.responseText);
+		  }
+		});
+
+		xhr.open("PUT", "https://shivadb-f348.restdb.io/rest/plm-products-db/67d7ccaaf223471c00001c91");
+		xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
+		xhr.setRequestHeader("Content-Type", "application/json");
+
+		xhr.send(data);
+    }
+	function getValue(id) {
+			return document.getElementById(id).value.trim() || null;
+		}
+</script>
+</body>
+</html>
