@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product sale</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 90%;
+            margin: auto;
+            text-align: center;
+        }
+        .accordion {
+            background-color: #f2f2f2;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 16px;
+            transition: 0.4s;
+            position: relative;
+        }
+        .accordion::after {
+            content: '\25BC';
+            font-size: 16px;
+            position: absolute;
+            right: 10px;
+            transition: transform 0.4s;
+        }
+        .active::after {
+            transform: rotate(180deg);
+        }
+        .active, .accordion:hover {
+            background-color: #ccc;
+        }
+        .panel {
+            padding: 10px;
+            display: none;
+            overflow: hidden;
+            background-color: white;
+            text-align: left;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+            word-wrap: break-word;
+        }
+        th {
+            background-color: #f2f2f2;
+            color: black;
+            font-weight: bold;
+        }
+        input {
+            width: 90%;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+        .submit {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #0066b2;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+            width: 50%;
+        }
+        .scroll-table {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Product Sale</h2>
+        <form>
+            <!--First Accordian  -->
+            <button type="button" class="accordion">Basic Details</button>
+            <div class="panel">
+                <div class="scroll-table">
+                    <table>
+                        <tr><th>Block No.</th><td><input type="text"></td></tr>
+                        <tr><th>Block Colour</th><td><input type="text"></td></tr>
+                        <tr><th>Block Part</th><td><input type="text"></td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <!--Second Accordian  -->
+            <button type="button" class="accordion">Marking/Sales Particulars</button>
+            <div class="panel">
+                <div class="scroll-table">
+                    <table>
+                        <tr>
+                            <th colspan="5">Marking/Sales Particulars</th>
+                        </tr>
+                        <tr>
+                            <th>Type</th><th colspan="2">No of Pcs</th><th colspan="2">Sft</th>
+                        </tr>
+                        <tr>
+                            <td>Fresh</td>
+                            <td colspan="2"><input type="number" step="0.01" name="Marking_fresh_pcs"></td>
+                            <td colspan="2"><input type="number" step="0.01" name="Marking_fresh_sft"></td>
+                        </tr>
+                        <tr>
+                            <td>Semi-Fresh</td>
+                            <td colspan="2"><input type="number" step="0.01" name="Marking_semi_fresh_pcs"></td>
+                            <td colspan="2"><input type="number" step="0.01" name="Marking_semi_fresh_sft"></td>
+                        </tr>
+                        <tr>
+                            <td>Commercial</td>
+                            <td colspan="2"><input type="number" step="0.01" name="Marking_comrcl_fresh_pcs"></td>
+                            <td colspan="2"><input type="number" step="0.01" name="Marking_comrcl_fresh_sft"></td>
+                        </tr>
+
+                    
+                    </table>
+                </div>
+            </div>
+
+            <!--Third Accordian  -->
+            <button type="button" class="accordion">Closing stock Qty (After sale)(SFT)</button>
+            <div class="panel">
+                <div class="scroll-table">
+                    <table>
+                        <tr>
+                            <th colspan="5">Closing stock Qty (After sale)(SFT)</th>
+                        </tr>
+                        <tr>
+                            <th>Type</th><th colspan="2">No of Pcs</th><th colspan="2">Sft</th>
+                        </tr>
+                        <tr>
+                            <td>Fresh</td>
+                            <td colspan="2"><input type="number" step="0.01" name="Closing_fresh_pcs"></td>
+                            <td colspan="2"><input type="number" step="0.01" name="Closing_fresh_sft"></td>
+                        </tr>
+                        <tr>
+                            <td>Semi-Fresh</td>
+                            <td colspan="2"><input type="number" step="0.01" name="Closing_semi_fresh_pcs"></td>
+                            <td colspan="2"><input type="number" step="0.01" name="Closing_semi_fresh_sft"></td>
+                        </tr>
+                        <tr>
+                            <td>Commercial</td>
+                            <td colspan="2"><input type="number" step="0.01" name="Closing_commercial_pcs"></td>
+                            <td colspan="2"><input type="number" step="0.01" name="Closing_commercial_sft"></td>
+                        </tr>
+                        <tr>
+                            <td>Total Qty (SFT) Fresh/Semi+Commrl</td>
+                            <td colspan="2"><input type="number" step="0.01" name="Closing_total_pcs" readonly></td>
+                            <td colspan="2"><input type="number" step="0.01" name="Closing_total_sft" readonly></td>
+                        </tr>
+                    </table>
+                    
+                </div>
+            </div>
+
+
+            <!--fourth Accordian  -->
+            <button type="button" class="accordion">Product Sale</button>
+            <div class="panel">
+                <div class="scroll-table">
+                    <table>
+                        <tr>
+                            <th colspan="5">Product Sale</th>
+                        </tr>
+                        <tr>
+                            <th>Type</th><th colspan="2">No of Pcs</th><th colspan="2">Sft</th>
+                        </tr>
+                        <tr>
+                            <td>Fresh</td>
+                            <td colspan="2"><input type="number" step="0.01" name="sale_fresh_pcs"></td>
+                            <td colspan="2"><input type="number" step="0.01" name="sale_fresh_sft"></td>
+                        </tr>
+                        <tr>
+                            <td>Semi-Fresh</td>
+                            <td colspan="2"><input type="number" step="0.01" name="sale_semi_fresh_pcs"></td>
+                            <td colspan="2"><input type="number" step="0.01" name="sale_semi_fresh_sft"></td>
+                        </tr>
+                        <tr>
+                            <td>Commercial</td>
+                            <td colspan="2"><input type="number" step="0.01" name="sale_commercial_pcs"></td>
+                            <td colspan="2"><input type="number" step="0.01" name="sale_commercial_sft"></td>
+                        </tr>
+                        <tr>
+                            <td>Total Qty (SFT) Fresh/Semi+Commrl</td>
+                            <td colspan="2"><input type="number" step="0.01" name="sale_total_pcs" readonly></td>
+                            <td colspan="2"><input type="number" step="0.01" name="sale_total_sft" readonly></td>
+                        </tr>
+                    </table>
+                    
+                </div>
+            </div>
+           
+            <!--Fifth Accordian  -->
+            <button type="button" class="accordion">Incharge  Information</button>
+            <div class="panel">
+                <table>
+                    <tr><th>Supervisor Name</th><td><input type="text" name="supervisor_name"></td></tr>
+                    <tr><th>Incharge Name</th><td><input type="text" name="incharge_name"></td></tr>
+                </table>
+            </div>
+            
+            <br>
+            <input type="submit" class="submit" value="Submit">
+        </form>
+    </div>
+
+    <script>
+        var acc = document.getElementsByClassName("accordion");
+        for (var i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var panel = this.nextElementSibling;
+                if (panel.style.display === "block") {
+                    panel.style.display = "none";
+                } else {
+                    panel.style.display = "block";
+                }
+            });
+        }
+    </script>
+</body>
+</html>
