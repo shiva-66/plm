@@ -180,49 +180,34 @@
     function submitForm() {
 		
 		var data = JSON.stringify({
-		  "block_cutting_date": getValue("block_cutting_date"),
-		  "total_children_qty": getValue("total"),
-		  "normal_loss_children": getValue("normal_loss"),
-		  "operator_name": getValue("operator_name"),
-		  "tekedar_name": getValue("tekedar_name"),
-		  "children": [
-			{
-			  "part": "A",
-			  "a_length": getValue("a_length"),
-			  "a_height":getValue("a_height"),
-			  "a_width": getValue("a_width"),
-			  "a_total": getValue("a_total"),
-			  "slabs_expected_qty":"",
-			  "blade_mc_no":"",
-			  "pcs":"",
-			  "sft":""
-			},
-			{
-			  "part": "B",
-			  "b_length": getValue("b_length"),
-			  "b_height":getValue("b_height"),
-			  "b_width": getValue("b_width"),
-			  "b_total": getValue("b_total"),
-			  "slabs_expected_qty":"",
-			  "blade_mc_no":"",
-			  "thickness":"",
-			  "length":"",
-			  "height":"",
-			  "pcs":"",
-			  "sft":""
-			},
-			{
-			  "part": "C",
-			  "c_length": getValue("c_length"),
-			  "c_height":getValue("c_height"),
-			  "c_width": getValue("c_width"),
-			  "c_total": getValue("c_total"),
-			  "slabs_expected_qty":"",
-			  "blade_mc_no":"",
-			  "pcs":"",
-			  "sft":""
-			}
-		  ]
+			"dressing": {
+				"block_cutting_date": getValue("block_cutting_date"),
+				"part_a": {
+				  "stage": "2",
+				  "a_length": getValue("a_length"),
+				  "a_height": getValue("a_height"),
+				  "a_width": getValue("a_width"),
+				  "a_total": getValue("a_total")
+				},
+				"part_b": {
+				  "stage": "2",
+				  "b_length": getValue("b_length"),
+				  "b_height": getValue("b_height"),
+				  "b_width": getValue("b_width"),
+				  "b_total": getValue("b_total")
+				},
+				"part_c": {
+				  "stage": "2",
+				  "c_length": getValue("c_length"),
+				  "c_height": getValue("c_height"),
+				  "c_width": getValue("c_width"),
+				  "c_total": getValue("c_total")
+				},
+				"total_parts_qty": getValue("total"),
+				"total_parts_normal_loss": getValue("normal_loss"),
+				"operator_name": getValue("operator_name"),
+				"tekedar_name": getValue("tekedar_name")
+		    }
 		});
 
 		var xhr = new XMLHttpRequest();
@@ -234,7 +219,7 @@
 		  }
 		});
 
-		xhr.open("PUT", "https://shivadb-f348.restdb.io/rest/plm-products-db/67d7ccaaf223471c00001c91");
+		xhr.open("PUT", "https://shivadb-f348.restdb.io/rest/plm-products-db/67dcbd0c420df42a0000062d");
 		xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
 		xhr.setRequestHeader("Content-Type", "application/json");
 

@@ -106,10 +106,13 @@
 							<th>Block Colour</th>
 							<td><input type="text" name="block_colour" id="block_colour"></td>
 						</tr>
-						<tr>
-							<th>Block Part</th>
-							<td><input type="text" name="block_part" id="block_part"></td>
-						</tr>
+						<tr><th>Block Part</th><td>
+							<select name="block_parts" id="block_parts">
+								<option value="part_a">Part A</option>
+								<option value="part_b">Part B</option>
+								<option value="part_c">Part C</option>
+							</select>
+						</td></tr>
 						<tr>
 							<th colspan="2">
 								<fieldset>
@@ -337,9 +340,109 @@
 		
 	});
 	
-	function submitForm(){
-		
+	function submitForm() {
+			event.preventDefault();
+
+			let recordId = "67dcbd0c420df42a0000062d"; // Replace with actual record ID
+			let blockPart = getValue("block_parts").toLowerCase().trim(); 
+
+			if (!blockPart) {
+				alert("Please select a Block Part.");
+				return;
+			}
+
+			var xhr = new XMLHttpRequest();
+
+			xhr.onreadystatechange = function () {
+				if (xhr.readyState === 4) {
+					if (xhr.status === 200) {
+						let existingData = JSON.parse(xhr.responseText);
+						updateRecord(existingData, blockPart, recordId);
+					} else if (xhr.status === 404) {
+						alert("Error: Record not found. Please check the record ID.");
+					} else {
+						alert("Error fetching existing data. Status: " + xhr.status);
+					}
+				}
+			};
+
+			xhr.open("GET", `https://shivadb-f348.restdb.io/rest/plm-products-db/${recordId}`);
+			xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
+			xhr.send();
+		}
+
+		function updateRecord(existingData, blockPart, recordId) {
+			let existingPart = existingData.dressing?.[blockPart] || {};
+
+			let updatedPart = {
+				...existingPart, // Keep all existing data
+				slabs_auto_polishing: {
+					date_of_polishing: getValue("date_of_polishing"),
+					slabs_after_polishing: {
+						polished_length: getValue("polished_length"),
+						polished_height: getValue("polished_height"),
+						polished_no_of_pcs: getValue("polished_no_of_pcs"),
+						polished_sft: getValue("polished_sft"),
+						polished_short_pcs: getValue("polished_short_pcs"),
+						polished_short_sft: getValue("polished_short_sft")
+					}
+				},
+				marking_sales_particulars: {
+					fresh: {
+						fresh_pcs: getValue("fresh_pcs"),
+						fresh_sft: getValue("fresh_sft")
+					},
+					semi_fresh: {
+						semi_fresh_pcs: getValue("semi_fresh_pcs"),
+						semi_fresh_sft: getValue("semi_fresh_sft")
+					},
+					commercial: {
+						commercial_pcs: getValue("commercial_pcs"),
+						commercial_sft: getValue("commercial_sft")
+					},
+					closing_stock_qty: getValue("closing_stock_qty"),
+					closing_stock_sft: getValue("closing_stock_sft"),
+					slabs_short_pcs: getValue("slabs_short_pcs"),
+					slabs_short_sft: getValue("slabs_short_sft")
+				}
+			};
+
+			let updatedData = {
+				...existingData,
+				dressing: {
+					...existingData.dressing,
+					[blockPart]: updatedPart
+				}
+			};
+			updateStage("3");
+
+			var xhr = new XMLHttpRequest();
+			xhr.onreadystatechange = function () {
+				if (xhr.readyState === 4) {
+					if (xhr.status === 200 || xhr.status === 201) {
+						alert("Stage-4 data updated successfully!");
+					} else {
+						alert("Error updating Stage-4 data. Status: " + xhr.status);
+					}
+				}
+			};
+
+			xhr.open("PATCH", `https://shivadb-f348.restdb.io/rest/plm-products-db/${recordId}`);
+			xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
+			xhr.setRequestHeader("Content-Type", "application/json");
+			xhr.send(JSON.stringify(updatedData));
+		}
+
+	
+	function getValue(id) {
+		return document.getElementById(id)?.value || "";
 	}
+	
+	function updateStage(newStage) {
+    obj.dressing.part_a.stage = newStage;
+	}
+
+
     </script>	
 </body>
 </html>

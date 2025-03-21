@@ -238,7 +238,7 @@
 			// WARNING: For POST requests, body is set to null by browsers.
 			var data = JSON.stringify({
 				stage: "Stage-1",
-				block_number: getValue("block_number"),
+				id: getValue("block_number"),
 				date_of_marking: getValue("date_of_marking"),
 				recd_date: getValue("recd_date"),
 				supplier_name: getValue("supplier_name"),
@@ -267,6 +267,43 @@
 				total_blocks_cost: getValue("total_blocks_cost"),
 				children:[],
 			});
+			
+			var jsonData = JSON.stringify({
+				id: getValue("block_number"),
+				stage: "1",
+				date_of_marking: getValue("date_of_marking"),
+				recd_date: getValue("recd_date"),
+				supplier_name: getValue("supplier_name"),
+				quarry_name: getValue("quarry_name"),
+				blocks: {
+					block_color: getValue("block_color"),
+					measurement_type: document.querySelector('input[name="measurement_type"]:checked').value,
+					length: getValue("length") || getValue("length_ft"),
+					width: getValue("width") || getValue("width_ft"),
+					height: getValue("height") || null,
+					net_measurement_qty: getValue("net_qty_cbm") || getValue("net_qty_sqft"),
+					num_of_blocks: getValue("num_blocks"),
+					num_of_trips: getValue("num_trips"),
+					weight_tonnage: getValue("weight_tonnage"),
+					qty_sft_cbm: getValue("qty_sft_cbm"),
+					price_sft: getValue("price_sft"),
+					price_cbm: getValue("price_cbm"),
+					amount: getValue("amount"),
+					gate_pass_no: getValue("gate_pass_no"),
+					transporter_details: {
+						transporter_name: getValue("transporter_name"),
+						driver_name: getValue("driver_name"),
+						vehicle_number: getValue("vehicle_number"),
+						transport_rate: getValue("transport_rate"),
+						transport_amount: getValue("transport_amount"),
+					},
+					other_expenses: {
+						weighting_expense: getValue("weighting_expense"),
+						loading_mamulu: getValue("Loading_mamulu"),
+						total_blocks_cost: getValue("total_blocks_cost"),
+					}
+				}
+			}, null, 2);
 
 			var xhr = new XMLHttpRequest();
 			//xhr.withCredentials = true;
@@ -275,7 +312,7 @@
 			  if(this.readyState === 4) {
 				console.log(this.responseText);
 				alert("Data submitted successfully!");
-				form.reset(); 
+				//form.reset(); 
 			  }
 			});
 
@@ -283,7 +320,7 @@
 			xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
 			xhr.setRequestHeader("Content-Type", "application/json");
 
-			xhr.send(data);
+			xhr.send(jsonData);
 		}
 		
 		// Helper function to get input values
