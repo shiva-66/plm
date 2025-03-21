@@ -50,7 +50,7 @@
         th, td {
             border: 1px solid black;
             padding: 8px;
-            text-align: left;
+            text-align: center;
         }
         th {
             background-color: #f2f2f2;
@@ -83,12 +83,12 @@
             <button type="button" class="accordion">General Information</button>
             <div class="panel">
                 <table>
-                    <tr><th>Date of Marking</th><td><label id="date_of_marking" ></label></td></tr>
-                    <tr><th>Block Recd Date</th><td><label id="block_recd_date" ></label></td></tr>
+                    <tr><th>Date of Marking</th><td><label id="date_of_marking" >2025-03-04</label></td></tr>
+                    <tr><th>Block Recd Date</th><td><label id="block_recd_date" >2025-03-14</label></td></tr>
                     <tr><th>Block Cutting Date</th><td><input type="date" name="block_cutting_date" id="block_cutting_date" required></td></tr>
-                    <tr><th>Block No.</th><td><label id="block_no" ></label></td></tr>
-                    <tr><th>Block Colour</th><td><label id="block_colour" ></td></tr>
-                    <tr><th>Net Qty</th><td><label id="net_qty" ></label></td></tr>
+                    <tr><th>Block No.</th><td><label id="block_no" >9503</label></td></tr>
+                    <tr><th>Block Colour</th><td><label id="block_colour" >PSR - TB</label></td></tr>
+                    <tr><th>Net Qty</th><td><label id="net_qty" >5.13</label></td></tr>
                 </table>
             </div>
             
@@ -142,7 +142,7 @@
         let totalC = parseFloat(document.getElementById("c_total").value) || 0;
         let grandTotal = totalA + totalB + totalC;
         document.getElementById("total").value = grandTotal.toFixed(2);
-        let netQty = parseFloat(document.getElementById("net_qty").value);
+        let netQty = parseFloat(document.getElementById("net_qty").textContent);
         let normalLoss = netQty - grandTotal;
         document.getElementById("normal_loss").value = normalLoss.toFixed(2);
     }
@@ -219,7 +219,7 @@
 		  }
 		});
 
-		xhr.open("PUT", "https://shivadb-f348.restdb.io/rest/plm-products-db/67dcbd0c420df42a0000062d");
+		xhr.open("PUT", "https://shivadb-f348.restdb.io/rest/plm-products-db/67dd4a2e420df42a00001803");
 		xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
 		xhr.setRequestHeader("Content-Type", "application/json");
 

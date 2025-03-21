@@ -50,7 +50,7 @@
         th, td {
             border: 1px solid black;
             padding: 8px;
-            text-align: left;
+            text-align: center;
             width: 50%;
         }
         th {
@@ -81,17 +81,12 @@
             <button type="button" class="accordion">General Information</button>
             <div class="panel">
                 <table>
-                    <tr><th>Date of Production</th><td><label id="date_of_production"></label></td></tr>
-                    <tr><th>Block No.</th><td><label id="block_no"></label></td></tr>
-                    <tr><th>Block Colour</th><td><label id="block_colour"></label></td></tr>
-                   <tr><th>Block Parts</th><td>
-						<select name="block_parts" id="block_parts">
-							<option value="part_a">Part A</option>
-							<option value="part_b">Part B</option>
-							<option value="part_c">Part C</option>
-						</select></td></tr>
-                    <tr><th>Block Qty. (CBM)</th><td><input type="number" step="0.001" name="block_qty" id="block_qty"></label></td></tr>
-                    <tr><th>Slabs Expected Qty.</th><td><input type="text" name="slabs_expected_qty" id="slabs_expected_qty"></label></td></tr>
+                    <tr><th>Date of Production</th><td><label id="date_of_production">2023-04-11</label></td></tr>
+                    <tr><th>Block No.</th><td><label id="block_no">9503</label></td></tr>
+                    <tr><th>Block Colour</th><td><label id="block_colour">PSR - TB</label></td></tr>
+                    <tr><th>Block Part</th><td><label id="block_parts">Part-A</label></td></tr>
+                    <tr><th>Block Qty. (CBM)</th><td><label id="block_qty">1.620</label></td></tr>
+                    <tr><th>Slabs Expected Qty.</th><td><input type="number" name="slabs_expected_qty" id="slabs_expected_qty"></td></tr>
                     <tr><th>Blade M/c No.</th><td><input type="text" name="blade_mc_no" id="blade_mc_no"></td></tr>
                 </table>
             </div>
@@ -177,9 +172,19 @@
 		function submitForm() {
 			event.preventDefault();
 
-			let recordId = "67dcbd0c420df42a0000062d"; // Replace with actual record ID
-			let blockPart = getValue("block_parts").toLowerCase().trim(); 
-
+			let recordId = "67dd4a2e420df42a00001803"; // Replace with actual record ID
+			let blockParts = getInnerText("block_parts").toLowerCase().trim(); 
+			var blockPart;
+			let parts = blockParts.split("-");  
+			if(parts[1]=="a"){
+				blockPart="part_a";
+			}
+			else if(parts[1]=="b"){
+				blockPart="part_b";
+			}
+			else{
+				blockPart="part_c";
+			}
 			if (!blockPart) {
 				alert("Please select a Block Part.");
 				return;
@@ -233,7 +238,6 @@
 					[blockPart]: updatedPart 
 				}
 			};
-			updateStage("2");
 
 			var Xhr = new XMLHttpRequest();
 			Xhr.onreadystatechange = function () {
@@ -256,8 +260,10 @@
 	function getValue(id) {
 		return document.getElementById(id)?.value || "";
 	}
-	function updateStage(newStage) {
-    obj.dressing.part_a.stage = newStage;
+	
+	// Function to get text values (handles empty fields)
+	function getInnerText(id) {
+		return document.getElementById(id)?.textContent || "";
 	}
 
     </script>

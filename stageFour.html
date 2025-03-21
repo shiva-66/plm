@@ -100,11 +100,11 @@
 						</tr>
 						<tr>
 							<th>Block No.</th>
-							<td><label type="text" name="block_no" id="block_no"></label></td>
+							<td><label id="block_no">9503</label></td>
 						</tr>
 						<tr>
 							<th>Block Colour</th>
-							<td><label type="text" name="block_colour" id="block_colour"></label></td>
+							<td><label id="block_colour">PSR - TB</label></td>
 						</tr>
 						<tr><th>Block Part</th><td>
 							<select name="block_parts" id="block_parts">
@@ -120,19 +120,19 @@
 									<table>
 										<tr>
 											<th>No of Pcs</th>
-											<td><label type="number" step="0.01" name="production_no_of_pcs" id="production_no_of_pcs" min="0"></label></td>
+											<td><label id="production_no_of_pcs" >44</label></td>
 										</tr>
 										<tr>
 											<th>SFT</th>
-											<td><label type="number" step="0.001" name="production_sft" id="production_sft" min="0"></label></td>
+											<td><label id="production_sft" >1430.000</label></td>
 										</tr>
 									</table>
 								</fieldset>
 							</th>
 						</tr>
 						<tr>
-							<th>Thickness</th>
-							<td><label type="text" name="thickness" id="thickness"></label></td>
+							<th>Thickness(mm)</th>
+							<td><label id="thickness">18</label></td>
 						</tr>
 					</table>
 				</div>
@@ -271,10 +271,10 @@
             let polishingSft = (polishingLength * polishingWidth * polishedPcs) / 144;
             document.getElementById("polishing_sft").value = polishingSft.toFixed(3);
 
-            let productionPcs = getValue("production_no_of_pcs");
+            let productionPcs = parseFloat(getInnerText("production_no_of_pcs"));
             document.getElementById("polishing_short_pcs").value = Math.max(productionPcs - polishedPcs, 0);
 
-            let productionSft = getValue("production_sft");
+            let productionSft = parseFloat(getInnerText("production_sft"));
             document.getElementById("polishing_short_sft").value = Math.max(productionSft - polishingSft, 0).toFixed(3);
         }
 
@@ -338,9 +338,19 @@
 	function submitForm() {
 			event.preventDefault();
 
-			let recordId = "67dcbd0c420df42a0000062d"; // Replace with actual record ID
+			let recordId = "67dd4a2e420df42a00001803"; // Replace with actual record ID
 			let blockPart = getValue("block_parts").toLowerCase().trim(); 
-
+			/*var blockPart;
+			let parts = blockParts.split("-");  
+			if(parts[1]=="a"){
+				blockPart="part_a";
+			}
+			else if(parts[1]=="b"){
+				blockPart="part_b";
+			}
+			else{
+				blockPart="part_c";
+			}*/
 			if (!blockPart) {
 				alert("Please select a Block Part.");
 				return;
@@ -374,12 +384,12 @@
 				slabs_auto_polishing: {
 					date_of_polishing: getValue("date_of_polishing"),
 					slabs_after_polishing: {
-						polished_length: getValue("polished_length"),
-						polished_height: getValue("polished_height"),
-						polished_no_of_pcs: getValue("polished_no_of_pcs"),
-						polished_sft: getValue("polished_sft"),
-						polished_short_pcs: getValue("polished_short_pcs"),
-						polished_short_sft: getValue("polished_short_sft")
+						polished_length: getValue("polishing_length"),
+						polished_height: getValue("polishing_height"),
+						polished_no_of_pcs: getValue("polishing_no_of_pcs"),
+						polished_sft: getValue("polishing_sft"),
+						polished_short_pcs: getValue("polishing_short_pcs"),
+						polished_short_sft: getValue("polishing_short_sft")
 					}
 				},
 				marking_sales_particulars: {
@@ -409,7 +419,7 @@
 					[blockPart]: updatedPart
 				}
 			};
-			updateStage("3");
+			
 
 			var xhr = new XMLHttpRequest();
 			xhr.onreadystatechange = function () {
@@ -433,10 +443,12 @@
 		return document.getElementById(id)?.value || "";
 	}
 	
-	function updateStage(newStage) {
-    obj.dressing.part_a.stage = newStage;
+	
+	
+	// Function to get text values (handles empty fields)
+	function getInnerText(id) {
+		return document.getElementById(id)?.textContent || "";
 	}
-
 
     </script>	
 </body>
