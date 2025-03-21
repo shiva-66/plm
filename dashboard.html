@@ -11,7 +11,6 @@
         }
         h1 {
            padding: 50px;
-
         }
         .dashboard {
             width: 50%;
@@ -63,13 +62,27 @@
     <div class="dashboard">
         <h2>Dashboard</h2>
         <div class="row">
-            <div class="box"><a href="stage1.html">Add New Product</a></div>
-            <div class="box"><a href="#">Search & Edit Product</a></div>
+            <div class="box">
+                <a href="stageOne.html" onclick="setDashboardSession()">Add New Product</a>
+            </div>
+            <div class="box">
+                <a href="#" onclick="setDashboardSession()">Search & Edit Product</a>
+            </div>
         </div>
         <div class="row">
-            <div class="box"><a href="#">Sell Products</a></div>
-            <div class="box"><a href="#">Sales Report</a></div>
+            <div class="box">
+                <a href="#" onclick="setDashboardSession()">Sell Products</a>
+            </div>
+            <div class="box">
+                <a href="#" onclick="setDashboardSession()">Sales Report</a>
+            </div>
         </div>
     </div>
+
+    <script>
+        function setDashboardSession() {
+            sessionStorage.setItem('dashboard', 'true');
+        }
+    </script>
 </body>
 </html>
