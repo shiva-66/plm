@@ -4,14 +4,22 @@
     <title>Granite Inventory Input</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+           font-family: Arial, sans-serif;
+           margin: 0;
+           padding: 0;
+           padding-top: 140px;
+		   background-color: #d6eaf8  !important;
         }
         .container {
-            width: 80%;
-            margin: auto;
+           width: 80%;
+           margin-top: 60px;
+           text-align: center;
         }
+		h1{
+			font-weight: bold; font-size: 30px; text-align: center; margin-bottom: 20px;color:#1b4f72;
+		}
         .accordion {
-            background-color: #f2f2f2;
+            background-color: #7fb3d5 ;
             cursor: pointer;
             padding: 10px;
             width: 100%;
@@ -26,7 +34,8 @@
         }
 
         .active, .accordion:hover {
-            background-color: #ccc;
+            background-color:#1b4f72;
+            color:white;
         }
         .panel {
             padding: 10px;
@@ -36,33 +45,40 @@
         }
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: collapse !important;
+			background-color: #d6eaf8  ;
         }
         th, td {
-            border: 1px solid black;
+            border: 1px solid black !important;
             padding: 8px;
             text-align: left;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #d6eaf8  ;
         }
         input {
             width: 90%;
             padding: 5px;
+			background-color: #F5F5F5;
+			border:1px solid black;
         }
         .error {
             color: red;
             font-size: 14px;
         }
-        .submit{
+		.submit {
             padding: 10px 20px;
-             font-size: 18px; 
-             background-color: #0066b2;
-             color: white; border: none; 
-             cursor: pointer; 
-             border-radius: 5px;
-             width:50%;
+            font-size: 18px; 
+            background-color: #1b4f72;
+            color: white;
+            border: none; 
+            cursor: pointer; 
+            border-radius: 5px;
+            width: 15%;  
+            display: inline-block; 
+            margin: 5px; 
         }
+
         fieldset {
             padding: 15px;
             border-radius: 8px;
@@ -73,16 +89,28 @@
             margin-bottom: 20px;
         }
     </style>
+	     <script>
+			fetch("header.html")
+			  .then(response => response.text())
+			  .then(data => {
+				document.getElementById("header-container").innerHTML = data;
+			  })
+		  </script>
 </head>
 <body>
+	<div id="header-container"></div>
+
     <div class="container">
-        <h2>Granite Inventory Input Form</h2>
+        <h1 style="font-weight: bold; font-size: 30px; text-align: center; margin-bottom: 20px;color:#1b4f72">
+			Granite Inventory Input Form
+		</h1>
+		
         <form id="inventoryForm" novalidate>
             
             <button class="accordion">Basic Details<span class="arrow">▼</span></button>
             <div class="panel">
                 <table>
-                    <tr><th>Date of Marking</th><td><input type="date" name="date_of_marking" id="date_of_marking" required ></td></tr>
+                    <tr><th style="border: 1px solid black;">Date of Marking</th><td><input type="date" name="date_of_marking" id="date_of_marking" required ></td></tr>
                     <tr><th>Recd Date</th><td><input type="date" name="recd_date" id="recd_date" required></td></tr>
                     <tr><th>Name of the Supplier</th><td><input type="text" name="supplier_name"  id="supplier_name" required></td></tr>
                     <tr><th>Goods Received From Which Quarry</th><td><input type="text" name="quarry_name" id="quarry_name" required></td></tr>
@@ -161,9 +189,9 @@
                 </table>
             </div>
             <div style="text-align: center; margin-top: 20px;">
-                <button type="submit" class="submit">
-                    Submit
-                </button>
+                <button type="submit" class="submit" style="display: none">Submit</button>
+				<button type="submit" class="submit"style="display: none">Submit</button>
+				<button type="submit" class="submit">Submit</button>
             </div>
         </form>
     </div>
