@@ -81,17 +81,17 @@
             <button type="button" class="accordion">General Information</button>
             <div class="panel">
                 <table>
-                    <tr><th>Date of Production</th><td><input type="date" name="date_of_production" id="date_of_production"></td></tr>
-                    <tr><th>Block No.</th><td><input type="text" name="block_no" id="block_no"></td></tr>
-                    <tr><th>Block Colour</th><td><input type="text" name="block_colour" id="block_colour"></td></tr>
+                    <tr><th>Date of Production</th><td><label id="date_of_production"></label></td></tr>
+                    <tr><th>Block No.</th><td><label id="block_no"></label></td></tr>
+                    <tr><th>Block Colour</th><td><label id="block_colour"></label></td></tr>
                    <tr><th>Block Parts</th><td>
 						<select name="block_parts" id="block_parts">
 							<option value="part_a">Part A</option>
 							<option value="part_b">Part B</option>
 							<option value="part_c">Part C</option>
 						</select></td></tr>
-                    <tr><th>Block Qty. (CBM)</th><td><input type="number" step="0.001" name="block_qty" id="block_qty"></td></tr>
-                    <tr><th>Slabs Expected Qty.</th><td><input type="text" name="slabs_expected_qty" id="slabs_expected_qty"></td></tr>
+                    <tr><th>Block Qty. (CBM)</th><td><input type="number" step="0.001" name="block_qty" id="block_qty"></label></td></tr>
+                    <tr><th>Slabs Expected Qty.</th><td><input type="text" name="slabs_expected_qty" id="slabs_expected_qty"></label></td></tr>
                     <tr><th>Blade M/c No.</th><td><input type="text" name="blade_mc_no" id="blade_mc_no"></td></tr>
                 </table>
             </div>
@@ -174,143 +174,6 @@
 			}
 		});
 		
-	/*function submitForm(){
-		event.preventDefault();
-		    let recordId = "67dcbd0c420df42a0000062d"; // Replace with actual record ID
-			let blockPart = getValue("block_parts").toLowerCase().trim(); // Get block part input value
-
-			if (!blockPart) {
-				alert("Please enter a Block Part.");
-				return;
-			}
-
-
-		/*fetch(`https://shivadb-f348.restdb.io/rest/plm-products-db/${recordId}`, {
-			method: "GET",
-			headers: {
-				"x-api-key": "657c53fe63ede92cdbf17208",
-				"Content-Type": "application/json"
-			}
-		})
-		.then(response => response.json())
-		.then(existingData => {
-			let existingPart = existingData.dressing?.[blockPart] || {}; // Preserve existing properties
-			let existingSlabsProduction = existingPart.slabs_production || {}; // Preserve existing slabs_production properties
-
-			let updatedSlabsProduction = {
-				...existingSlabsProduction, // Keep existing slabs_production data
-				slabs_expected_qty: getValue("slabs_expected_qty"),
-				blade_mc_no: getValue("blade_mc_no"),
-				thickness: getValue("thickness"),
-				length: getValue("length"),
-				height: getValue("height"),
-				production_pcs: getValue("pcs"),
-				production_sft: getValue("sft"),
-				operator_name: getValue("operator_name"),
-				tekedar_name: getValue("tekedar_name")
-			};
-
-			let updatedPart = {
-				...existingPart, // Preserve other part_x properties
-				slabs_production: updatedSlabsProduction // Update only slabs_production
-			};
-
-			let updatedData = {
-				dressing: {
-					...existingData.dressing, // Keep other parts intact
-					[blockPart]: updatedPart // Update the correct part_x
-				}
-			};
-			// If there are updates, send a PATCH request
-			if (Object.keys(updatedData).length > 0) {
-				fetch(`https://shivadb-f348.restdb.io/rest/plm-products-db/${recordId}`, {
-					method: "POST",
-					headers: {
-						"x-api-key": "657c53fe63ede92cdbf17208",
-						"Content-Type": "application/json"
-					},
-					body: JSON.stringify(updatedData)
-				})
-				.then(response => response.json())
-				.then(data => {
-					alert("Stage-3 empty values updated successfully!");
-				})
-				.catch(error => {
-					alert("Error updating Stage-3 data.");
-				});
-			} else {
-				alert("No empty fields were found to update.");
-			}
-		})
-		.catch(error => {
-			alert("Error fetching existing data.");
-		});
-		
-		// WARNING: For GET requests, body is set to null by browsers.
-
-		var xhr = new XMLHttpRequest();
-		//xhr.withCredentials = true;
-
-		xhr.addEventListener("readystatechange", function() {
-		  if(this.readyState === 4) {
-			console.log(this.responseText);
-			let existingPart = existingData.dressing?.[blockPart] || {}; // Preserve existing properties
-			let existingSlabsProduction = existingPart.slabs_production || {}; // Preserve existing slabs_production properties
-
-			let updatedSlabsProduction = {
-				...existingSlabsProduction, // Keep existing slabs_production data
-				slabs_expected_qty: getValue("slabs_expected_qty"),
-				blade_mc_no: getValue("blade_mc_no"),
-				thickness: getValue("thickness"),
-				length: getValue("length"),
-				height: getValue("height"),
-				production_pcs: getValue("pcs"),
-				production_sft: getValue("sft"),
-				operator_name: getValue("operator_name"),
-				tekedar_name: getValue("tekedar_name")
-			};
-
-			let updatedPart = {
-				...existingPart, // Preserve other part_x properties
-				slabs_production: updatedSlabsProduction // Update only slabs_production
-			};
-
-			let updatedData = {
-				dressing: {
-					...existingData.dressing, // Keep other parts intact
-					[blockPart]: updatedPart // Update the correct part_x
-				}
-			};
-			// If there are updates, send a PATCH request
-			if (Object.keys(updatedData).length > 0) {
-				
-				var xhr = new XMLHttpRequest();
-				//xhr.withCredentials = true;
-
-				xhr.addEventListener("readystatechange", function() {
-				  if(this.readyState === 4) {
-					console.log(this.responseText);
-				  }
-				});
-
-				xhr.open("POST", "https://shivadb-f348.restdb.io/rest/plm-products-db");
-				xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
-				xhr.setRequestHeader("Content-Type", "application/json");
-
-				xhr.send(updatedData);
-			} else {
-				alert("No empty fields were found to update.");
-			}
-		  }
-		});
-
-		xhr.open("GET", `https://shivadb-f348.restdb.io/rest/plm-products-db/${recordId}`);
-		xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
-
-		xhr.send();
-		
-	}*/
-	
 		function submitForm() {
 			event.preventDefault();
 
