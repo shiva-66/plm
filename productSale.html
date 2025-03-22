@@ -157,6 +157,22 @@
         .scroll-table {
             overflow-x: auto;
         }
+
+        #dataTable {
+            display: none;
+        }
+        #searchInput {
+            width: 250px !important; 
+            border: 1px solid #1b4f72;
+        }
+        .input-group {
+            width: auto; 
+            display: inline-flex;  
+        }
+        #searchInput:focus {
+            border-color: #1b4f72 !important;
+            box-shadow: none !important;
+        }
     </style>
 </head>
 <body>
@@ -180,7 +196,14 @@
         </div>
     <div class="container">
         <h1>Product Sale</h1>
+        <div class="container mt-4">
+            <div class="input-group mb-3">
+                <input type="text" id="searchInput" class="form-control" placeholder="Enter Block Number" >
+                <button class="btn btn-primary" onclick="searchBlock()" style="background-color: #1b4f72;">Search</button>
+            </div>
+        </div>
         <form id="inventoryForm">
+            <div id="dataTable">
             <!--First Accordian  -->
             <button type="button" class="accordion">Basic Details</button>
             <div class="panel">
@@ -313,6 +336,7 @@
 				<button type="submit" class="submit" style="display: none">Submit</button>
 				<button type="submit" class="submit">Submit</button>
 			</div>
+        </div>
         </form>
     </div>
 
@@ -328,6 +352,28 @@
                     panel.style.display = "block";
                 }
             });
+        }
+
+        function searchBlock() {
+            let searchValue = document.getElementById("searchInput").value.trim();
+            let table = document.getElementById("dataTable");
+           let blockNo = document.getElementById("block_no").textContent;
+
+           if (!searchValue) {
+               table.style.display = "none";
+               alert("Please enter a block number to search!");
+              return;
+        }
+
+    // For this example, we'll just compare with the static block number (9503)
+    
+           if (searchValue === blockNo) {
+              table.style.display = "block"; 
+            }
+           else {
+             table.style.display = "none";   
+                 alert("Block number " + searchValue + " not found!");
+            }
         }
 		
 		function calculateClosingStockDamage() {
