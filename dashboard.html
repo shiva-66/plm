@@ -11,6 +11,7 @@
         }
         h1 {
            padding: 50px;
+
         }
         .dashboard {
             width: 50%;
@@ -39,7 +40,7 @@
             padding: 15px;
             border: 1px solid black;
             text-align: center;
-            background-color: #87ceeb;
+            background-color: #5fa9d1;
             color: white;
             font-weight: bold;
             cursor: pointer;
@@ -47,7 +48,7 @@
             box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
         }
         .box:hover {
-            background-color:#5fa9d1;
+            background-color: #007BFF;
             transform: scale(1.05);
             box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.3);
         }
@@ -62,27 +63,13 @@
     <div class="dashboard">
         <h2>Dashboard</h2>
         <div class="row">
-            <div class="box">
-                <a href="stageOne.html" onclick="setDashboardSession()">Add New Product</a>
-            </div>
-            <div class="box">
-                <a href="#" onclick="setDashboardSession()">Search & Edit Product</a>
-            </div>
+            <div class="box"><a href="stage1.html">Add New Product</a></div>
+            <div class="box"><a href="#">Search & Edit Product</a></div>
         </div>
         <div class="row">
-            <div class="box">
-                <a href="#" onclick="setDashboardSession()">Sell Products</a>
-            </div>
-            <div class="box">
-                <a href="#" onclick="setDashboardSession()">Sales Report</a>
-            </div>
+            <div class="box"><a href="#">Sell Products</a></div>
+            <div class="box"><a href="#">Sales Report</a></div>
         </div>
     </div>
-
-    <script>
-        function setDashboardSession() {
-            sessionStorage.setItem('dashboard', 'true');
-        }
-    </script>
 </body>
 </html>
