@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <title>Search & Edit</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,15 +8,13 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
-     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <style>
-         body {
+        body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
@@ -46,18 +44,18 @@
             color: #E6E6FA;
         }
         header .company-name h2 {
-            font-family: Arial, sans-serif;
             font-size: 40px;
             font-weight: 900;
             font-style: italic;
             margin-bottom: 10px;
         }
         header .company-name h4 {
-            font-family: Arial, sans-serif;
+            
             font-size: 25px;
             font-weight: bold;
             font-style: italic;
             margin: 0;
+            text-align: center;
         }
         .navbar-section {
             background-color: #1b4f72;
@@ -80,109 +78,100 @@
             margin-right: 20px;
         }
         .navbar-section a:hover {
-            background-color:  #7fb3d5 ;
+            background-color:  #7fb3d5;
             color: black !important;
             border-radius: 5px;
         }
         .container {
-           width: 80%;
-           margin-top: 60px;
-           text-align: center;
+            width: 80%;
+            margin-top: 60px;
+            text-align: center;
         }
-        h1{
-			font-weight: bold; 
-			font-size: 30px; 
-			text-align: center; 
-			margin-bottom: 20px;color:#1b4f72;
-		}
+        h1 {
+            font-weight: bold;
+            font-size: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #1b4f72;
+        }
+        .filter-section {
+            margin: 15px 0;
+        }
     </style>
-  </head>
-  <body>
-    <div>
+</head>
+<body>
     <header>
-      <img src="logocct.jpg" style="width:100px ;height:80px" alt="Company Logo" />
-      <div class="company-name">
-        <h2>Cloud Chain Technologies</h2> 
-        <h4>Karimnagar</h4>
-      </div>
+        <img src="logocct.jpg" style="width:100px; height:80px" alt="Company Logo">
+        <div class="company-name">
+            <h2>Cloud Chain Technologies</h2> 
+            <h4>Karimnagar</h4>
+        </div>
     </header>
 
     <!-- Navbar Section -->
     <div class="navbar-section">
         <ul class="nav justify-content-center">
-          <li class="nav-item">
-            <a class="nav-link" href="dashboard.html">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="index.html">Add Product</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="SearchandEdit.html">Search & Edit</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="productSale.html">Sell</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="SalesReport.html">Sales Report</a>
-          </li>
+            <li class="nav-item"><a class="nav-link" href="dashboard.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="index.html">Add Product</a></li>
+            <li class="nav-item"><a class="nav-link" href="SearchandEdit.html">Search & Edit</a></li>
+            <li class="nav-item"><a class="nav-link" href="productSale.html">Sell</a></li>
+            <li class="nav-item"><a class="nav-link" href="SalesReport.html">Sales Report</a></li>
         </ul>
-      </div>
-      <div  class="container">
-        <h1>
-			Product List
-		</h1>
-        <table border="0" cellspacing="5" cellpadding="5">
-            <tbody><tr>
-                <td>Minimum date:</td>
-                <td><input type="text" id="min" name="min"></td>
-            </tr>
-            <tr>
-                <td>Maximum date:</td>
-                <td><input type="text" id="max" name="max"></td>
-            </tr>
-        </tbody></table>
+    </div>
+
+    <div class="container">
+        <h1>Product List</h1>
+
+        <!-- Radio Button Selection -->
+        <div class="filter-options">
+            <label><input type="radio" name="filterType" value="dateRange" checked> Date Range</label>
+            <label><input type="radio" name="filterType" value="blockNumber"> Block Number</label>
+        </div>
+
+        <!-- Date Range Filtering Section -->
+        <div id="dateRangeInputs" class="filter-section">
+            <label>Min Date: <input type="text" id="min"></label>
+            <label>Max Date: <input type="text" id="max"></label>
+        </div>
+
+        <!-- Block Number Filtering Section -->
+        <div id="blockNumberInput" class="filter-section" style="display: none;">
+            <label>Block Number: <input type="text" id="blockNumber"></label>
+        </div>
+
         <table id="example" class="display nowrap" style="width:100%">
             <thead>
                 <tr>
-                    <th>Part Name</th>
+                    <th>Block Number</th> <!-- Changed from Part Name -->
                     <th>Current Stage</th>
-                    
+                    <th>Date</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>1234</td>
                     <td>Stage1</td>
-                    
+                    <td>2025-03-22</td> 
                 </tr>
                 <tr>
                     <td>5678</td>
-                    <td>stage2</td>
-
+                    <td>Stage2</td>
+                    <td>2025-03-20</td>
                 </tr>
             </tbody>
-            <tfoot>
-            <tr>
-                <th>...</th>
-                <th>...</th>
+        </table>
+    </div>
 
-            </tr>
-            </tfoot>
-      </div>
-
-      <script>
+    <script>
         $(document).ready(function () {
-            var minDate, maxDate;
-    
-            
             var table = $('#example').DataTable();
-    
-    
+
+            // Date Range Filtering
             $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
                 var min = $('#min').datepicker("getDate");
                 var max = $('#max').datepicker("getDate");
-                var startDate = new Date(data[4]); 
-    
+                var startDate = new Date(data[2]); // Date is in column index 2
+
                 if (
                     (min === null && max === null) ||
                     (min === null && startDate <= max) ||
@@ -193,18 +182,38 @@
                 }
                 return false;
             });
-    
+
+            // Initialize Date Picker
             $("#min, #max").datepicker({
                 dateFormat: "yy-mm-dd",
                 onSelect: function () {
-                    table.draw(); 
+                    table.draw();
                 }
             });
-    
+
+            // Trigger filtering when dates change
             $('#min, #max').on('change', function () {
                 table.draw();
             });
+
+            // Block Number Search Functionality
+            $('#blockNumber').on('keyup', function () {
+                table.column(0).search(this.value).draw(); // Search in "Block Number" column
+            });
+
+            // Radio Button Toggle Logic
+            $('input[type=radio][name=filterType]').change(function () {
+                if (this.value === 'dateRange') {
+                    $('#dateRangeInputs').show();
+                    $('#blockNumberInput').hide();
+                } else if (this.value === 'blockNumber') {
+                    $('#dateRangeInputs').hide();
+                    $('#blockNumberInput').show();
+                }
+            });
+
+            console.log("DataTable Initialized with Block Number Filtering");
         });
     </script>
-  </body>
+</body>
 </html>
