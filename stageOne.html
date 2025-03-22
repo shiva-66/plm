@@ -270,13 +270,16 @@
             </div>
             <div style="text-align: center; margin-top: 20px;">
                 <button type="submit" class="submit" style="display: none">Submit</button>
-				<button type="submit" class="submit"style="display: none">Submit</button>
+				<button type="submit" class="submit" style="display: none">Submit</button>
 				<button type="submit" class="submit">Submit</button>
             </div>
         </form>
     </div>
 
     <script>
+		 let dashboard = sessionStorage.getItem("dashboard");
+		 console.log("dashboard=", dashboard);
+	
         document.addEventListener("DOMContentLoaded", function () {
 			   // Accordion functionality
 				var acc = document.getElementsByClassName("accordion");

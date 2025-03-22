@@ -149,7 +149,7 @@
     <div class="dashboard">
         
         <div class="row">
-            <div class="box"><a href="stage1.html">Add New Product</a></div>
+            <div class="box"><a href="stageOne.html">Add New Product</a></div>
             <div class="box"><a href="#">Search & Edit Product</a></div>
         </div>
         <div class="row">
@@ -157,5 +157,48 @@
             <div class="box"><a href="#">Sales Report</a></div>
         </div>
     </div>
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			// Select all anchor tags inside .box divs
+			document.querySelectorAll(".box a").forEach(anchor => {
+				anchor.addEventListener("click", function (event) {
+					event.preventDefault(); // Prevent default navigation behavior
+
+					// Call a specific function based on the link text or href
+					if (this.textContent.includes("Add New Product")) {
+						addNewProduct();
+					} else if (this.textContent.includes("Search & Edit Product")) {
+						searchEditProduct();
+					} else if (this.textContent.includes("Sell Products")) {
+						sellProducts();
+					} else if (this.textContent.includes("Sales Report")) {
+						salesReport();
+					}
+				});
+			});
+		});
+
+		// Define different functions for each action
+		function addNewProduct() {
+			alert("Navigating to Add New Product...");
+			sessionStorage.setItem("dashboard", "true");
+			window.location.href = "stageOne.html"; // Redirect after action
+		}
+
+		function searchEditProduct() {
+			alert("Opening Search & Edit Product...");
+			// window.location.href = "your_edit_page.html";
+		}
+
+		function sellProducts() {
+			alert("Proceeding to Sell Products...");
+			// window.location.href = "your_sell_page.html";
+		}
+
+		function salesReport() {
+			alert("Generating Sales Report...");
+			// window.location.href = "your_report_page.html";
+		}
+	</script>
 </body>
 </html>
