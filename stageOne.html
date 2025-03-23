@@ -512,6 +512,7 @@
 					if (!block_id) {
 						// If creating a new record, reset the form
 						document.getElementById("inventoryForm").reset();
+						window.location.href = "productList.html";
 					}
 				} else {
 					console.error("Error saving data:", xhr.responseText);
