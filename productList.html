@@ -97,6 +97,78 @@
         .filter-section {
             margin: 15px 0;
         }
+				
+		/* Table Styling */
+		#example {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 20px;
+			background-color: white;
+			border-radius: 10px;
+			overflow: hidden;
+			box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+		}
+
+		/* Table Header */
+		#example thead {
+			background-color: #1b4f72;
+			color: white;
+			text-align: center;
+			font-size: 16px;
+			font-weight: bold;
+		}
+
+		#example thead th {
+			padding: 12px;
+			white-space: normal;
+			word-wrap: break-word;
+			text-align: left;
+		}
+
+		/* Table Body */
+		#example tbody tr:nth-child(even) {
+			background-color: #f2f2f2;
+		}
+
+		#example tbody tr:hover {
+			background-color: #cce5ff; /* Highlight row on hover */
+			transition: 0.3s;
+		}
+
+		#example tbody td {
+			padding: 10px;
+			text-align: center;
+			font-size: 14px;
+			border-bottom: 1px solid #ddd;
+		}
+
+		/* Footer Row (Total Calculation) */
+		#example tfoot {
+			background-color: #1b4f72;
+			color: white;
+			font-weight: bold;
+			font-size: 15px;
+		}
+
+		#example tfoot th {
+			padding: 12px;
+			text-align: center;
+		}
+
+		/* Responsive Design */
+		@media screen and (max-width: 768px) {
+			#example {
+				display: block;
+				overflow-x: auto;
+			}
+
+			#example thead th,
+			#example tbody td,
+			#example tfoot th {
+				font-size: 13px;
+				padding: 8px;
+			}
+		}
     </style>
 </head>
 <body>
@@ -110,32 +182,33 @@
 
     <!-- Navbar Section -->
     <div class="navbar-section">
-        <ul class="nav justify-content-center">
-            <li class="nav-item"><a class="nav-link" href="dashboard.html">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="index.html">Add Product</a></li>
-            <li class="nav-item"><a class="nav-link" href="SearchandEdit.html">Search & Edit</a></li>
-            <li class="nav-item"><a class="nav-link" href="productSale.html">Sell</a></li>
-            <li class="nav-item"><a class="nav-link" href="SalesReport.html">Sales Report</a></li>
-        </ul>
-    </div>
+            <ul class="nav justify-content-center">
+                <li class="nav-item"><a class="nav-link" href="dashboard.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="stageOne.html">Add Product</a></li>
+                <li class="nav-item"><a class="nav-link" href="productList.html">Search & Edit</a></li>
+                <li class="nav-item"><a class="nav-link" href="productSale.html">Sell</a></li>
+                <li class="nav-item"><a class="nav-link" href="salesreport.html">Sales Report</a></li>
+            </ul>
+        </div>
 
     <div class="container">
         <h1>Product List</h1>
 
         <!-- Radio Button Selection -->
         <div class="filter-options">
-            <label><input type="radio" name="filterType" value="dateRange" checked> Date Range</label>
-            <label><input type="radio" name="filterType" value="blockNumber"> Block Number</label>
+			<label><input type="radio" name="filterType" value="blockNumber" checked> Block Number</label>
+            <label><input type="radio" name="filterType" value="dateRange" > Date Range</label>
+            
         </div>
 
         <!-- Date Range Filtering Section -->
-        <div id="dateRangeInputs" class="filter-section">
+        <div id="dateRangeInputs" class="filter-section" style="display: none;">
             <label>Min Date: <input type="text" id="min"></label>
             <label>Max Date: <input type="text" id="max"></label>
         </div>
 
         <!-- Block Number Filtering Section -->
-        <div id="blockNumberInput" class="filter-section" style="display: none;">
+        <div id="blockNumberInput" class="filter-section" style="display: block;">
             <label>Block Number: <input type="text" id="blockNumber"></label>
         </div>
 
@@ -143,22 +216,30 @@
             <thead>
                 <tr>
                     <th>Block Number</th> <!-- Changed from Part Name -->
-                    <th>Current Stage</th>
-                    <th>Date</th>
+                    <th>Supplier Name</th>
+                    <th>Block Colour</th>
+                    <th>Net Measurement (Qty)</th>
+					<th>QTY.[250 SFT/CBM]</th>
+                    <th>Price/CBM</th>
+                    <th>Block Purchase Amount</th>
+					<th>Weighting Expenses</th>
+					<th>Loading Mamulu</th>
+					<th>Total Blocks Cost</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>1234</td>
-                    <td>Stage1</td>
-                    <td>2025-03-22</td> 
-                </tr>
-                <tr>
-                    <td>5678</td>
-                    <td>Stage2</td>
-                    <td>2025-03-20</td>
-                </tr>
-            </tbody>
+            <tbody></tbody>
+			<tfoot>
+			<tr>
+				<th colspan="3" style="text-align:right">Total:</th>
+				<th id="totalNetMeasurement"></th>
+				<th id="totalQty"></th>
+				<th>-</th>
+				<th id="totalPurchaseAmount"></th>
+				<th id="totalWeighting"></th>
+				<th id="totalLoading"></th>
+				<th id="totalBlocksCost"></th>
+			</tr>
+    </tfoot>
         </table>
     </div>
 
@@ -213,6 +294,101 @@
             });
 
             console.log("DataTable Initialized with Block Number Filtering");
+			/*----------------------------------------------------------------*/
+			
+			var table = $('#example').DataTable(); // Initialize DataTable
+
+			// Function to Fetch Data from RestDB
+			function fetchData() {
+				// WARNING: For GET requests, body is set to null by browsers.
+				var xhr = new XMLHttpRequest();
+				//xhr.withCredentials = true;
+
+				xhr.addEventListener("readystatechange", function() {
+					if(this.readyState === 4) {
+						try {
+							let data = JSON.parse(this.responseText); // Parse JSON
+							populateTable(data);
+						} catch (error) {
+							console.error("Error parsing JSON:", error);
+						}
+					}
+				});
+
+				xhr.open("GET", "https://shivadb-f348.restdb.io/rest/plm-products-db");
+				xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
+
+				xhr.send();
+			}
+
+
+			// Function to Populate Table
+			function populateTable(data) {
+				table.clear(); // Clear existing rows
+
+				if (!Array.isArray(data)) {
+					console.error("Expected an array but got:", data);
+					return; // Exit if data is not an array
+				}
+
+				data.forEach(record => {
+					if (!record || !record.blocks) {
+						console.warn("Skipping invalid record:", record);
+						return; // Skip invalid records
+					}
+
+					let blockNumber = record.id || "N/A";  // Define blockNumber properly
+					let block_id = record._id || "N/A";  // Define blockNumber properly
+
+					// Create an anchor tag for Block Number
+					let blockLink = `<a href="stageOne.html?block_id=${block_id}" style="color: #1b4f72; font-weight: bold; text-decoration: none;">
+										${blockNumber}
+									 </a>`;
+
+					table.row.add([
+						blockLink,  // Block Number with anchor tag
+						record.supplier_name || "N/A",  
+						record.blocks.block_color || "N/A",
+						record.blocks.net_measurement_qty || "N/A",
+						record.blocks.qty_sft_cbm || "N/A",
+						record.blocks.price_cbm || "N/A",
+						record.blocks.amount || "N/A",
+						(record.blocks.other_expenses?.weighting_expense) || "N/A",
+						(record.blocks.other_expenses?.loading_mamulu) || "N/A",
+						(record.blocks.other_expenses?.total_blocks_cost) || "N/A"
+					]);
+				});
+
+				table.draw(); // Redraw DataTable
+				updateFooter(); // Update total sums in footer
+			}
+			
+			function updateFooter() {
+				var api = table;
+
+				// Function to calculate sum of a column
+				function sumColumn(index) {
+					return api.column(index, { filter: 'applied' }).data().reduce(function (a, b) {
+						return (parseFloat(a) || 0) + (parseFloat(b) || 0);
+					}, 0).toFixed(2);
+				}
+
+				// Updating the footer with total sums
+				$('#totalNetMeasurement').html(sumColumn(3));
+				$('#totalQty').html(sumColumn(4));
+				$('#totalPurchaseAmount').html(sumColumn(6));
+				$('#totalWeighting').html(sumColumn(7));
+				$('#totalLoading').html(sumColumn(8));
+				$('#totalBlocksCost').html(sumColumn(9));
+			}
+
+			// Recalculate totals whenever the table is updated
+			$('#example').on('draw.dt', function () {
+				updateFooter();
+			});
+
+			fetchData(); // Fetch data on page load
+			
         });
     </script>
 </body>
