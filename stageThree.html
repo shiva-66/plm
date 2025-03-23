@@ -140,16 +140,16 @@
 			border:1px solid black;
         }
         .submit {
-            width: 50%;
             padding: 10px 20px;
             font-size: 18px; 
             background-color: #1b4f72;
-            color: white; 
+            color: white;
             border: none; 
             cursor: pointer; 
             border-radius: 5px;
-            margin-top: 20px;
-            margin-bottom: 50px;
+            width: 15%;  
+            display: inline-block; 
+            margin: 5px; 
         }
         .error {
             border: 2px solid red;
@@ -169,23 +169,29 @@
         <div class="navbar-section">
             <ul class="nav justify-content-center">
                 <li class="nav-item"><a class="nav-link" href="dashboard.html">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="index.html">Add Product</a></li>
-                <li class="nav-item"><a class="nav-link" href="SearchandEdit.html">Search & Edit</a></li>
+                <li class="nav-item"><a class="nav-link" href="stageOne.html">Add Product</a></li>
+                <li class="nav-item"><a class="nav-link" href="productList.html">Search & Edit</a></li>
                 <li class="nav-item"><a class="nav-link" href="productSale.html">Sell</a></li>
-                <li class="nav-item"><a class="nav-link" href="SalesReport.html">Sales Report</a></li>
+                <li class="nav-item"><a class="nav-link" href="salesreport.html">Sales Report</a></li>
             </ul>
-        </div>    
+        </div>
     <div class="container">
         <h1>STAGE-3. SLABS Production</h1>
         <form id="inventoryForm">
             <button type="button" class="accordion">General Information</button>
             <div class="panel">
                 <table>
-                    <tr><th>Date of Production</th><td><label id="date_of_production">2023-04-11</label></td></tr>
-                    <tr><th>Block No.</th><td><label id="block_no">9503</label></td></tr>
-                    <tr><th>Block Colour</th><td><label id="block_colour">PSR - TB</label></td></tr>
-                    <tr><th>Block Part</th><td><label id="block_parts">Part-A</label></td></tr>
-                    <tr><th>Block Qty. (CBM)</th><td><label id="block_qty">1.620</label></td></tr>
+                    <tr><th>Date of Production</th><td><label id="date_of_production"></label></td></tr>
+                    <tr><th>Block No.</th><td><label id="block_no"></label></td></tr>
+                    <tr><th>Block Colour</th><td><label id="block_colour"></label></td></tr>
+                    <tr><th>Block Part</th><td>
+							<select name="block_parts" id="block_parts">
+								<option value="part_a">Part A</option>
+								<option value="part_b">Part B</option>
+								<option value="part_c">Part C</option>
+							</select>
+						</td></tr>
+                    <tr><th>Block Qty. (CBM)</th><td><label id="block_qty"></label></td></tr>
                     <tr><th>Slabs Expected Qty.</th><td><input type="number" name="slabs_expected_qty" id="slabs_expected_qty"></td></tr>
                     <tr><th>Blade M/c No.</th><td><input type="text" name="blade_mc_no" id="blade_mc_no"></td></tr>
                 </table>
@@ -218,26 +224,110 @@
             
             <br>
             <div style="text-align: center; margin-top: 20px;">
-                <button type="submit" class="submit" style="display: none">Submit</button>
-				<button type="submit" class="submit" style="display: none">Submit</button>
-				<button type="submit" class="submit">Submit</button>
+                <button type="submit" class="submit" style="display: none" id="backButton">Back</button>
+				<button type="submit" class="submit" style="display: block" id="saveButton">Save</button>
+				<button type="submit" class="submit" style="width: 200px; display: none" id="moveToPolishingButton">Move to Polishing</button>
             </div>
         </form>
     </div>
 
     <script>
-        var acc = document.getElementsByClassName("accordion");
-        for (var i = 0; i < acc.length; i++) {
-            acc[i].addEventListener("click", function() {
-                this.classList.toggle("active");
-                var panel = this.nextElementSibling;
-                if (panel.style.display === "block") {
-                    panel.style.display = "none";
-                } else {
-                    panel.style.display = "block";
-                }
-            });
-        }
+		const urlParams = new URLSearchParams(window.location.search);
+	
+		 document.addEventListener("DOMContentLoaded", function () {
+			//const urlParams = new URLSearchParams(window.location.search);
+            const block_id = urlParams.get("block_id");
+
+            // Fetch block details if block_id is present
+            if (block_id) {
+				document.querySelectorAll(".submit").forEach(button => {
+					button.style.display = "inline-block"; // Make all submit buttons visible
+				});
+                fetchBlockDetails(block_id);
+            }
+			
+			var acc = document.getElementsByClassName("accordion");
+			for (var i = 0; i < acc.length; i++) {
+				acc[i].addEventListener("click", function() {
+					this.classList.toggle("active");
+					var panel = this.nextElementSibling;
+					panel.style.display = (panel.style.display === "block") ? "none" : "block";
+				});
+			}
+		});
+		
+		// Add event listener to the block_parts dropdown
+            const blockPartsDropdown = document.getElementById("block_parts");
+            if (blockPartsDropdown) {
+                blockPartsDropdown.addEventListener("change", function () {
+                    const block_id = urlParams.get("block_id");
+                    if (block_id) {
+                        fetchBlockDetails(block_id); // Re-fetch block details when dropdown changes
+                    }
+                });
+            } else {
+                console.error("Block parts dropdown not found!");
+            }
+		
+		// Add event listener to the Save Button
+            const saveButton = document.getElementById("saveButton");
+            if (saveButton) {
+                saveButton.addEventListener("click", function (event) {
+                    event.preventDefault(); // Prevent default form submission
+
+                    let isValid = true;
+
+                    document.querySelectorAll('input[required]').forEach(input => {
+                        if (!input.value.trim()) {
+                            isValid = false;
+                            input.classList.add("error");
+                        } else {
+                            input.classList.remove("error");
+                        }
+                    });
+
+                    if (isValid) {
+                        submitForm();
+                        alert("Submit form has got triggered!");
+                    } else {
+                        alert("Please fill all required fields.");
+                    }
+                });
+            } else {
+                console.error("Save button not found!");
+            }
+
+            // Add event listener to the Back button
+            const backButton = document.getElementById("backButton");
+            if (backButton) {
+                backButton.addEventListener("click", function (event) {
+                    event.preventDefault(); // Prevent default form submission
+                    window.history.back(); // Navigate to the previous page
+                });
+            } else {
+                console.error("Back button not found!");
+            }
+
+            // Add event listener to the Move to Polishing button
+            const moveToPolishingButton = document.getElementById("moveToPolishingButton");
+            if (moveToPolishingButton) {
+                moveToPolishingButton.addEventListener("click", function (event) {
+                    event.preventDefault(); // Prevent default form submission
+
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const block_id = urlParams.get("block_id");
+
+                    if (block_id) {
+                        // Redirect to stageTwo.html with the block_id parameter
+                        window.location.href = `stageFour.html?block_id=${block_id}`;
+                    } else {
+                        alert("No block ID found. Please save the record first.");
+                    }
+                });
+            } else {
+                console.error("Move to Production button not found!");
+            }
+
 		
 		["length", "height", "pcs"].forEach(id => {
                 document.getElementById(id).addEventListener("input", calculateProductionSft);
@@ -251,44 +341,59 @@
 			document.getElementById("sft").value = sft.toFixed(3);
 		}
 
-		
-		document.getElementById("inventoryForm").addEventListener("submit", function(event) {
-			event.preventDefault(); 
-			let isValid = true;
+		// Fetch block details from the API
+        function fetchBlockDetails(blockId) {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", `https://shivadb-f348.restdb.io/rest/plm-products-db/${blockId}`);
+            xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
+            xhr.setRequestHeader("Content-Type", "application/json");
 
-			this.querySelectorAll('input[required]').forEach(input => {
-				if (!input.value.trim()) {
-					isValid = false;
-					input.classList.add("error");
-				} else {
-					input.classList.remove("error");
-				}
-			});
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    const data = JSON.parse(xhr.responseText);
+                    populateForm(data);
+                }
+            };
 
-			if (isValid) {
-				submitForm();
-				alert("Submit form has got triggered!");
-			} else {
-				alert("Please fill all required fields.");
-			}
-		});
+            xhr.send();
+        }
+
+        // Populate form fields with fetched data
+        function populateForm(data) {
+			const blockPart = document.getElementById("block_parts").value;
+			// Dynamically construct the property name based on the selected block part
+			const totalProperty = `${blockPart.slice(-1)}_total`; // e.g., "a_total", "b_total", etc.
+			
+            document.getElementById("date_of_production").textContent = data.dressing.block_cutting_date || "";
+            document.getElementById("block_no").textContent = data.id || "";
+            document.getElementById("block_colour").textContent = data.blocks?.block_color || "";
+            document.getElementById("block_qty").textContent = data.dressing[blockPart]?.[totalProperty] || ""; // Use dynamic property name
+
+            if (data.dressing) {
+                
+                const slabsProduction = data.dressing[blockPart]?.slabs_production || {};
+
+                document.getElementById("slabs_expected_qty").value = slabsProduction.slabs_expected_qty || "";
+                document.getElementById("blade_mc_no").value = slabsProduction.blade_mc_no || "";
+                document.getElementById("thickness").value = slabsProduction.thickness || "";
+                document.getElementById("length").value = slabsProduction.length || "";
+                document.getElementById("height").value = slabsProduction.height || "";
+                document.getElementById("pcs").value = slabsProduction.production_pcs || "";
+                document.getElementById("sft").value = slabsProduction.production_sft || "";
+                document.getElementById("operator_name").value = slabsProduction.operator_name || "";
+                document.getElementById("tekedar_name").value = slabsProduction.tekedar_name || "";
+            }
+        }
+
 		
 		function submitForm() {
 			event.preventDefault();
 
-			let recordId = "67dd4a2e420df42a00001803"; // Replace with actual record ID
-			let blockParts = getInnerText("block_parts").toLowerCase().trim(); 
-			var blockPart;
-			let parts = blockParts.split("-");  
-			if(parts[1]=="a"){
-				blockPart="part_a";
-			}
-			else if(parts[1]=="b"){
-				blockPart="part_b";
-			}
-			else{
-				blockPart="part_c";
-			}
+			const urlParams = new URLSearchParams(window.location.search);
+            const block_id = urlParams.get("block_id");
+
+            const blockPart = document.getElementById("block_parts").value;
+			
 			if (!blockPart) {
 				alert("Please select a Block Part.");
 				return;
@@ -300,7 +405,7 @@
 				if (xhr.readyState === 4) {
 					if (xhr.status === 200) {
 						let existingData = JSON.parse(xhr.responseText);
-						updateRecord(existingData, blockPart, recordId);
+						updateRecord(existingData, blockPart, block_id);
 					} else if (xhr.status === 404) {
 						alert("Error: Record not found. Please check the record ID.");
 					} else {
@@ -309,12 +414,12 @@
 				}
 			};
 
-			xhr.open("GET", `https://shivadb-f348.restdb.io/rest/plm-products-db/${recordId}`);
+			xhr.open("GET", `https://shivadb-f348.restdb.io/rest/plm-products-db/${block_id}`);
 			xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
 			xhr.send();
 		}
 
-		function updateRecord(existingData, blockPart, recordId) {
+		function updateRecord(existingData, blockPart, block_id) {
 			let existingPart = existingData.dressing?.[blockPart] || {}; 
 			let existingSlabsProduction = existingPart.slabs_production || {}; 
 
@@ -354,7 +459,7 @@
 				}
 			};
 
-			Xhr.open("PATCH", `https://shivadb-f348.restdb.io/rest/plm-products-db/${recordId}`);
+			Xhr.open("PATCH", `https://shivadb-f348.restdb.io/rest/plm-products-db/${block_id}`);
 			Xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
 			Xhr.setRequestHeader("Content-Type", "application/json");
 			Xhr.send(JSON.stringify(updatedData));
