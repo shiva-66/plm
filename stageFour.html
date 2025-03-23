@@ -495,24 +495,24 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("thickness").textContent = partData.slabs_production?.thickness || "0";
 
         // Populate Slabs Production (After Polishing)
-        document.getElementById("polishing_length").value = parseFloat(partData.slabs_auto_polishing?.slabs_after_polishing?.polished_length) || 0;
-        document.getElementById("polishing_height").value = parseFloat(partData.slabs_auto_polishing?.slabs_after_polishing?.polished_height) || 0;
-        document.getElementById("polishing_no_of_pcs").value = parseFloat(partData.slabs_auto_polishing?.slabs_after_polishing?.polished_no_of_pcs) || 0;
-        document.getElementById("polishing_sft").value = parseFloat(partData.slabs_auto_polishing?.slabs_after_polishing?.polished_sft) || 0;
-        document.getElementById("polishing_short_pcs").value = parseFloat(partData.slabs_auto_polishing?.slabs_after_polishing?.polished_short_pcs) || 0;
-        document.getElementById("polishing_short_sft").value = parseFloat(partData.slabs_auto_polishing?.slabs_after_polishing?.polished_short_sft) || 0;
+        document.getElementById("polishing_length").value = parseFloat(partData.slabs_auto_polishing?.slabs_after_polishing?.polished_length) || "";
+        document.getElementById("polishing_height").value = parseFloat(partData.slabs_auto_polishing?.slabs_after_polishing?.polished_height) || "";
+        document.getElementById("polishing_no_of_pcs").value = parseFloat(partData.slabs_auto_polishing?.slabs_after_polishing?.polished_no_of_pcs) || "";
+        document.getElementById("polishing_sft").value = parseFloat(partData.slabs_auto_polishing?.slabs_after_polishing?.polished_sft) || "";
+        document.getElementById("polishing_short_pcs").value = parseFloat(partData.slabs_auto_polishing?.slabs_after_polishing?.polished_short_pcs) || "";
+        document.getElementById("polishing_short_sft").value = parseFloat(partData.slabs_auto_polishing?.slabs_after_polishing?.polished_short_sft) || "";
 
         // Populate Stock Summary
-        document.getElementById("fresh_pcs").value = parseFloat(partData.marking_sales_particulars?.fresh?.fresh_pcs) || 0;
-        document.getElementById("fresh_sft").value = parseFloat(partData.marking_sales_particulars?.fresh?.fresh_sft) || 0;
-        document.getElementById("semi_fresh_pcs").value = parseFloat(partData.marking_sales_particulars?.semi_fresh?.semi_fresh_pcs) || 0;
-        document.getElementById("semi_fresh_sft").value = parseFloat(partData.marking_sales_particulars?.semi_fresh?.semi_fresh_sft) || 0;
-        document.getElementById("commercial_pcs").value = parseFloat(partData.marking_sales_particulars?.commercial?.commercial_pcs) || 0;
-        document.getElementById("commercial_sft").value = parseFloat(partData.marking_sales_particulars?.commercial?.commercial_sft) || 0;
-        document.getElementById("closing_stock_qty").value = parseFloat(partData.marking_sales_particulars?.closing_stock_qty) || 0;
-        document.getElementById("closing_stock_sft").value = parseFloat(partData.marking_sales_particulars?.closing_stock_sft) || 0;
-        document.getElementById("slabs_short_pcs").value = parseFloat(partData.marking_sales_particulars?.slabs_short_pcs) || 0;
-        document.getElementById("slabs_short_sft").value = parseFloat(partData.marking_sales_particulars?.slabs_short_sft) || 0;
+        document.getElementById("fresh_pcs").value = parseFloat(partData.marking_sales_particulars?.fresh?.fresh_pcs) || "";
+        document.getElementById("fresh_sft").value = parseFloat(partData.marking_sales_particulars?.fresh?.fresh_sft) || "";
+        document.getElementById("semi_fresh_pcs").value = parseFloat(partData.marking_sales_particulars?.semi_fresh?.semi_fresh_pcs) || "";
+        document.getElementById("semi_fresh_sft").value = parseFloat(partData.marking_sales_particulars?.semi_fresh?.semi_fresh_sft) || "";
+        document.getElementById("commercial_pcs").value = parseFloat(partData.marking_sales_particulars?.commercial?.commercial_pcs) || "";
+        document.getElementById("commercial_sft").value = parseFloat(partData.marking_sales_particulars?.commercial?.commercial_sft) || "";
+        document.getElementById("closing_stock_qty").value = parseFloat(partData.marking_sales_particulars?.closing_stock_qty) || "";
+        document.getElementById("closing_stock_sft").value = parseFloat(partData.marking_sales_particulars?.closing_stock_sft) || "";
+        document.getElementById("slabs_short_pcs").value = parseFloat(partData.marking_sales_particulars?.slabs_short_pcs) || "";
+        document.getElementById("slabs_short_sft").value = parseFloat(partData.marking_sales_particulars?.slabs_short_sft) || "";
     }
 
     // Rest of your existing code (accordion functionality, calculations, etc.)
