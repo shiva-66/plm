@@ -140,16 +140,16 @@
 			border:1px solid black;
         }
         .submit {
-            width: 50%;
             padding: 10px 20px;
             font-size: 18px; 
             background-color: #1b4f72;
-            color: white; 
+            color: white;
             border: none; 
             cursor: pointer; 
             border-radius: 5px;
-            margin-top: 20px;
-            margin-bottom: 50px;
+            width: 15%;  
+            display: inline-block; 
+            margin: 5px; 
         }
         .error {
             border: 2px solid red;
@@ -169,10 +169,10 @@
         <div class="navbar-section">
             <ul class="nav justify-content-center">
                 <li class="nav-item"><a class="nav-link" href="dashboard.html">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="index.html">Add Product</a></li>
-                <li class="nav-item"><a class="nav-link" href="SearchandEdit.html">Search & Edit</a></li>
+                <li class="nav-item"><a class="nav-link" href="stageOne.html">Add Product</a></li>
+                <li class="nav-item"><a class="nav-link" href="productList.html">Search & Edit</a></li>
                 <li class="nav-item"><a class="nav-link" href="productSale.html">Sell</a></li>
-                <li class="nav-item"><a class="nav-link" href="SalesReport.html">Sales Report</a></li>
+                <li class="nav-item"><a class="nav-link" href="salesreport.html">Sales Report</a></li>
             </ul>
         </div>    
     <div class="container">
@@ -213,23 +213,134 @@
             
             <br>
             <div style="text-align: center; margin-top: 20px;">
-                <button type="submit" class="submit" style="display: none">Submit</button>
-				<button type="submit" class="submit" style="display: none">Submit</button>
-				<button type="submit" class="submit">Submit</button>
+                <button type="submit" class="submit" style="display: none" id="backButton">Back</button>
+				<button type="submit" class="submit" style="display: block" id="saveButton">Save</button>
+				<button type="submit" class="submit" style="width: 200px; display: none" id="moveToProductionButton">Move to Production</button>
             </div>
         </form>
     </div>
 
     <script>
-    var acc = document.getElementsByClassName("accordion");
-    for (var i = 0; i < acc.length; i++) {
-        acc[i].addEventListener("click", function() {
-            this.classList.toggle("active");
-            var panel = this.nextElementSibling;
-            panel.style.display = (panel.style.display === "block") ? "none" : "block";
-        });
-    }
+	document.addEventListener("DOMContentLoaded", function () {
+		const urlParams = new URLSearchParams(window.location.search);
+            const block_id = urlParams.get("block_id");
 
+            // Fetch block details if block_id is present
+            if (block_id) {
+				document.querySelectorAll(".submit").forEach(button => {
+                button.style.display = "inline-block"; // Make all submit buttons visible
+            });
+                fetchBlockDetails(block_id);
+            }
+		var acc = document.getElementsByClassName("accordion");
+		for (var i = 0; i < acc.length; i++) {
+			acc[i].addEventListener("click", function() {
+				this.classList.toggle("active");
+				var panel = this.nextElementSibling;
+				panel.style.display = (panel.style.display === "block") ? "none" : "block";
+			});
+		}
+		
+		document.querySelectorAll('input[type="number"]').forEach(input => {
+			input.addEventListener("input", function() {
+				let part = this.id.split("_")[0];
+				if (["a", "b", "c"].includes(part)) {
+					calculateTotal(part);
+				}
+			});
+		});
+	});
+	
+	 // Event listener for the Save Button
+	document.getElementById("saveButton").addEventListener("click", function (event) {
+		event.preventDefault(); // Prevent default form submission
+		
+		 let isValid = true;
+
+        this.querySelectorAll('input[required]').forEach(input => {
+            if (!input.value.trim()) {
+                isValid = false;
+                input.classList.add("error");
+            } else {
+                input.classList.remove("error");
+            }
+        });
+
+        if (isValid) {
+            submitForm();
+            alert("Submit form has got triggered!");
+        } else {
+            alert("Please fill all required fields.");
+        }
+	});
+	
+	 // Event listener for the Back button
+		document.getElementById("backButton").addEventListener("click", function (event) {
+			event.preventDefault(); // Prevent default form submission
+			window.history.back(); // Navigate to the previous page
+		});
+		
+	 // Event listener for the Move to Production button
+		document.getElementById("moveToProductionButton").addEventListener("click", function (event) {
+			event.preventDefault(); // Prevent default form submission
+
+			const urlParams = new URLSearchParams(window.location.search);
+			const block_id = urlParams.get("block_id");
+
+			if (block_id) {
+				// Redirect to stageTwo.html with the block_id parameter
+				window.location.href = `stageThree.html?block_id=${block_id}`;
+			} else {
+				alert("No block ID found. Please save the record first.");
+			}
+		});
+	
+	// Fetch block details from the API
+        function fetchBlockDetails(blockId) {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", `https://shivadb-f348.restdb.io/rest/plm-products-db/${blockId}`);
+            xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    const data = JSON.parse(xhr.responseText);
+                    populateForm(data);
+                }
+            };
+
+            xhr.send();
+        }
+
+        // Populate form fields with fetched data
+        function populateForm(data) {
+            document.getElementById("date_of_marking").textContent = data.date_of_marking || "";
+            document.getElementById("block_recd_date").textContent = data.recd_date || "";
+            document.getElementById("block_no").textContent = data.id || "";
+            document.getElementById("block_colour").textContent = data.blocks?.block_color || "";
+            document.getElementById("net_qty").textContent = data.blocks?.net_measurement_qty || "";
+
+            if (data.dressing) {
+                document.getElementById("block_cutting_date").value = data.dressing.block_cutting_date || "";
+                document.getElementById("a_length").value = data.dressing.part_a?.a_length || "";
+                document.getElementById("a_height").value = data.dressing.part_a?.a_height || "";
+                document.getElementById("a_width").value = data.dressing.part_a?.a_width || "";
+                document.getElementById("a_total").value = data.dressing.part_a?.a_total || "";
+                document.getElementById("b_length").value = data.dressing.part_b?.b_length || "";
+                document.getElementById("b_height").value = data.dressing.part_b?.b_height || "";
+                document.getElementById("b_width").value = data.dressing.part_b?.b_width || "";
+                document.getElementById("b_total").value = data.dressing.part_b?.b_total || "";
+                document.getElementById("c_length").value = data.dressing.part_c?.c_length || "";
+                document.getElementById("c_height").value = data.dressing.part_c?.c_height || "";
+                document.getElementById("c_width").value = data.dressing.part_c?.c_width || "";
+                document.getElementById("c_total").value = data.dressing.part_c?.c_total || "";
+                document.getElementById("total").value = data.dressing.total_parts_qty || "";
+                document.getElementById("normal_loss").value = data.dressing.total_parts_normal_loss || "";
+                document.getElementById("operator_name").value = data.dressing.operator_name || "";
+                document.getElementById("tekedar_name").value = data.dressing.tekedar_name || "";
+            }
+        }
+	
     function calculateTotal(part) {
         let length = parseFloat(document.getElementById(`${part}_length`).value) || 0;
         let height = parseFloat(document.getElementById(`${part}_height`).value) || 0;
@@ -250,87 +361,87 @@
         document.getElementById("normal_loss").value = normalLoss.toFixed(2);
     }
 
-    document.querySelectorAll('input[type="number"]').forEach(input => {
-        input.addEventListener("input", function() {
-            let part = this.id.split("_")[0];
-            if (["a", "b", "c"].includes(part)) {
-                calculateTotal(part);
-            }
-        });
-    });
-
-    document.getElementById("inventoryForm").addEventListener("submit", function(event) {
-        event.preventDefault(); 
-        let isValid = true;
-
-        this.querySelectorAll('input[required]').forEach(input => {
-            if (!input.value.trim()) {
-                isValid = false;
-                input.classList.add("error");
-            } else {
-                input.classList.remove("error");
-            }
-        });
-
-        if (isValid) {
-            submitForm();
-            alert("Submit form has got triggered!");
-        } else {
-            alert("Please fill all required fields.");
-        }
-    });
-
     function submitForm() {
+		const urlParams = new URLSearchParams(window.location.search);
+        const block_id = urlParams.get("block_id"); // Replace with actual record ID
 		
-		var data = JSON.stringify({
-			"dressing": {
-				"block_cutting_date": getValue("block_cutting_date"),
-				"part_a": {
-				  "stage": "2",
-				  "a_length": getValue("a_length"),
-				  "a_height": getValue("a_height"),
-				  "a_width": getValue("a_width"),
-				  "a_total": getValue("a_total")
-				},
-				"part_b": {
-				  "stage": "2",
-				  "b_length": getValue("b_length"),
-				  "b_height": getValue("b_height"),
-				  "b_width": getValue("b_width"),
-				  "b_total": getValue("b_total")
-				},
-				"part_c": {
-				  "stage": "2",
-				  "c_length": getValue("c_length"),
-				  "c_height": getValue("c_height"),
-				  "c_width": getValue("c_width"),
-				  "c_total": getValue("c_total")
-				},
-				"total_parts_qty": getValue("total"),
-				"total_parts_normal_loss": getValue("normal_loss"),
-				"operator_name": getValue("operator_name"),
-				"tekedar_name": getValue("tekedar_name")
-		    }
-		});
-
 		var xhr = new XMLHttpRequest();
-		//xhr.withCredentials = true;
 
-		xhr.addEventListener("readystatechange", function() {
-		  if(this.readyState === 4) {
-			console.log(this.responseText);
-		  }
-		});
+		xhr.onreadystatechange = function () {
+			if (xhr.readyState === 4) {
+				if (xhr.status === 200) {
+					let existingData = JSON.parse(xhr.responseText);
+					updateRecord(existingData, block_id);
+				} else if (xhr.status === 404) {
+					alert("Error: Record not found. Please check the record ID.");
+				} else {
+					alert("Error fetching existing data. Status: " + xhr.status);
+				}
+			}
+		};
 
-		xhr.open("PUT", "https://shivadb-f348.restdb.io/rest/plm-products-db/67dd4a2e420df42a00001803");
+		xhr.open("GET", `https://shivadb-f348.restdb.io/rest/plm-products-db/${block_id}`);
 		xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
-		xhr.setRequestHeader("Content-Type", "application/json");
-
-		xhr.send(data);
+		xhr.send();
     }
-	function getValue(id) {
-			return document.getElementById(id).value.trim() || null;
+	function updateRecord(existingData, block_id) {
+			let existingPart = existingData || {}; 
+			let updatedDressing = {
+				block_cutting_date: getValue("block_cutting_date"),
+				part_a: {
+				  stage: "2",
+				  a_length: getValue("a_length"),
+				  a_height: getValue("a_height"),
+				  a_width: getValue("a_width"),
+				  a_total: getValue("a_total")
+				},
+				part_b: {
+				  stage: "2",
+				  b_length: getValue("b_length"),
+				  b_height: getValue("b_height"),
+				  b_width: getValue("b_width"),
+				  b_total: getValue("b_total")
+				},
+				part_c: {
+				  stage: "2",
+				  c_length: getValue("c_length"),
+				  c_height: getValue("c_height"),
+				  c_width: getValue("c_width"),
+				  c_total: getValue("c_total")
+				},
+				total_parts_qty: getValue("total"),
+				total_parts_normal_loss: getValue("normal_loss"),
+				operator_name: getValue("operator_name"),
+				tekedar_name: getValue("tekedar_name")
+			};
+
+			let updatedData = {
+				...existingPart, 
+				dressing: updatedDressing 
+			};
+
+			var Xhr = new XMLHttpRequest();
+			Xhr.onreadystatechange = function () {
+				if (Xhr.readyState === 4) {
+					if (Xhr.status === 200 || Xhr.status === 201) {
+						alert("Stage-3 data updated successfully!");
+					} else {
+						alert("Error updating Stage-3 data. Status: " + Xhr.status);
+					}
+				}
+			};
+
+			Xhr.open("PATCH", `https://shivadb-f348.restdb.io/rest/plm-products-db/${block_id}`);
+			Xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
+			Xhr.setRequestHeader("Content-Type", "application/json");
+			Xhr.send(JSON.stringify(updatedData));
 		}
+
+	
+	function getValue(id) {
+		return document.getElementById(id)?.value || "";
+	}
+	
 </script>
 </body>
 </html>
