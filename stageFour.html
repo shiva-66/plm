@@ -147,15 +147,15 @@
         }
         .submit {
             padding: 10px 20px;
-            font-size: 18px;
-            background-color: #1b4f72;;
+            font-size: 18px; 
+            background-color: #1b4f72;
             color: white;
-            border: none;
-            cursor: pointer;
+            border: none; 
+            cursor: pointer; 
             border-radius: 5px;
-            margin-top: 20px;
-            width: 50%;
-			margin-bottom: 50px;
+            width: 15%;  
+            display: inline-block; 
+            margin: 5px; 
         }
         
     </style>
@@ -171,14 +171,14 @@
 		</header>
 		<!--navbar section-->
 		<div class="navbar-section">
-			<ul class="nav justify-content-center">
-				<li class="nav-item"><a class="nav-link" href="dashboard.html">Home</a></li>
-				<li class="nav-item"><a class="nav-link" href="index.html">Add Product</a></li>
-				<li class="nav-item"><a class="nav-link" href="SearchandEdit.html">Search & Edit</a></li>
-				<li class="nav-item"><a class="nav-link" href="productSale.html">Sell</a></li>
-				<li class="nav-item"><a class="nav-link" href="SalesReport.html">Sales Report</a></li>
-			</ul>
-		</div>
+            <ul class="nav justify-content-center">
+                <li class="nav-item"><a class="nav-link" href="dashboard.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="stageOne.html">Add Product</a></li>
+                <li class="nav-item"><a class="nav-link" href="productList.html">Search & Edit</a></li>
+                <li class="nav-item"><a class="nav-link" href="productSale.html">Sell</a></li>
+                <li class="nav-item"><a class="nav-link" href="salesreport.html">Sales Report</a></li>
+            </ul>
+        </div>
     <div class="container">
         <h1>Stage-4 Slabs Auto Polishing</h1>
         <form id="inventoryForm">
@@ -193,11 +193,11 @@
 						</tr>
 						<tr>
 							<th>Block No.</th>
-							<td><label id="block_no">9503</label></td>
+							<td><label id="block_no"></label></td>
 						</tr>
 						<tr>
 							<th>Block Colour</th>
-							<td><label id="block_colour">PSR - TB</label></td>
+							<td><label id="block_colour"></label></td>
 						</tr>
 						<tr><th>Block Part</th><td>
 							<select name="block_parts" id="block_parts">
@@ -213,11 +213,11 @@
 									<table>
 										<tr>
 											<th>No of Pcs</th>
-											<td><label id="production_no_of_pcs" >44</label></td>
+											<td><label id="production_no_of_pcs" ></label></td>
 										</tr>
 										<tr>
 											<th>SFT</th>
-											<td><label id="production_sft" >1430.000</label></td>
+											<td><label id="production_sft" ></label></td>
 										</tr>
 									</table>
 								</fieldset>
@@ -225,7 +225,7 @@
 						</tr>
 						<tr>
 							<th>Thickness(mm)</th>
-							<td><label id="thickness">18</label></td>
+							<td><label id="thickness"></label></td>
 						</tr>
 					</table>
 				</div>
@@ -332,221 +332,382 @@
 
 		<br>
 		<div style="text-align: center; margin-top: 20px;">
-                <button type="submit" class="submit" style="display: none">Submit</button>
-				<button type="submit" class="submit" style="display: none">Submit</button>
-				<button type="submit" class="submit">Submit</button>
-        </div>
+                <button type="submit" class="submit" style="display: none" id="backButton">Back</button>
+				<button type="submit" class="submit" style="display: block" id="saveButton">Save</button>
+				<button type="submit" class="submit" style="width: 200px; display: none" id="moveToSaleButton">Move to Sale</button>
+          </div>
 	</form>
 
     </div>
 
     <script>
-        var acc = document.getElementsByClassName("accordion");
-        for (var i = 0; i < acc.length; i++) {
-            acc[i].addEventListener("click", function() {
-                this.classList.toggle("active");
-                var panel = this.nextElementSibling;
-                if (panel.style.display === "block") {
-                    panel.style.display = "none";
+        let previousBlockPart = "part_a"; // Track the previous block part
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Extract block_id from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const blockId = urlParams.get('block_id');
+
+    let blockData; // Declare blockData globally
+
+    if (blockId) {
+		document.querySelectorAll(".submit").forEach(button => {
+					button.style.display = "inline-block"; // Make all submit buttons visible
+				});	
+        // Fetch data from the database using the block_id
+        fetchBlockDetails(blockId);
+    } else {
+        alert("Block ID not found in the URL.");
+    }
+
+    // Function to fetch block details from the database
+    function fetchBlockDetails(blockId) {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    blockData = JSON.parse(xhr.responseText); // Assign fetched data to blockData
+                    populateForm(blockData, previousBlockPart); // Populate form with fetched data
+                } else if (xhr.status === 404) {
+                    alert("Error: Block not found. Please check the Block ID.");
                 } else {
-                    panel.style.display = "block";
+                    alert("Error fetching block details. Status: " + xhr.status);
                 }
-            });
+            }
+        };
+
+        xhr.open("GET", `https://shivadb-f348.restdb.io/rest/plm-products-db/${blockId}`);
+        xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
+        xhr.send();
+    }
+
+    // Event listener for block_parts dropdown change
+    document.getElementById("block_parts").addEventListener("change", function () {
+        const selectedBlockPart = this.value; // Get the selected block part
+        if (blockData) {
+            const partData = blockData.dressing?.[selectedBlockPart] || {};
+
+            // Check if slabs_production data exists
+            if (!partData.slabs_production) {
+                alert(`No slabs production data found for ${selectedBlockPart}. Reverting to previous selection.`);
+                this.value = previousBlockPart; // Revert to the previous block part
+                return;
+            }
+
+            // Save the current form data before populating the form with new data
+            saveFormData(blockData, previousBlockPart);
+
+            // Populate form with the selected block part's data
+            populateForm(blockData, selectedBlockPart);
+
+            // Update the previous block part
+            previousBlockPart = selectedBlockPart;
+        } else {
+            alert("Block data is not loaded yet.");
         }
-		
-		 document.addEventListener("DOMContentLoaded", function() {
-
-        function getValue(id) {
-            return parseFloat(document.getElementById(id)?.value) || 0;
-        }
-
-        function calculateSlabsProductionQty() {
-            let polishingLength = getValue("polishing_length");
-            let polishingWidth = getValue("polishing_height");
-            let polishedPcs = getValue("polishing_no_of_pcs");
-
-            let polishingSft = (polishingLength * polishingWidth * polishedPcs) / 144;
-            document.getElementById("polishing_sft").value = polishingSft.toFixed(3);
-
-            let productionPcs = parseFloat(getInnerText("production_no_of_pcs"));
-            document.getElementById("polishing_short_pcs").value = Math.max(productionPcs - polishedPcs, 0);
-
-            let productionSft = parseFloat(getInnerText("production_sft"));
-            document.getElementById("polishing_short_sft").value = Math.max(productionSft - polishingSft, 0).toFixed(3);
-        }
-
-        function calculateClosingStockDamage() {
-            let freshPcs = getValue("fresh_pcs");
-            let freshSft = getValue("fresh_sft");
-            let semiFreshPcs = getValue("semi_fresh_pcs");
-            let semiFreshSft = getValue("semi_fresh_sft");
-            let commercialPcs = getValue("commercial_pcs");
-            let commercialSft = getValue("commercial_sft");
-
-            let closingStockQty = freshPcs + semiFreshPcs + commercialPcs;
-            let closingStockSft = freshSft + semiFreshSft + commercialSft;
-
-            document.getElementById("closing_stock_qty").value = closingStockQty;
-            document.getElementById("closing_stock_sft").value = closingStockSft;
-
-            let polishedPcs = getValue("polishing_no_of_pcs");
-            let polishingSft = getValue("polishing_sft");
-
-            document.getElementById("slabs_short_pcs").value = Math.max(polishedPcs - closingStockQty, 0);
-            document.getElementById("slabs_short_sft").value = Math.max(polishingSft - closingStockSft, 0).toFixed(3);
-        }
-
-        function attachEventListeners() {
-            ["polishing_length", "polishing_height", "polishing_no_of_pcs"].forEach(id => {
-                document.getElementById(id).addEventListener("input", calculateSlabsProductionQty);
-            });
-
-            ["fresh_pcs", "fresh_sft", "semi_fresh_pcs", "semi_fresh_sft", "commercial_pcs", "commercial_sft"].forEach(id => {
-                document.getElementById(id).addEventListener("input", calculateClosingStockDamage);
-            });
-        }
-
-        attachEventListeners();
-
-        document.getElementById("inventoryForm").addEventListener("submit", function(event) {
-            event.preventDefault();
-            let isValid = true;
-
-            this.querySelectorAll('input[required]').forEach(input => {
-                if (!input.value.trim()) {
-                    isValid = false;
-                    input.classList.add("error");
-                } else {
-                    input.classList.remove("error");
-                }
-            });
-
-            if (isValid) {
-                //alert("Submit form has got triggered!");
-				submitForm();
-				
+    });
+	
+			// Add event listener to the Back button
+            const backButton = document.getElementById("backButton");
+            if (backButton) {
+                backButton.addEventListener("click", function (event) {
+                    event.preventDefault(); // Prevent default form submission
+                    window.history.back(); // Navigate to the previous page
+                });
             } else {
-                alert("Please fill all required fields.");
+                console.error("Back button not found!");
+            }
+
+            // Add event listener to the Move to Polishing button
+            const moveToSaleButton = document.getElementById("moveToSaleButton");
+            if (moveToSaleButton) {
+                moveToSaleButton.addEventListener("click", function (event) {
+                    event.preventDefault(); // Prevent default form submission
+
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const block_id = urlParams.get("block_id");
+
+                    if (block_id) {
+                        // Redirect to stageTwo.html with the block_id parameter
+                        window.location.href = `productSale.html`;
+                    } else {
+                        alert("No block ID found. Please save the record first.");
+                    }
+                });
+            } else {
+                console.error("Move to Production button not found!");
+            }
+
+	
+    // Function to save the current form data into blockData
+    function saveFormData(blockData, blockPart) {
+        const partData = blockData.dressing?.[blockPart] || {};
+
+        // Save Production Details
+        partData.slabs_auto_polishing = {
+            date_of_polishing: document.getElementById("date_of_polishing").value,
+            slabs_after_polishing: {
+                polished_length: parseFloat(document.getElementById("polishing_length").value) || 0,
+                polished_height: parseFloat(document.getElementById("polishing_height").value) || 0,
+                polished_no_of_pcs: parseFloat(document.getElementById("polishing_no_of_pcs").value) || 0,
+                polished_sft: parseFloat(document.getElementById("polishing_sft").value) || 0,
+                polished_short_pcs: parseFloat(document.getElementById("polishing_short_pcs").value) || 0,
+                polished_short_sft: parseFloat(document.getElementById("polishing_short_sft").value) || 0,
+            },
+        };
+
+        // Save Stock Summary
+        partData.marking_sales_particulars = {
+            fresh: {
+                fresh_pcs: parseFloat(document.getElementById("fresh_pcs").value) || 0,
+                fresh_sft: parseFloat(document.getElementById("fresh_sft").value) || 0,
+            },
+            semi_fresh: {
+                semi_fresh_pcs: parseFloat(document.getElementById("semi_fresh_pcs").value) || 0,
+                semi_fresh_sft: parseFloat(document.getElementById("semi_fresh_sft").value) || 0,
+            },
+            commercial: {
+                commercial_pcs: parseFloat(document.getElementById("commercial_pcs").value) || 0,
+                commercial_sft: parseFloat(document.getElementById("commercial_sft").value) || 0,
+            },
+            closing_stock_qty: parseFloat(document.getElementById("closing_stock_qty").value) || 0,
+            closing_stock_sft: parseFloat(document.getElementById("closing_stock_sft").value) || 0,
+            slabs_short_pcs: parseFloat(document.getElementById("slabs_short_pcs").value) || 0,
+            slabs_short_sft: parseFloat(document.getElementById("slabs_short_sft").value) || 0,
+        };
+
+        // Update the blockData object
+        blockData.dressing[blockPart] = partData;
+    }
+
+    // Function to populate the form based on the selected block part
+    function populateForm(blockData, blockPart) {
+        // Access the data for the selected block part
+        const partData = blockData.dressing?.[blockPart] || {};
+
+        // Populate Production Details
+        document.getElementById("date_of_polishing").value = partData.slabs_auto_polishing?.date_of_polishing || "";
+        document.getElementById("block_no").textContent = blockData.id || "";
+        document.getElementById("block_colour").textContent = blockData.blocks?.block_color || "";
+        document.getElementById("block_parts").value = blockPart;
+        document.getElementById("production_no_of_pcs").textContent = partData.slabs_production?.production_pcs || "0";
+        document.getElementById("production_sft").textContent = partData.slabs_production?.production_sft || "0";
+        document.getElementById("thickness").textContent = partData.slabs_production?.thickness || "0";
+
+        // Populate Slabs Production (After Polishing)
+        document.getElementById("polishing_length").value = parseFloat(partData.slabs_auto_polishing?.slabs_after_polishing?.polished_length) || 0;
+        document.getElementById("polishing_height").value = parseFloat(partData.slabs_auto_polishing?.slabs_after_polishing?.polished_height) || 0;
+        document.getElementById("polishing_no_of_pcs").value = parseFloat(partData.slabs_auto_polishing?.slabs_after_polishing?.polished_no_of_pcs) || 0;
+        document.getElementById("polishing_sft").value = parseFloat(partData.slabs_auto_polishing?.slabs_after_polishing?.polished_sft) || 0;
+        document.getElementById("polishing_short_pcs").value = parseFloat(partData.slabs_auto_polishing?.slabs_after_polishing?.polished_short_pcs) || 0;
+        document.getElementById("polishing_short_sft").value = parseFloat(partData.slabs_auto_polishing?.slabs_after_polishing?.polished_short_sft) || 0;
+
+        // Populate Stock Summary
+        document.getElementById("fresh_pcs").value = parseFloat(partData.marking_sales_particulars?.fresh?.fresh_pcs) || 0;
+        document.getElementById("fresh_sft").value = parseFloat(partData.marking_sales_particulars?.fresh?.fresh_sft) || 0;
+        document.getElementById("semi_fresh_pcs").value = parseFloat(partData.marking_sales_particulars?.semi_fresh?.semi_fresh_pcs) || 0;
+        document.getElementById("semi_fresh_sft").value = parseFloat(partData.marking_sales_particulars?.semi_fresh?.semi_fresh_sft) || 0;
+        document.getElementById("commercial_pcs").value = parseFloat(partData.marking_sales_particulars?.commercial?.commercial_pcs) || 0;
+        document.getElementById("commercial_sft").value = parseFloat(partData.marking_sales_particulars?.commercial?.commercial_sft) || 0;
+        document.getElementById("closing_stock_qty").value = parseFloat(partData.marking_sales_particulars?.closing_stock_qty) || 0;
+        document.getElementById("closing_stock_sft").value = parseFloat(partData.marking_sales_particulars?.closing_stock_sft) || 0;
+        document.getElementById("slabs_short_pcs").value = parseFloat(partData.marking_sales_particulars?.slabs_short_pcs) || 0;
+        document.getElementById("slabs_short_sft").value = parseFloat(partData.marking_sales_particulars?.slabs_short_sft) || 0;
+    }
+
+    // Rest of your existing code (accordion functionality, calculations, etc.)
+    var acc = document.getElementsByClassName("accordion");
+    for (var i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.style.display === "block") {
+                panel.style.display = "none";
+            } else {
+                panel.style.display = "block";
             }
         });
-		
-	});
-	
-	function submitForm() {
-			event.preventDefault();
+    }
 
-			let recordId = "67dd4a2e420df42a00001803"; // Replace with actual record ID
-			let blockPart = getValue("block_parts").toLowerCase().trim(); 
-			/*var blockPart;
-			let parts = blockParts.split("-");  
-			if(parts[1]=="a"){
-				blockPart="part_a";
-			}
-			else if(parts[1]=="b"){
-				blockPart="part_b";
-			}
-			else{
-				blockPart="part_c";
-			}*/
-			if (!blockPart) {
-				alert("Please select a Block Part.");
-				return;
-			}
+    // Attach event listeners for calculations
+    function getValue(id) {
+        return parseFloat(document.getElementById(id)?.value) || 0;
+    }
 
-			var xhr = new XMLHttpRequest();
+    function calculateSlabsProductionQty() {
+        let polishingLength = getValue("polishing_length");
+        let polishingWidth = getValue("polishing_height");
+        let polishedPcs = getValue("polishing_no_of_pcs");
 
-			xhr.onreadystatechange = function () {
-				if (xhr.readyState === 4) {
-					if (xhr.status === 200) {
-						let existingData = JSON.parse(xhr.responseText);
-						updateRecord(existingData, blockPart, recordId);
-					} else if (xhr.status === 404) {
-						alert("Error: Record not found. Please check the record ID.");
-					} else {
-						alert("Error fetching existing data. Status: " + xhr.status);
-					}
-				}
-			};
+        let polishingSft = (polishingLength * polishingWidth * polishedPcs) / 144;
+        document.getElementById("polishing_sft").value = polishingSft.toFixed(3);
 
-			xhr.open("GET", `https://shivadb-f348.restdb.io/rest/plm-products-db/${recordId}`);
-			xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
-			xhr.send();
-		}
+        let productionPcs = parseFloat(getInnerText("production_no_of_pcs"));
+        document.getElementById("polishing_short_pcs").value = Math.max(productionPcs - polishedPcs, 0);
 
-		function updateRecord(existingData, blockPart, recordId) {
-			let existingPart = existingData.dressing?.[blockPart] || {};
+        let productionSft = parseFloat(getInnerText("production_sft"));
+        document.getElementById("polishing_short_sft").value = Math.max(productionSft - polishingSft, 0).toFixed(3);
+    }
 
-			let updatedPart = {
-				...existingPart, // Keep all existing data
-				slabs_auto_polishing: {
-					date_of_polishing: getValue("date_of_polishing"),
-					slabs_after_polishing: {
-						polished_length: getValue("polishing_length"),
-						polished_height: getValue("polishing_height"),
-						polished_no_of_pcs: getValue("polishing_no_of_pcs"),
-						polished_sft: getValue("polishing_sft"),
-						polished_short_pcs: getValue("polishing_short_pcs"),
-						polished_short_sft: getValue("polishing_short_sft")
-					}
-				},
-				marking_sales_particulars: {
-					fresh: {
-						fresh_pcs: getValue("fresh_pcs"),
-						fresh_sft: getValue("fresh_sft")
-					},
-					semi_fresh: {
-						semi_fresh_pcs: getValue("semi_fresh_pcs"),
-						semi_fresh_sft: getValue("semi_fresh_sft")
-					},
-					commercial: {
-						commercial_pcs: getValue("commercial_pcs"),
-						commercial_sft: getValue("commercial_sft")
-					},
-					closing_stock_qty: getValue("closing_stock_qty"),
-					closing_stock_sft: getValue("closing_stock_sft"),
-					slabs_short_pcs: getValue("slabs_short_pcs"),
-					slabs_short_sft: getValue("slabs_short_sft")
-				}
-			};
+    function calculateClosingStockDamage() {
+		// Parse input values, defaulting to 0 if invalid
+		let freshPcs = parseInt(getValue("fresh_pcs")) || 0;
+		let freshSft = parseFloat(getValue("fresh_sft")) || 0;
+		let semiFreshPcs = parseInt(getValue("semi_fresh_pcs")) || 0;
+		let semiFreshSft = parseFloat(getValue("semi_fresh_sft")) || 0;
+		let commercialPcs = parseInt(getValue("commercial_pcs")) || 0;
+		let commercialSft = parseFloat(getValue("commercial_sft")) || 0;
 
-			let updatedData = {
-				...existingData,
-				dressing: {
-					...existingData.dressing,
-					[blockPart]: updatedPart
-				}
-			};
-			
+		// Calculate closing stock quantities
+		let closingStockQty = freshPcs + semiFreshPcs + commercialPcs;
+		let closingStockSft = freshSft + semiFreshSft + commercialSft;
 
-			var xhr = new XMLHttpRequest();
-			xhr.onreadystatechange = function () {
-				if (xhr.readyState === 4) {
-					if (xhr.status === 200 || xhr.status === 201) {
-						alert("Stage-4 data updated successfully!");
-					} else {
-						alert("Error updating Stage-4 data. Status: " + xhr.status);
-					}
-				}
-			};
+		// Update closing stock fields
+		document.getElementById("closing_stock_qty").value = closingStockQty;
+		document.getElementById("closing_stock_sft").value = closingStockSft.toFixed(3);
 
-			xhr.open("PATCH", `https://shivadb-f348.restdb.io/rest/plm-products-db/${recordId}`);
-			xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
-			xhr.setRequestHeader("Content-Type", "application/json");
-			xhr.send(JSON.stringify(updatedData));
-		}
+		// Parse polished values, defaulting to 0 if invalid
+		let polishedPcs = parseInt(getValue("polishing_no_of_pcs")) || 0;
+		let polishingSft = parseFloat(getValue("polishing_sft")) || 0;
 
-	
-	function getValue(id) {
-		return document.getElementById(id)?.value || "";
-	}
-	
-	
-	
-	// Function to get text values (handles empty fields)
-	function getInnerText(id) {
-		return document.getElementById(id)?.textContent || "";
+		// Calculate short/damage quantities
+		let slabsShortPcs = Math.max(polishedPcs - closingStockQty, 0);
+		let slabsShortSft = Math.max(polishingSft - closingStockSft, 0);
+
+		// Update short/damage fields
+		document.getElementById("slabs_short_pcs").value = slabsShortPcs;
+		document.getElementById("slabs_short_sft").value = slabsShortSft.toFixed(3);
 	}
 
+    function attachEventListeners() {
+        ["polishing_length", "polishing_height", "polishing_no_of_pcs"].forEach(id => {
+            document.getElementById(id).addEventListener("input", calculateSlabsProductionQty);
+        });
+
+        ["fresh_pcs", "fresh_sft", "semi_fresh_pcs", "semi_fresh_sft", "commercial_pcs", "commercial_sft"].forEach(id => {
+            document.getElementById(id).addEventListener("input", calculateClosingStockDamage);
+        });
+    }
+
+    attachEventListeners();
+
+    document.getElementById("inventoryForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+        let isValid = true;
+
+        this.querySelectorAll('input[required]').forEach(input => {
+            if (!input.value.trim()) {
+                isValid = false;
+                input.classList.add("error");
+            } else {
+                input.classList.remove("error");
+            }
+        });
+
+        if (isValid) {
+            submitForm(blockId);
+        } else {
+            alert("Please fill all required fields.");
+        }
+    });
+
+    function submitForm(blockId) {
+        let blockPart = getValue("block_parts").toLowerCase().trim();
+
+        if (!blockPart) {
+            alert("Please select a Block Part.");
+            return;
+        }
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    let existingData = JSON.parse(xhr.responseText);
+                    updateRecord(existingData, blockPart, blockId);
+                } else if (xhr.status === 404) {
+                    alert("Error: Record not found. Please check the record ID.");
+                } else {
+                    alert("Error fetching existing data. Status: " + xhr.status);
+                }
+            }
+        };
+
+        xhr.open("GET", `https://shivadb-f348.restdb.io/rest/plm-products-db/${blockId}`);
+        xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
+        xhr.send();
+    }
+
+    function updateRecord(existingData, blockPart, blockId) {
+        let existingPart = existingData.dressing?.[blockPart] || {};
+
+        let updatedPart = {
+            ...existingPart,
+            slabs_auto_polishing: {
+                date_of_polishing: getValue("date_of_polishing"),
+                slabs_after_polishing: {
+                    polished_length: getValue("polishing_length"),
+                    polished_height: getValue("polishing_height"),
+                    polished_no_of_pcs: getValue("polishing_no_of_pcs"),
+                    polished_sft: getValue("polishing_sft"),
+                    polished_short_pcs: getValue("polishing_short_pcs"),
+                    polished_short_sft: getValue("polishing_short_sft")
+                }
+            },
+            marking_sales_particulars: {
+                fresh: {
+                    fresh_pcs: getValue("fresh_pcs"),
+                    fresh_sft: getValue("fresh_sft")
+                },
+                semi_fresh: {
+                    semi_fresh_pcs: getValue("semi_fresh_pcs"),
+                    semi_fresh_sft: getValue("semi_fresh_sft")
+                },
+                commercial: {
+                    commercial_pcs: getValue("commercial_pcs"),
+                    commercial_sft: getValue("commercial_sft")
+                },
+                closing_stock_qty: getValue("closing_stock_qty"),
+                closing_stock_sft: getValue("closing_stock_sft"),
+                slabs_short_pcs: getValue("slabs_short_pcs"),
+                slabs_short_sft: getValue("slabs_short_sft")
+            }
+        };
+
+        let updatedData = {
+            ...existingData,
+            dressing: {
+                ...existingData.dressing,
+                [blockPart]: updatedPart
+            }
+        };
+
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200 || xhr.status === 201) {
+                    alert("Stage-4 data updated successfully!");
+                } else {
+                    alert("Error updating Stage-4 data. Status: " + xhr.status);
+                }
+            }
+        };
+
+        xhr.open("PATCH", `https://shivadb-f348.restdb.io/rest/plm-products-db/${blockId}`);
+        xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(JSON.stringify(updatedData));
+    }
+
+    function getValue(id) {
+        return document.getElementById(id)?.value || "";
+    }
+
+    function getInnerText(id) {
+        return document.getElementById(id)?.textContent || "";
+    }
+});
     </script>	
 </body>
 </html>
