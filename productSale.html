@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <title>Product sale</title>
+    <title>Product Sale</title>
     <style>
-         body {
+        /* Your existing CSS styles */
+        body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
@@ -72,20 +73,18 @@
             margin-right: 20px;
         }
         .navbar-section a:hover {
-            background-color:  #7fb3d5 ;
+            background-color: #7fb3d5;
             color: black !important;
             border-radius: 5px;
         }
-        h1{
-            font-weight: bold; font-size: 30px; text-align: center; margin-bottom: 20px;color:#1b4f72;
+        h1 {
+            font-weight: bold; font-size: 30px; text-align: center; margin-bottom: 20px; color: #1b4f72;
         }
-		
         .container {
             width: 80%;
             margin-top: 60px;
             text-align: center;
         }
-        
         .accordion {
             background-color: #7fb3d5;
             cursor: pointer;
@@ -110,7 +109,7 @@
         }
         .active, .accordion:hover {
             background-color: #1b4f72;
-            color:white;
+            color: white;
         }
         .panel {
             padding: 10px;
@@ -140,7 +139,7 @@
             width: 90%;
             padding: 5px;
             background-color: #f5f5f5;
-            border:1px solid black;
+            border: 1px solid black;
             box-sizing: border-box;
         }
         .submit {
@@ -157,432 +156,570 @@
         .scroll-table {
             overflow-x: auto;
         }
-
         #dataTable {
             display: none;
         }
         #searchInput {
-            width: 250px !important; 
+            width: 250px !important;
             border: 1px solid #1b4f72;
         }
         .input-group {
-            width: auto; 
-            display: inline-flex;  
+            width: auto;
+            display: inline-flex;
         }
         #searchInput:focus {
             border-color: #1b4f72 !important;
             box-shadow: none !important;
         }
+		.error {
+			border: 2px solid red !important;
+			background-color: #ffebee !important;
+		}
+
+		.error-alerted {
+			/* Just used as a flag, no styling needed */
+		}
     </style>
 </head>
 <body>
-    <!--header section-->
+    <!-- Header Section -->
     <header>
-		<img src="logocct.jpg" style="width:100px; height:80px" alt="Company Logo" />
-		<div class="company-name">
-			<h2>Cloud Chain Technologies</h2> 
-			<h4>Karimnagar</h4>
-		</div>
-	</header>
-	<!--navbar section-->
-	<div class="navbar-section">
-            <ul class="nav justify-content-center">
-                <li class="nav-item"><a class="nav-link" href="dashboard.html">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="stageOne.html">Add Product</a></li>
-                <li class="nav-item"><a class="nav-link" href="productList.html">Search & Edit</a></li>
-                <li class="nav-item"><a class="nav-link" href="productSale.html">Sell</a></li>
-                <li class="nav-item"><a class="nav-link" href="salesreport.html">Sales Report</a></li>
-            </ul>
+        <img src="logocct.jpg" style="width:100px; height:80px" alt="Company Logo" />
+        <div class="company-name">
+            <h2>CCT Stonexa</h2> 
+            <h4>Karimnagar</h4>
         </div>
+    </header>
+
+    <!-- Navbar Section -->
+    <div class="navbar-section">
+        <ul class="nav justify-content-center">
+            <li class="nav-item"><a class="nav-link" href="dashboard.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="stageOne.html">Add Product</a></li>
+            <li class="nav-item"><a class="nav-link" href="productList.html">Search & Edit</a></li>
+            <li class="nav-item"><a class="nav-link" href="productSale.html">Sell</a></li>
+            <li class="nav-item"><a class="nav-link" href="salesreport.html">Sales Report</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
     <div class="container">
         <h1>Product Sale</h1>
         <div class="container mt-4">
             <div class="input-group mb-3">
-                <input type="text" id="searchInput" class="form-control" placeholder="Enter Block Number" >
+                <input type="text" id="searchInput" class="form-control" placeholder="Enter Block Number">
                 <button class="btn btn-primary" onclick="searchBlock()" style="background-color: #1b4f72;">Search</button>
             </div>
         </div>
         <form id="inventoryForm">
             <div id="dataTable">
-            <!--First Accordian  -->
-            <button type="button" class="accordion">Basic Details</button>
-            <div class="panel">
-                <div class="scroll-table">
+                <!-- First Accordion: Basic Details -->
+                <button type="button" class="accordion">Basic Details</button>
+                <div class="panel">
+                    <div class="scroll-table">
+                        <table>
+                            <tr>
+                                <th>Block No.</th>
+                                <td><label id="block_no"></label></td>
+                            </tr>
+                            <tr>
+                                <th>Block Colour</th>
+                                <td><label id="block_colour"></label></td>
+                            </tr>
+                            <tr>
+                                <th>Block Part</th>
+                                <td>
+                                    <select name="block_parts" id="block_parts" onchange="updateFormFields()">
+                                        <option value="part_a">Part A</option>
+                                        <option value="part_b">Part B</option>
+                                        <option value="part_c">Part C</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Second Accordion: Marking/Sales Particulars -->
+                <button type="button" class="accordion">Marking/Sales Particulars</button>
+                <div class="panel">
+                    <div class="scroll-table">
+                        <table>
+                            <tr>
+                                <th colspan="5">Actual Qty (Before Sale)</th>
+                            </tr>
+                            <tr>
+                                <th>Type</th>
+                                <th colspan="2">No of Pcs</th>
+                                <th colspan="2">Sft</th>
+                            </tr>
+                            <tr>
+                                <td>Fresh</td>
+                                <td colspan="2"><label id="marking_fresh_pcs"></label></td>
+                                <td colspan="2"><label id="marking_fresh_sft"></label></td>
+                            </tr>
+                            <tr>
+                                <td>Semi-Fresh</td>
+                                <td colspan="2"><label id="marking_semi_fresh_pcs"></label></td>
+                                <td colspan="2"><label id="marking_semi_fresh_sft"></label></td>
+                            </tr>
+                            <tr>
+                                <td>Commercial</td>
+                                <td colspan="2"><label id="marking_commercial_pcs"></label></td>
+                                <td colspan="2"><label id="marking_commercial_sft"></label></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Third Accordion: Closing Stock Qty (After Sale) -->
+                <button type="button" class="accordion">Closing Stock Qty (After Sale)</button>
+                <div class="panel">
+                    <div class="scroll-table">
+                        <table>
+                            <tr>
+                                <th colspan="5">Closing Stock Qty (After Sale)</th>
+                            </tr>
+                            <tr>
+                                <th>Type</th>
+                                <th colspan="2">No of Pcs</th>
+                                <th colspan="2">Sft</th>
+                            </tr>
+                            <tr>
+                                <td>Fresh</td>
+                                <td colspan="2"><label id="closing_fresh_pcs"></label></td>
+                                <td colspan="2"><label id="closing_fresh_sft"></label></td>
+                            </tr>
+                            <tr>
+                                <td>Semi-Fresh</td>
+                                <td colspan="2"><label id="closing_semi_fresh_pcs"></label></td>
+                                <td colspan="2"><label id="closing_semi_fresh_sft"></label></td>
+                            </tr>
+                            <tr>
+                                <td>Commercial</td>
+                                <td colspan="2"><label id="closing_commercial_pcs"></label></td>
+                                <td colspan="2"><label id="closing_commercial_sft"></label></td>
+                            </tr>
+                            <tr>
+                                <td>Total Qty (SFT) Fresh/Semi+Commrl</td>
+                                <td colspan="2"><label id="closing_total_pcs"></label></td>
+                                <td colspan="2"><label id="closing_total_sft"></label></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Fourth Accordion: Product Sale -->
+                <button type="button" class="accordion">Product Sale</button>
+                <div class="panel">
+                    <div class="scroll-table">
+                        <table>
+                            <tr>
+                                <th colspan="5">Product Sale</th>
+                            </tr>
+                            <tr>
+                                <th>Type</th>
+                                <th colspan="2">No of Pcs</th>
+                                <th colspan="2">Sft</th>
+                            </tr>
+                            <tr>
+                                <td>Fresh</td>
+                                <td colspan="2"><input type="number" step="0.01" name="sale_fresh_pcs" id="sale_fresh_pcs"></td>
+                                <td colspan="2"><input type="number" step="0.01" name="sale_fresh_sft" id="sale_fresh_sft"></td>
+                            </tr>
+                            <tr>
+                                <td>Semi-Fresh</td>
+                                <td colspan="2"><input type="number" step="0.01" name="sale_semi_fresh_pcs" id="sale_semi_fresh_pcs"></td>
+                                <td colspan="2"><input type="number" step="0.01" name="sale_semi_fresh_sft" id="sale_semi_fresh_sft"></td>
+                            </tr>
+                            <tr>
+                                <td>Commercial</td>
+                                <td colspan="2"><input type="number" step="0.01" name="sale_commercial_pcs" id="sale_commercial_pcs"></td>
+                                <td colspan="2"><input type="number" step="0.01" name="sale_commercial_sft" id="sale_commercial_sft"></td>
+                            </tr>
+                            <tr>
+                                <td>Total Qty (SFT) Fresh/Semi+Commrl</td>
+                                <td colspan="2"><input type="number" step="0.01" name="sale_total_pcs" id="sale_total_pcs" readonly></td>
+                                <td colspan="2"><input type="number" step="0.01" name="sale_total_sft" id="sale_total_sft" readonly></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Fifth Accordion: Incharge Information -->
+                <button type="button" class="accordion">Incharge Information</button>
+                <div class="panel">
                     <table>
-                        <tr><th>Block No.</th><td><label id="block_no">9503</label></td></tr>
-                        <tr><th>Block Colour</th><td><label id="block_colour">PSR - TB</label></td></tr>
-                        <tr><th>Block Part</th><td><label id="block_parts">Part-A</label></td></tr>
+                        <tr>
+                            <th>Supervisor Name</th>
+                            <td><input type="text" name="supervisor_name" id="supervisor_name"></td>
+                        </tr>
+                        <tr>
+                            <th>Incharge Name</th>
+                            <td><input type="text" name="incharge_name" id="incharge_name"></td>
+                        </tr>
                     </table>
                 </div>
-            </div>
 
-            <!--Second Accordian  -->
-            <button type="button" class="accordion">Marking/Sales Particulars</button>
-            <div class="panel">
-                <div class="scroll-table">
-                    <table>
-                        <tr>
-                            <th colspan="5">Actual Qty(Before sale)</th>
-                        </tr>
-                        <tr>
-                            <th>Type</th><th colspan="2">No of Pcs</th><th colspan="2">Sft</th>
-                        </tr>
-                        <tr>
-                            <td>Fresh</td>
-                            <td colspan="2"><label id="marking_fresh_pcs">20</label></td>
-                            <td colspan="2"><label id="marking_fresh_sft"> 700.000 </label></td>
-                        </tr>
-                        <tr>
-                            <td>Semi-Fresh</td>
-                            <td colspan="2"><label id="marking_semi_fresh_pcs">10</label></td>
-                            <td colspan="2"><label id="marking_semi_fresh_sft"> 100.000 </label></td>
-                        </tr>
-                        <tr>
-                            <td>Commercial</td>
-                            <td colspan="2"><label id="marking_commercial_pcs">7</label></td>
-                            <td colspan="2"><label id="marking_commercial_sft"> 253.958 </label></td>
-                        </tr>
-
-                    
-                    </table>
+                <!-- Submit Button -->
+                <br>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button type="submit" class="submit">Submit</button>
                 </div>
             </div>
-
-            <!--Third Accordian  -->
-            <button type="button" class="accordion">Closing stock Qty (After sale)(SFT)</button>
-            <div class="panel">
-                <div class="scroll-table">
-                    <table>
-                        <tr>
-                            <th colspan="5">Closing stock Qty (After sale)(SFT)</th>
-                        </tr>
-                        <tr>
-                            <th>Type</th><th colspan="2">No of Pcs</th><th colspan="2">Sft</th>
-                        </tr>
-                        <tr>
-                            <td>Fresh</td>
-                            <td colspan="2"><label id="closing_fresh_pcs">20</label></td>
-                            <td colspan="2"><label id="closing_fresh_sft"> 700.000 </label></td>
-                        </tr>
-                        <tr>
-                            <td>Semi-Fresh</td>
-                            <td colspan="2"><label id="closing_semi_fresh_pcs">10</label></td>
-                            <td colspan="2"><label id="closing_semi_fresh_sft"> 100.000 </label></td>
-                        </tr>
-                        <tr>
-                            <td>Commercial</td>
-                            <td colspan="2"><label id="closing_commercial_pcs">7</label></td>
-                            <td colspan="2"><label id="closing_commercial_sft"> 253.958 </label></td>
-                        </tr>
-                        <tr>
-                            <td>Total Qty (SFT) Fresh/Semi+Commrl</td>
-                            <td colspan="2"><label id="closing_total_pcs" >37</label></td>
-                            <td colspan="2"><label id="closing_total_sft" >  1053.958 </label></td>
-                        </tr>
-                    </table>
-                    
-                </div>
-            </div>
-
-
-            <!--fourth Accordian  -->
-            <button type="button" class="accordion">Product Sale</button>
-            <div class="panel">
-                <div class="scroll-table">
-                    <table>
-                        <tr>
-                            <th colspan="5">Product Sale</th>
-                        </tr>
-                        <tr>
-                            <th>Type</th><th colspan="2">No of Pcs</th><th colspan="2">Sft</th>
-                        </tr>
-                        <tr>
-                            <td>Fresh</td>
-                            <td colspan="2"><input type="number" step="0.01" name="sale_fresh_pcs" id="sale_fresh_pcs"></td>
-                            <td colspan="2"><input type="number" step="0.01" name="sale_fresh_sft" id="sale_fresh_sft"></td>
-                        </tr>
-                        <tr>
-                            <td>Semi-Fresh</td>
-                            <td colspan="2"><input type="number" step="0.01" name="sale_semi_fresh_pcs" id="sale_semi_fresh_pcs"></td>
-                            <td colspan="2"><input type="number" step="0.01" name="sale_semi_fresh_sft" id="sale_semi_fresh_sft"></td>
-                        </tr>
-                        <tr>
-                            <td>Commercial</td>
-                            <td colspan="2"><input type="number" step="0.01" name="sale_commercial_pcs" id="sale_commercial_pcs"></td>
-                            <td colspan="2"><input type="number" step="0.01" name="sale_commercial_sft" id="sale_commercial_sft"></td>
-                        </tr>
-                        <tr>
-                            <td>Total Qty (SFT) Fresh/Semi+Commrl</td>
-                            <td colspan="2"><input type="number" step="0.01" name="sale_total_pcs"  id="sale_total_pcs"readonly></td>
-                            <td colspan="2"><input type="number" step="0.01" name="sale_total_sft"  id="sale_total_sft"readonly></td>
-                        </tr>
-                    </table>
-                    
-                </div>
-            </div>
-           
-            <!--Fifth Accordian  -->
-            <button type="button" class="accordion">Incharge  Information</button>
-            <div class="panel">
-                <table>
-                    <tr><th>Supervisor Name</th><td><input type="text" name="supervisor_name" id="supervisor_name"></td></tr>
-                    <tr><th>Incharge Name</th><td><input type="text" name="incharge_name" id="incharge_name"></td></tr>
-                </table>
-            </div>
-            
-            <br>
-            <div style="text-align: center; margin-top: 20px;">
-                <button type="submit" class="submit" style="display: none">Submit</button>
-				<button type="submit" class="submit" style="display: none">Submit</button>
-				<button type="submit" class="submit">Submit</button>
-			</div>
-        </div>
         </form>
     </div>
 
-    <script>
-        var acc = document.getElementsByClassName("accordion");
-        for (var i = 0; i < acc.length; i++) {
-            acc[i].addEventListener("click", function() {
-                this.classList.toggle("active");
-                var panel = this.nextElementSibling;
-                if (panel.style.display === "block") {
-                    panel.style.display = "none";
+   <script>
+    // Global variable to store original stock values
+    let originalStocks = {};
+	let previousSoldStocks = {};
+    let record_id;
+
+    // Accordion functionality
+    var acc = document.getElementsByClassName("accordion");
+    for (var i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.style.display === "block") {
+                panel.style.display = "none";
+            } else {
+                panel.style.display = "block";
+            }
+        });
+    }
+
+    // Search block functionality
+    function searchBlock() {
+        let searchValue = document.getElementById("searchInput").value.trim();
+        let table = document.getElementById("dataTable");
+
+        if (!searchValue) {
+            table.style.display = "none";
+            alert("Please enter a block number to search!");
+            return;
+        }
+
+        fetchDataFromAPI(searchValue);
+    }
+
+    // Fetch data from API
+    function fetchDataFromAPI(blockNumber, part = "part_a") {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    let data = JSON.parse(xhr.responseText);
+                    record_id = data[0]._id;
+                    populateFormFields(data, part);
+                    document.getElementById("dataTable").style.display = "block";
+                } else if (xhr.status === 404) {
+                    alert("Block number " + blockNumber + " not found!");
                 } else {
-                    panel.style.display = "block";
+                    alert("Error fetching data. Status: " + xhr.status);
                 }
-            });
-        }
-
-        function searchBlock() {
-            let searchValue = document.getElementById("searchInput").value.trim();
-            let table = document.getElementById("dataTable");
-           let blockNo = document.getElementById("block_no").textContent;
-
-           if (!searchValue) {
-               table.style.display = "none";
-               alert("Please enter a block number to search!");
-              return;
-        }
-
-    // For this example, we'll just compare with the static block number (9503)
-    
-           if (searchValue === blockNo) {
-              table.style.display = "block"; 
             }
-           else {
-             table.style.display = "none";   
-                 alert("Block number " + searchValue + " not found!");
+        };
+
+        xhr.open("GET", `https://shivadb-f348.restdb.io/rest/plm-products-db?q={"id":"${blockNumber}"}`);
+        xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
+        xhr.send();
+    }
+
+    let previousPart = "part_a";
+
+    function populateFormFields(data, part) {
+        if (data.length > 0) {
+            let record = data[0];
+
+            if (!record.dressing?.[part]?.marking_sales_particulars) {
+                alert(`No data found for ${part.toUpperCase()}. Please select another part.`);
+                document.getElementById("block_parts").value = previousPart || "part_a";
+                return;
             }
-        }
-		
-		function calculateClosingStockDamage() {
+
+            previousPart = part;
+
+            // Populate Basic Details
+            document.getElementById("block_no").textContent = record.id || "";
+            document.getElementById("block_colour").textContent = record.blocks?.block_color || "";
+
+            // Populate Marking/Sales Particulars
+            let markingSales = record.dressing?.[part]?.marking_sales_particulars;
+            document.getElementById("marking_fresh_pcs").textContent = markingSales?.fresh?.fresh_pcs || 0;
+            document.getElementById("marking_fresh_sft").textContent = markingSales?.fresh?.fresh_sft || 0;
+            document.getElementById("marking_semi_fresh_pcs").textContent = markingSales?.semi_fresh?.semi_fresh_pcs || 0;
+            document.getElementById("marking_semi_fresh_sft").textContent = markingSales?.semi_fresh?.semi_fresh_sft || 0;
+            document.getElementById("marking_commercial_pcs").textContent = markingSales?.commercial?.commercial_pcs || 0;
+            document.getElementById("marking_commercial_sft").textContent = markingSales?.commercial?.commercial_sft || 0;
+
+            // Store original values when first loading
+           let closingStock = record.dressing?.[part]?.sales_report?.closing_stock_after_sale;
+            originalStocks = {
+                fresh_pcs: parseFloat(closingStock?.fresh?.closing_fresh_pcs || markingSales?.fresh?.fresh_pcs),
+                fresh_sft: parseFloat(closingStock?.fresh?.closing_fresh_sft || markingSales?.fresh?.fresh_sft),
+                semi_fresh_pcs: parseFloat(closingStock?.semi_fresh?.closing_semi_fresh_pcs || markingSales?.semi_fresh?.semi_fresh_pcs),
+                semi_fresh_sft: parseFloat(closingStock?.semi_fresh?.closing_semi_fresh_sft || markingSales?.semi_fresh?.semi_fresh_sft),
+                commercial_pcs: parseFloat(closingStock?.commercial?.closing_commercial_pcs || markingSales?.commercial?.commercial_pcs),
+                commercial_sft: parseFloat(closingStock?.commercial?.closing_commercial_sft || markingSales?.commercial?.commercial_sft)
+            };
 			
-			function getText(id) {
-				return parseFloat(document.getElementById(id)?.textContent) || 0;
-			}
+			// Store previous sales values when first loading
+			let soldStocks = record.dressing?.[part]?.sales_report;
+			previousSoldStocks = {
+				fresh_pcs: parseFloat(soldStocks?.fresh?.sale_fresh_pcs) || 0,
+				fresh_sft: parseFloat(soldStocks?.fresh?.sale_fresh_sft) || 0,
+				semi_fresh_pcs: parseFloat(soldStocks?.semi_fresh?.sale_semi_fresh_pcs) || 0,
+				semi_fresh_sft: parseFloat(soldStocks?.semi_fresh?.sale_semi_fresh_sft) || 0,
+				commercial_pcs: parseFloat(soldStocks?.commercial?.sale_commercial_pcs) || 0,
+				commercial_sft: parseFloat(soldStocks?.commercial?.sale_commercial_sft) || 0,
+				sale_total_pcs: parseFloat(soldStocks?.sale_total_pcs) || 0,
+				sale_total_sft: parseFloat(soldStocks?.sale_total_sft) || 0
+			};
+			
+            // Initialize closing stock with original values
+            document.getElementById("closing_fresh_pcs").textContent = originalStocks.fresh_pcs;
+            document.getElementById("closing_fresh_sft").textContent = originalStocks.fresh_sft.toFixed(3);
+            document.getElementById("closing_semi_fresh_pcs").textContent = originalStocks.semi_fresh_pcs;
+            document.getElementById("closing_semi_fresh_sft").textContent = originalStocks.semi_fresh_sft.toFixed(3);
+            document.getElementById("closing_commercial_pcs").textContent = originalStocks.commercial_pcs;
+            document.getElementById("closing_commercial_sft").textContent = originalStocks.commercial_sft.toFixed(3);
+            
+            // Initialize totals
+            const totalPcs = originalStocks.fresh_pcs + originalStocks.semi_fresh_pcs + originalStocks.commercial_pcs;
+            const totalSft = originalStocks.fresh_sft + originalStocks.semi_fresh_sft + originalStocks.commercial_sft;
+            document.getElementById("closing_total_pcs").textContent = totalPcs;
+            document.getElementById("closing_total_sft").textContent = totalSft.toFixed(3);
+            
+            // Clear sale inputs
+            document.getElementById("sale_fresh_pcs").value = "";
+            document.getElementById("sale_fresh_sft").value = "";
+            document.getElementById("sale_semi_fresh_pcs").value = "";
+            document.getElementById("sale_semi_fresh_sft").value = "";
+            document.getElementById("sale_commercial_pcs").value = "";
+            document.getElementById("sale_commercial_sft").value = "";
+            document.getElementById("sale_total_pcs").value = "";
+            document.getElementById("sale_total_sft").value = "";
 
-			// Function to update text content
-			function setText(id, value) {
-				if (document.getElementById(id)) {
-					document.getElementById(id).textContent = value;
-				}
-			}
+            // Populate Incharge Information
+            let salesReport = record.dressing?.[part]?.sales_report;
+            document.getElementById("supervisor_name").value = salesReport?.supervisor_name || "";
+            document.getElementById("incharge_name").value = salesReport?.incharge_name || "";
+        } else {
+            alert("No data found for the given block number!");
+        }
+    }
 
-			// Function to ensure stock never goes below zero
-			function validateStock(available, sold) {
-				return Math.max(0, available - sold);
-			}
+    function updateFormFields() {
+        let selectedPart = document.getElementById("block_parts").value;
+        let blockNumber = document.getElementById("searchInput").value.trim();
 
-			// Get sale input values (how much is being sold)
-			let freshPcs = getValue("sale_fresh_pcs");
-			let freshSft = getValue("sale_fresh_sft");
-			let semiFreshPcs = getValue("sale_semi_fresh_pcs");
-			let semiFreshSft = getValue("sale_semi_fresh_sft");
-			let commercialPcs = getValue("sale_commercial_pcs");
-			let commercialSft = getValue("sale_commercial_sft");
+        if (blockNumber) {
+            fetchDataFromAPI(blockNumber, selectedPart);
+        } else {
+            alert("Please enter a block number first!");
+        }
+    }
 
-			// Get actual stock before sale
-			let markingFreshPcs = parseInt(getText("marking_fresh_pcs")) || 0;
-			let markingFreshSft = parseFloat(getText("marking_fresh_sft")) || 0;
-			let markingSemiFreshPcs = parseInt(getText("marking_semi_fresh_pcs")) || 0;
-			let markingSemiFreshSft = parseFloat(getText("marking_semi_fresh_sft")) || 0;
-			let markingCommercialPcs = parseInt(getText("marking_commercial_pcs")) || 0;
-			let markingCommercialSft = parseFloat(getText("marking_commercial_sft")) || 0;
+    function calculateClosingStockDamage() {
+        // Get current sale inputs (0 if empty)
+        const freshPcs = parseFloat(document.getElementById("sale_fresh_pcs").value) || 0;
+        const freshSft = parseFloat(document.getElementById("sale_fresh_sft").value) || 0;
+        const semiFreshPcs = parseFloat(document.getElementById("sale_semi_fresh_pcs").value) || 0;
+        const semiFreshSft = parseFloat(document.getElementById("sale_semi_fresh_sft").value) || 0;
+        const commercialPcs = parseFloat(document.getElementById("sale_commercial_pcs").value) || 0;
+        const commercialSft = parseFloat(document.getElementById("sale_commercial_sft").value) || 0;
 
-			// Calculate closing stock (after sale)
-			let closingFreshPcs = validateStock(markingFreshPcs, freshPcs);
-			let closingFreshSft = validateStock(markingFreshSft, freshSft);
-			let closingSemiFreshPcs = validateStock(markingSemiFreshPcs, semiFreshPcs);
-			let closingSemiFreshSft = validateStock(markingSemiFreshSft, semiFreshSft);
-			let closingCommercialPcs = validateStock(markingCommercialPcs, commercialPcs);
-			let closingCommercialSft = validateStock(markingCommercialSft, commercialSft);
+        // Calculate closing stocks based on ORIGINAL values
+        const closingFreshPcs = originalStocks.fresh_pcs - freshPcs;
+        const closingFreshSft = originalStocks.fresh_sft - freshSft;
+        const closingSemiFreshPcs = originalStocks.semi_fresh_pcs - semiFreshPcs;
+        const closingSemiFreshSft = originalStocks.semi_fresh_sft - semiFreshSft;
+        const closingCommercialPcs = originalStocks.commercial_pcs - commercialPcs;
+        const closingCommercialSft = originalStocks.commercial_sft - commercialSft;
 
-			// Update the closing stock display
-			setText("closing_fresh_pcs", closingFreshPcs);
-			setText("closing_fresh_sft", closingFreshSft.toFixed(3));
-			setText("closing_semi_fresh_pcs", closingSemiFreshPcs);
-			setText("closing_semi_fresh_sft", closingSemiFreshSft.toFixed(3));
-			setText("closing_commercial_pcs", closingCommercialPcs);
-			setText("closing_commercial_sft", closingCommercialSft.toFixed(3));
+        // Update closing stock display
+        document.getElementById("closing_fresh_pcs").textContent = closingFreshPcs;
+        document.getElementById("closing_fresh_sft").textContent = closingFreshSft.toFixed(3);
+        document.getElementById("closing_semi_fresh_pcs").textContent = closingSemiFreshPcs;
+        document.getElementById("closing_semi_fresh_sft").textContent = closingSemiFreshSft.toFixed(3);
+        document.getElementById("closing_commercial_pcs").textContent = closingCommercialPcs;
+        document.getElementById("closing_commercial_sft").textContent = closingCommercialSft.toFixed(3);
 
-			// Calculate and update total closing values
-			let totalClosingPcs = closingFreshPcs + closingSemiFreshPcs + closingCommercialPcs;
-			let totalClosingSft = closingFreshSft + closingSemiFreshSft + closingCommercialSft;
+        // Calculate totals
+        const totalClosingPcs = closingFreshPcs + closingSemiFreshPcs + closingCommercialPcs;
+        const totalClosingSft = closingFreshSft + closingSemiFreshSft + closingCommercialSft;
+        const totalSalePcs = freshPcs + semiFreshPcs + commercialPcs;
+        const totalSaleSft = freshSft + semiFreshSft + commercialSft;
 
-			setText("closing_total_pcs", totalClosingPcs);
-			setText("closing_total_sft", totalClosingSft.toFixed(3));
+        // Update total fields
+        document.getElementById("closing_total_pcs").textContent = totalClosingPcs;
+        document.getElementById("closing_total_sft").textContent = totalClosingSft.toFixed(3);
+        document.getElementById("sale_total_pcs").value = totalSalePcs;
+        document.getElementById("sale_total_sft").value = totalSaleSft.toFixed(3);
+    }
 
-			// Update total sale fields
-			document.getElementById("sale_total_pcs").value = parseInt(freshPcs) + parseInt(semiFreshPcs) + parseInt(commercialPcs);
-			document.getElementById("sale_total_sft").value = (parseFloat(freshSft) + parseFloat(semiFreshSft) + parseFloat(commercialSft)).toFixed(3);
-		}
+    // Event listeners
+    document.querySelectorAll("#sale_fresh_pcs, #sale_fresh_sft, #sale_semi_fresh_pcs, #sale_semi_fresh_sft, #sale_commercial_pcs, #sale_commercial_sft").forEach(input => {
+        input.addEventListener("change", function() {
+            calculateClosingStockDamage();
+        });
+        
+        // Real-time validation (visual only)
+        input.addEventListener("input", function() {
+            const closingFieldId = this.id.replace("sale_", "closing_");
+            const maxValue = parseFloat(document.getElementById(closingFieldId).textContent) || 0;
+            const enteredValue = parseFloat(this.value) || 0;
+            
+            if (this.value && enteredValue > maxValue) {
+                this.classList.add("invalid");
+            } else {
+                this.classList.remove("invalid");
+            }
+        });
+    });
 
-		// Attach event listeners to update stock whenever an input changes
-		document.querySelectorAll("input").forEach(input => {
-			input.addEventListener("input", calculateClosingStockDamage);
-		});
+    // Form submission handling
+    document.getElementById("inventoryForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        let isValid = true;
+
+        // Check required fields
+        this.querySelectorAll('input[required]').forEach(input => {
+            if (!input.value.trim()) {
+                isValid = false;
+                input.classList.add("error");
+            } else {
+                input.classList.remove("error");
+            }
+        });
+
+        // Additional validation for sale quantities
+        let alertShown = false;
+        document.querySelectorAll("#sale_fresh_pcs, #sale_fresh_sft, #sale_semi_fresh_pcs, #sale_semi_fresh_sft, #sale_commercial_pcs, #sale_commercial_sft").forEach(input => {
+            const closingFieldId = input.id.replace("sale_", "");
+            const maxValue = parseFloat(originalStocks[closingFieldId]) || 0;
+            const enteredValue = parseFloat(input.value) || 0;
+            
+            if (enteredValue > maxValue) {
+                isValid = false;
+                input.classList.add("error");
+                if (!alertShown) {
+                    alert(`Cannot enter more than available stock (Max: ${maxValue}) for ${input.id.replace("sale_", "").replace(/_/g, " ")}`);
+                    alertShown = true;
+                }
+            } else {
+                input.classList.remove("error");
+            }
+        });
+
+        if (isValid) {
+            submitForm();
+        } else {
+            if (!alertShown) {
+                alert("Please correct the errors before submitting.");
+            }
+        }
+    });
+
+    function submitForm() {
+        let blockParts = document.getElementById("block_parts").value;
+
+        if (!blockParts) {
+            alert("Please select a Block Part.");
+            return;
+        }
+
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    let existingData = JSON.parse(xhr.responseText);
+                    updateRecord(existingData, blockParts, record_id);
+                } else if (xhr.status === 404) {
+                    alert("Error: Record not found. Please check the record ID.");
+                } else {
+                    alert("Error fetching existing data. Status: " + xhr.status);
+                }
+            }
+        };
+
+        xhr.open("GET", `https://shivadb-f348.restdb.io/rest/plm-products-db/${record_id}`);
+        xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
+        xhr.send();
+    }
+
+    function updateRecord(existingData, blockPart, recordId) {
+        let existingPart = existingData.dressing?.[blockPart] || {};
+
+        let updatedPart = {
+            ...existingPart,
+            sales_report: {
+                fresh: {
+                    sale_fresh_pcs: (getValue("sale_fresh_pcs") + previousSoldStocks.fresh_pcs) || 0,
+                    sale_fresh_sft: (getValue("sale_fresh_sft") + previousSoldStocks.fresh_sft) || 0
+                },
+                semi_fresh: {
+                    sale_semi_fresh_pcs: (getValue("sale_semi_fresh_pcs")+previousSoldStocks.semi_fresh_pcs) || 0,
+                    sale_semi_fresh_sft: (getValue("sale_semi_fresh_sft")+previousSoldStocks.semi_fresh_sft) || 0
+                },
+                commercial: {
+                    sale_commercial_pcs: (getValue("sale_commercial_pcs")+ previousSoldStocks.commercial_pcs) || 0,
+                    sale_commercial_sft: (getValue("sale_commercial_sft")+ previousSoldStocks.commercial_sft) || 0
+                },
+                sale_total_pcs: (getValue("sale_total_pcs")+ previousSoldStocks.sale_total_pcs) || 0,
+                sale_total_sft: (getValue("sale_total_sft")+ previousSoldStocks.sale_total_sft) || 0,
+                closing_stock_after_sale: {
+                    fresh: {
+                        closing_fresh_pcs: document.getElementById("closing_fresh_pcs").textContent || 0,
+                        closing_fresh_sft: document.getElementById("closing_fresh_sft").textContent || 0
+                    },
+                    semi_fresh: {
+                        closing_semi_fresh_pcs: document.getElementById("closing_semi_fresh_pcs").textContent || 0,
+                        closing_semi_fresh_sft: document.getElementById("closing_semi_fresh_sft").textContent || 0
+                    },
+                    commercial: {
+                        closing_commercial_pcs: document.getElementById("closing_commercial_pcs").textContent || 0,
+                        closing_commercial_sft: document.getElementById("closing_commercial_sft").textContent || 0
+                    },
+                    closing_total_pcs: document.getElementById("closing_total_pcs").textContent || 0,
+                    closing_total_sft: document.getElementById("closing_total_sft").textContent || 0
+                },
+                supervisor_name: document.getElementById("supervisor_name").value || "",
+                incharge_name: document.getElementById("incharge_name").value || ""
+            }
+        };
+
+        let updatedData = {
+            ...existingData,
+            dressing: {
+                ...existingData.dressing,
+                [blockPart]: updatedPart
+            }
+        };
+
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200 || xhr.status === 201) {
+                    alert("Sale data updated successfully!");
+                    window.location.href = `salesreport.html?block_id=${recordId}`;
+                } else {
+                    alert("Error updating Stage-4 data. Status: " + xhr.status);
+                }
+            }
+        };
+
+        xhr.open("PATCH", `https://shivadb-f348.restdb.io/rest/plm-products-db/${recordId}`);
+        xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(JSON.stringify(updatedData));
 		
-		document.getElementById("inventoryForm").addEventListener("submit", function(event) {
-			event.preventDefault(); 
-			let isValid = true;
-
-			this.querySelectorAll('input[required]').forEach(input => {
-				if (!input.value.trim()) {
-					isValid = false;
-					input.classList.add("error");
-				} else {
-					input.classList.remove("error");
-				}
-			});
-
-			if (isValid) {
-				submitForm();
-				alert("Submit form has got triggered!");
-			} else {
-				alert("Please fill all required fields.");
-			}
-		});
-		
-		function submitForm() {
-			event.preventDefault();
-
-			let recordId = "67dd4a2e420df42a00001803"; // Replace with actual record ID
-			let blockParts = getInnerText("block_parts").toLowerCase().trim(); 
-			var blockPart;
-			let parts = blockParts.split("-");  
-			if(parts[1]=="a"){
-				blockPart="part_a";
-			}
-			else if(parts[1]=="b"){
-				blockPart="part_b";
-			}
-			else{
-				blockPart="part_c";
-			}
-
-			if (!blockPart) {
-				alert("Please select a Block Part.");
-				return;
-			}
-
-			var xhr = new XMLHttpRequest();
-
-			xhr.onreadystatechange = function () {
-				if (xhr.readyState === 4) {
-					if (xhr.status === 200) {
-						let existingData = JSON.parse(xhr.responseText);
-						updateRecord(existingData, blockPart, recordId);
-					} else if (xhr.status === 404) {
-						alert("Error: Record not found. Please check the record ID.");
-					} else {
-						alert("Error fetching existing data. Status: " + xhr.status);
-					}
-				}
-			};
-
-			xhr.open("GET", `https://shivadb-f348.restdb.io/rest/plm-products-db/${recordId}`);
-			xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
-			xhr.send();
+		function getValue(id){
+			return parseFloat(document.getElementById(id).value)
 		}
-
-		function updateRecord(existingData, blockPart, recordId) {
-			let existingPart = existingData.dressing?.[blockPart] || {};
-
-			let updatedPart = {
-				...existingPart, // Keep all existing data
-				sales_report: {
-					fresh: {
-						sale_fresh_pcs:  getValue("sale_fresh_pcs"),
-						sale_fresh_sft: getValue("sale_fresh_sft")
-					},
-					semi_fresh: {
-						sale_semi_fresh_pcs: getValue("sale_semi_fresh_pcs"),
-						sale_semi_fresh_sft: getValue("sale_semi_fresh_sft")
-					},
-					commercial: {
-						sale_commercial_pcs: getValue("sale_commercial_pcs"),
-						sale_commercial_sft: getValue("sale_commercial_sft")
-					},
-					sale_total_pcs: getValue("sale_total_pcs"),
-					sale_total_sft: getValue("sale_total_sft"),
-					closing_stock_after_sale: {
-						fresh: {
-							closing_fresh_pcs: getInnerText("closing_fresh_pcs"),
-							closing_fresh_sft:  getInnerText("closing_fresh_sft")
-						},
-						semi_fresh: {
-							closing_semi_fresh_pcs: getInnerText("closing_semi_fresh_pcs"),
-							closing_semi_fresh_sft: getInnerText("closing_semi_fresh_sft")
-						},
-						commercial: {
-							closing_commercial_pcs: getInnerText("closing_commercial_pcs"),
-							closing_commercial_sft: getInnerText("closing_commercial_sft")
-						},
-						closing_total_pcs: getInnerText("closing_total_pcs"),
-						closing_total_sft: getInnerText("closing_total_sft")
-					},
-					supervisor_name: getValue("supervisor_name"),
-					incharge_name: getValue("incharge_name")
-				}
-			};
-
-			let updatedData = {
-				...existingData,
-				dressing: {
-					...existingData.dressing,
-					[blockPart]: updatedPart
-				}
-			};
-
-			var xhr = new XMLHttpRequest();
-			xhr.onreadystatechange = function () {
-				if (xhr.readyState === 4) {
-					if (xhr.status === 200 || xhr.status === 201) {
-						alert("Stage-4 data updated successfully!");
-					} else {
-						alert("Error updating Stage-4 data. Status: " + xhr.status);
-					}
-				}
-			};
-
-			xhr.open("PATCH", `https://shivadb-f348.restdb.io/rest/plm-products-db/${recordId}`);
-			xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
-			xhr.setRequestHeader("Content-Type", "application/json");
-			xhr.send(JSON.stringify(updatedData));
-		}
-
-	
-		function getValue(id) {
-			return document.getElementById(id)?.value || "";
-		}
-	
-		// Function to get text values (handles empty fields)
-		function getInnerText(id) {
-			return document.getElementById(id)?.textContent || "";
-		}
-	
-
-    </script>
+    }
+</script>
 </body>
 </html>
