@@ -12,7 +12,10 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
+	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+	<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -169,6 +172,20 @@
 				padding: 8px;
 			}
 		}
+		.dt-buttons .btn {
+			background-color: #1b4f72 !important;
+			color: white !important;
+			border: none;
+			margin-bottom: 15px;
+			padding: 8px 15px;
+			border-radius: 5px;
+		}
+
+		.dt-buttons .btn:hover {
+			background-color: #7fb3d5 !important;
+			color: black !important;
+		}
+		
     </style>
 </head>
 <body>
@@ -203,8 +220,8 @@
 
         <!-- Date Range Filtering Section -->
         <div id="dateRangeInputs" class="filter-section" style="display: none;">
-            <label>Min Date: <input type="text" id="min"></label>
-            <label>Max Date: <input type="text" id="max"></label>
+            <label>Starting Date: <input type="text" id="min"></label>
+            <label>Ending Date: <input type="text" id="max"></label>
         </div>
 
         <!-- Block Number Filtering Section -->
@@ -245,8 +262,37 @@
 
     <script>
         $(document).ready(function () {
-            var table = $('#example').DataTable();
-
+            var table = $('#example').DataTable({
+				dom: 'Bfrtip',  // Add this to show buttons
+				buttons: [
+					{
+						extend: 'csv',
+						text: 'Download CSV',
+						className: 'btn btn-primary',
+						exportOptions: {
+							columns: ':visible',
+							footer: true  // This includes the footer in the export
+						},
+						title: 'Product_List',
+						customize: function (csv) {
+							// Get the footer totals
+							var footerTotals = [
+								'Total,,',  // Empty cells for first 3 columns
+								$('#totalNetMeasurement').text(),
+								$('#totalQty').text(),
+								'-',  // Empty for Price/CBM
+								$('#totalPurchaseAmount').text(),
+								$('#totalWeighting').text(),
+								$('#totalLoading').text(),
+								$('#totalBlocksCost').text()
+							].join(',');
+							
+							// Add footer row to CSV
+							return csv + '\n' + footerTotals;
+						}
+					}
+				]
+			});
             // Date Range Filtering
             $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
                 var min = $('#min').datepicker("getDate");
