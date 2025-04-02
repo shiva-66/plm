@@ -152,68 +152,16 @@
         
         <div class="row">
             <div class="box"><a href="stageOne.html">Add New Product</a></div>
-            <div class="box"><a href="#">Search & Edit Product</a></div>
+            <div class="box"><a href="productList.html">Search & Edit Product</a></div>
         </div>
         <div class="row">
-            <div class="box"><a href="#">Sell Products</a></div>
-            <div class="box"><a href="#">Sales Report</a></div>
+            <div class="box"><a href="productSale.html">Sell Products</a></div>
+            <div class="box"><a href="salesreport.html">Sales Report</a></div>
         </div>
         <div class="row">
-            <div class="box"><a href="#">Slabs Report</a></div>
-            <div class="box"><a href="#">Graph Report</a></div>
+            <div class="box"><a href="slabsReport.html">Slabs Report</a></div>
+            <div class="box"><a href="graphReport.html">Graph Report</a></div>
         </div>
     </div>
-	<script>
-		document.addEventListener("DOMContentLoaded", function () {
-			// Select all anchor tags inside .box divs
-			document.querySelectorAll(".box a").forEach(anchor => {
-				anchor.addEventListener("click", function (event) {
-					event.preventDefault(); // Prevent default navigation behavior
-
-					// Call a specific function based on the link text or href
-					if (this.textContent.includes("Add New Product")) {
-						addNewProduct();
-					} else if (this.textContent.includes("Search & Edit Product")) {
-						searchEditProduct();
-					} else if (this.textContent.includes("Sell Products")) {
-						sellProducts();
-					} else if (this.textContent.includes("Sales Report")) {
-						salesReport();
-					}else if (this.textContent.includes("Slabs Report")) {
-						slabsReport();
-					}else if (this.textContent.includes("Graph Report")) {
-						graphReport();
-					}
-				});
-			});
-		});
-
-		// Define different functions for each action
-		function addNewProduct() {
-			sessionStorage.setItem("dashboard", "true");
-			window.location.href = "stageOne.html"; // Redirect after action
-		}
-
-		function searchEditProduct() {
-			 window.location.href = "productList.html";
-		}
-
-		function sellProducts() {
-			window.location.href = "productSale.html";
-		}
-
-		function salesReport() {
-			window.location.href = "salesreport.html";
-		}
-
-        function slabsReport() {
-			window.location.href = "slabsReport.html";
-		}
-
-        function graphReport() {
-			window.location.href = "graphReport.html";
-		}
-
-	</script>
 </body>
 </html>
