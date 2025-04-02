@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Graphreport</title>
+    <title>Graph Report</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-     <style>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -81,27 +83,41 @@
             margin-top: 60px;
             text-align: center;
         }
-        .submit {
-            padding: 5px 10px;
-            font-size: 15px;
-            background-color: #0066b2;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            margin-top: 20px;
-            width: 10%;
-            margin-bottom: 20px;
+        .form-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        input {
-            width: 12%;
-            padding: 0px;
-            box-sizing: border-box;
+        .form-group {
+            margin-bottom: 15px;
         }
-        select{
-            width: 12%;
-            padding: 2px;
-            box-sizing: border-box;
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+            color: #1b4f72;
+        }
+        input, select {
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 16px;
+            width: 200px;
+        }
+        .btn {
+            padding: 8px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            margin: 0 10px;
+        }
+        .btn-primary {
+            background-color: #1b4f72;
+            border-color: #1b4f72;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
         }
         h1 {
             font-weight: bold;
@@ -127,6 +143,55 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .loading {
+            display: none;
+            margin: 20px 0;
+            font-size: 18px;
+            color: #1b4f72;
+        }
+        .spinner {
+            margin-right: 10px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .no-data {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            color: #6c757d;
+            font-size: 18px;
+        }
+        
+        @media (max-width: 768px) {
+            .charts-row {
+                flex-direction: column;
+            }
+            .chart-wrapper {
+                max-width: 100%;
+            }
+            input, select {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .btn {
+                width: 100%;
+                margin: 5px 0;
+            }
+            header .company-name h2 {
+                font-size: 28px;
+            }
+            header .company-name h4 {
+                font-size: 18px;
+            }
+            .nav-link {
+                font-size: 16px;
+                padding: 8px 12px;
+            }
         }
     </style>
   </head>
@@ -154,28 +219,49 @@
 
     <div class="container">
         <h1>Graph Report</h1>
-        <label for="blockNumber">Block Number: </label>
-        <input type="text" id="blockNumber" name="blockNumber"><br><br>
-        <label for="part">Choose Part: - </label>
-        <select name="part" id="part">
-            <option value="">All Parts</option>
-            <option value="part_a">Part-A</option>
-            <option value="part_b">Part-B</option>
-            <option value="part_c">Part-C</option>
-        </select><br>
-        <input type="submit" value="Submit" class="submit" id="submitBtn">
-        <div class="loading" id="loading">Loading data...</div>
+        
+        <div class="form-section">
+            <div class="form-group">
+                <label for="blockNumber">Block Number:</label>
+                <input type="text" id="blockNumber" name="blockNumber" placeholder="Enter block number">
+            </div>
+            
+            <div class="form-group">
+                <label for="part">Choose Part:</label>
+                <select name="part" id="part">
+                    <option value="">All Parts</option>
+                    <option value="part_a">Part-A</option>
+                    <option value="part_b">Part-B</option>
+                    <option value="part_c">Part-C</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    <i class="fas fa-chart-bar"></i> Generate Report
+                </button>
+                <button type="reset" class="btn btn-secondary" id="resetBtn">
+                    <i class="fas fa-redo"></i> Clear
+                </button>
+            </div>
+        </div>
+        
+        <div class="loading" id="loading">
+            <i class="fas fa-spinner spinner"></i> Loading data, please wait...
+        </div>
 
         <!-- Charts Container -->
         <div class="charts-row">
             <div class="chart-wrapper">
                 <div class="chart-container">
                     <canvas id="stockChartSft"></canvas>
+                    <div class="no-data" id="noDataSft">Please enter a block number and click "Generate Report" to view data</div>
                 </div>
             </div>
             <div class="chart-wrapper">
                 <div class="chart-container">
                     <canvas id="stockChartPcs"></canvas>
+                    <div class="no-data" id="noDataPcs">Please enter a block number and click "Generate Report" to view data</div>
                 </div>
             </div>
         </div>
@@ -190,37 +276,63 @@
             const ctxSft = document.getElementById('stockChartSft').getContext('2d');
             stockChartSft = new Chart(ctxSft, {
                 type: "bar",
+                plugins: [ChartDataLabels],
                 data: {
                     labels: ["Fresh", "Semi-Fresh", "Commercial"],
                     datasets: [
                         {
                             label: "Total Stock (sft)",
-                            data: [0, 0, 0],
-                            backgroundColor: "#8884d8"
+                            data: [],
+                            backgroundColor: "#3498db",
+                            borderColor: "#2980b9",
+                            borderWidth: 1
                         },
                         {
                             label: "Sold Stock (sft)",
-                            data: [0, 0, 0],
-                            backgroundColor: "#82ca9d"
+                            data: [],
+                            backgroundColor: "#2ecc71",
+                            borderColor: "#27ae60",
+                            borderWidth: 1
                         },
                         {
                             label: "Closing Stock (sft)",
-                            data: [0, 0, 0],
-                            backgroundColor: "#ffc658"
+                            data: [],
+                            backgroundColor: "#f39c12",
+                            borderColor: "#d35400",
+                            borderWidth: 1
                         }
                     ]
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            position: "top"
+                            position: "top",
+                            labels: {
+                                font: {
+                                    size: 14
+                                }
+                            }
                         },
                         title: {
                             display: true,
                             text: 'Stock Overview (Square Feet)',
                             font: {
-                                size: 16
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        },
+                        datalabels: {
+                            display: true,
+                            color: '#000',
+                            anchor: 'end',
+                            align: 'top',
+                            formatter: function(value) {
+                                return value.toLocaleString();
+                            },
+                            font: {
+                                weight: 'bold'
                             }
                         }
                     },
@@ -229,7 +341,22 @@
                             beginAtZero: true,
                             title: {
                                 display: true,
-                                text: 'Square Feet (sft)'
+                                text: 'Square Feet (sft)',
+                                font: {
+                                    weight: 'bold'
+                                }
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString();
+                                }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    size: 14
+                                }
                             }
                         }
                     }
@@ -240,37 +367,63 @@
             const ctxPcs = document.getElementById('stockChartPcs').getContext('2d');
             stockChartPcs = new Chart(ctxPcs, {
                 type: "bar",
+                plugins: [ChartDataLabels],
                 data: {
                     labels: ["Fresh", "Semi-Fresh", "Commercial"],
                     datasets: [
                         {
                             label: "Total Stock (pcs)",
-                            data: [0, 0, 0],
-                            backgroundColor: "#8884d8"
+                            data: [],
+                            backgroundColor: "#3498db",
+                            borderColor: "#2980b9",
+                            borderWidth: 1
                         },
                         {
                             label: "Sold Stock (pcs)",
-                            data: [0, 0, 0],
-                            backgroundColor: "#82ca9d"
+                            data: [],
+                            backgroundColor: "#2ecc71",
+                            borderColor: "#27ae60",
+                            borderWidth: 1
                         },
                         {
                             label: "Closing Stock (pcs)",
-                            data: [0, 0, 0],
-                            backgroundColor: "#ffc658"
+                            data: [],
+                            backgroundColor: "#f39c12",
+                            borderColor: "#d35400",
+                            borderWidth: 1
                         }
                     ]
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            position: "top"
+                            position: "top",
+                            labels: {
+                                font: {
+                                    size: 14
+                                }
+                            }
                         },
                         title: {
                             display: true,
                             text: 'Stock Overview (Piece Count)',
                             font: {
-                                size: 16
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        },
+                        datalabels: {
+                            display: true,
+                            color: '#000',
+                            anchor: 'end',
+                            align: 'top',
+                            formatter: function(value) {
+                                return value.toLocaleString();
+                            },
+                            font: {
+                                weight: 'bold'
                             }
                         }
                     },
@@ -279,12 +432,31 @@
                             beginAtZero: true,
                             title: {
                                 display: true,
-                                text: 'Number of Pieces'
+                                text: 'Number of Pieces',
+                                font: {
+                                    weight: 'bold'
+                                }
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString();
+                                }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    size: 14
+                                }
                             }
                         }
                     }
                 }
             });
+            
+            // Hide charts initially
+            document.getElementById('stockChartSft').style.display = 'none';
+            document.getElementById('stockChartPcs').style.display = 'none';
         }
 
         // Function to fetch data from API
@@ -309,7 +481,7 @@
                 loadingElement.style.display = 'none';
                 
                 if (data.length === 0) {
-                    alert('No data found for the specified block number');
+                    alert(`No data found for block number: ${blockNumber}`);
                     return null;
                 }
                 
@@ -317,7 +489,7 @@
             } catch (error) {
                 loadingElement.style.display = 'none';
                 console.error('Error fetching data:', error);
-                alert('Error fetching data. Please check console for details.');
+                alert(`Error fetching data for block ${blockNumber}. Please try again.`);
                 return null;
             }
         }
@@ -391,6 +563,12 @@
                 }
             });
             
+            // Show charts and hide "no data" messages
+            document.getElementById('stockChartSft').style.display = 'block';
+            document.getElementById('stockChartPcs').style.display = 'block';
+            document.getElementById('noDataSft').style.display = 'none';
+            document.getElementById('noDataPcs').style.display = 'none';
+            
             // Update Square Feet chart data
             stockChartSft.data.datasets[0].data = [
                 totalsSft.fresh.total,
@@ -439,6 +617,18 @@
             stockChartPcs.update();
         }
 
+        // Reset form and charts
+        function resetForm() {
+            document.getElementById('blockNumber').value = '';
+            document.getElementById('part').value = '';
+            
+            // Hide charts and show "no data" messages
+            document.getElementById('stockChartSft').style.display = 'none';
+            document.getElementById('stockChartPcs').style.display = 'none';
+            document.getElementById('noDataSft').style.display = 'flex';
+            document.getElementById('noDataPcs').style.display = 'flex';
+        }
+
         // Initialize charts when page loads
         document.addEventListener('DOMContentLoaded', function() {
             initializeCharts();
@@ -457,6 +647,11 @@
                 if (blockData) {
                     updateCharts(blockData, part);
                 }
+            });
+            
+            // Add click event to reset button
+            document.getElementById('resetBtn').addEventListener('click', function() {
+                resetForm();
             });
         });
     </script>
