@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Graphreport</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+     body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            padding-top: 140px;
+            background-color: #d6eaf8 !important;
+        }
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #1b4f72;
+            color: white;
+            padding: 15px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            border-bottom: 1px solid white;
+        }
+        header img {
+            margin-right: 35px;
+            border-radius: 50px;
+        }
+        header .company-name {
+            text-align: center;
+            color: #E6E6FA;
+        }
+        header .company-name h2 {
+            font-family: Arial, sans-serif;
+            font-size: 40px;
+            font-weight: 900;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+        header .company-name h4 {
+            font-family: Arial, sans-serif;
+            font-size: 25px;
+            font-weight: bold;
+            font-style: italic;
+            margin: 0;
+        }
+        .navbar-section {
+            background-color: #1b4f72;
+            padding: 25px 0 0 0;
+            position: fixed;
+            top: 90px;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            margin-bottom: 20px;
+        }
+        .nav-link {
+            color: white !important;
+            font-size: 22px;
+            padding: 12px 25px;
+        }
+        .nav-item {
+            list-style: none;
+            display: inline-block;
+            margin-right: 20px;
+        }
+        .navbar-section a:hover {
+            background-color:  #7fb3d5 ;
+            color: black !important;
+            border-radius: 5px;
+        }
+        .container {
+            width: 90%;
+            margin-top: 60px;
+            text-align: center;
+        }
+        .submit {
+            padding: 5px 10px;
+            font-size: 15px;
+            background-color: #0066b2;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+            width: 10%;
+        }
+        input {
+            width: 50%;
+            padding: 0px;
+            box-sizing: border-box;
+        }
+        select{
+            width: 12%;
+            padding: 2px;
+            box-sizing: border-box;
+        }
+    </style>
+  </head>
+  <body>
+    <header>
+      <img src="logocct.jpg" style="width:100px ;height:80px" alt="Company Logo" />
+      <div class="company-name">
+        <h2>CCT Stonexa</h2> 
+        <h4>Karimnagar</h4>
+      </div>
+    </header>
+
+    <!-- Navbar Section -->
+    <div class="navbar-section">
+        <ul class="nav justify-content-center">
+          <li class="nav-item">
+            <a class="nav-link" href="dashboard.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">Add Product</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="SearchandEdit.html">Search & Edit</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="productSale.html">Sell</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="SalesReport.html">Sales Report</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="SlabsReport.html">Slabs Report</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="graphReport.html">Graph Report</a>
+          </li>
+        </ul>
+      </div>
+      <div class="container">
+        <label>Block Number: <input type="text" id="blockNumber"></label><br><br>
+        <label for="choosepart">Choose  Part :</label>
+            <select name="part" id="part">
+                <option>None</option>
+                <option value="Part-A">Part-A</option>
+                <option value="Part-B">Part-B</option>
+                <option value="Part-C">Part-C</option>
+            </select><br>
+        <input type="submit" value="Submit" class="submit">
+      </div>
+  </body>
+</html>
