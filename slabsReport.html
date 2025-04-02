@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Slabs</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <style>
+        /* Your existing CSS styles remain the same */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            padding-top: 140px;
+            background-color: #d6eaf8 !important;
+        }
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #1b4f72;
+            color: white;
+            padding: 15px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            border-bottom: 1px solid white;
+        }
+        header img {
+            margin-right: 35px;
+            border-radius: 50px;
+        }
+        header .company-name {
+            text-align: center;
+            color: #E6E6FA;
+        }
+        header .company-name h2 {
+            font-size: 40px;
+            font-weight: 900;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+        header .company-name h4 {
+            font-size: 25px;
+            font-weight: bold;
+            font-style: italic;
+            margin: 0;
+            text-align: center;
+        }
+        .navbar-section {
+            background-color: #1b4f72;
+            padding: 25px 0 0 0;
+            position: fixed;
+            top: 90px;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            margin-bottom: 20px;
+        }
+        .nav-link {
+            color: white !important;
+            font-size: 22px;
+            padding: 12px 25px;
+        }
+        .nav-item {
+            list-style: none;
+            display: inline-block;
+            margin-right: 20px;
+        }
+        .navbar-section a:hover {
+            background-color: #7fb3d5;
+            color: black !important;
+            border-radius: 5px;
+        }
+        .container {
+            width: 95%;
+            margin-top: 60px;
+            text-align: center;
+        }
+        h1 {
+            font-weight: bold;
+            font-size: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #1b4f72;
+        }
+        .filter-section {
+            margin: 15px 0;
+        }
+        
+        /* Table Container for Horizontal Scrolling */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Table Styling */
+        #example {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 2400px; /* Adjusted width after removing columns */
+        }
+
+        /* Complex Header Styling */
+        #example thead tr.group-header {
+            background-color: #1b4f72;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        #example thead tr.sub-header {
+            background-color: #2980b9;
+            color: white;
+            text-align: center;
+        }
+        
+        /* Table Header Cells */
+        #example thead th {
+            padding: 8px;
+            white-space: nowrap;
+            text-align: center;
+            vertical-align: middle;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        /* Table Body */
+        #example tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #example tbody tr:hover {
+            background-color: #cce5ff;
+            transition: 0.3s;
+        }
+
+        #example tbody td {
+            padding: 8px;
+            text-align: center;
+            font-size: 14px;
+            border-bottom: 1px solid #ddd;
+            white-space: nowrap;
+        }
+
+        /* Footer Row (Total Calculation) */
+        #example tfoot {
+            background-color: #1b4f72;
+            color: white;
+            font-weight: bold;
+            font-size: 15px;
+            position: sticky;
+            bottom: 0;
+            z-index: 10;
+        }
+
+        #example tfoot th {
+            padding: 12px;
+            text-align: center;
+            white-space: nowrap;
+            border-top: 2px solid #1b4f72;
+            border-bottom: 2px solid #1b4f72;
+        }
+        .dt-buttons .btn {
+            background-color: #1b4f72 !important;
+            color: white !important;
+            border: none;
+            margin-bottom: 15px;
+            padding: 8px 15px;
+            border-radius: 5px;
+        }
+
+        .dt-buttons .btn:hover {
+            background-color: #7fb3d5 !important;
+            color: black !important;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="logocct.jpg" style="width:100px; height:80px" alt="Company Logo">
+        <div class="company-name">
+            <h2>CCT Stonexa</h2> 
+            <h4>Karimnagar</h4>
+        </div>
+    </header>
+
+    <!-- Navbar Section -->
+    <div class="navbar-section">
+        <ul class="nav justify-content-center">
+            <li class="nav-item"><a class="nav-link" href="dashboard.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="stageOne.html">Add Product</a></li>
+            <li class="nav-item"><a class="nav-link" href="productList.html">Search & Edit</a></li>
+            <li class="nav-item"><a class="nav-link" href="productSale.html">Sell</a></li>
+            <li class="nav-item"><a class="nav-link" href="salesreport.html">Sales Report</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <h1>Slabs Polishing & Sales Report</h1>
+
+        <!-- Filter Options -->
+        <div class="filter-options">
+            <label><input type="radio" name="filterType" value="blockNumber" checked> Block Number</label>
+            <label><input type="radio" name="filterType" value="dateRange"> Date Range</label>
+        </div>
+
+        <!-- Date Range Filtering Section -->
+        <div id="dateRangeInputs" class="filter-section" style="display: none;">
+            <label>Starting Date: <input type="text" id="min"></label>
+            <label>Ending Date: <input type="text" id="max"></label>
+        </div>
+
+        <!-- Block Number Filtering Section -->
+        <div id="blockNumberInput" class="filter-section" style="display: block;">
+            <label>Block Number: <input type="text" id="blockNumber"></label>
+        </div>
+
+        <!-- Table Container for Horizontal Scrolling -->
+        <div class="table-container">
+            <table id="example" class="display nowrap">
+                <thead>
+                    <tr class="group-header">
+                        <th colspan="4">Basic Information</th>
+                        <!-- Removed Opening Stock columns -->
+                        <th colspan="3">Production After Granding (Qty.)</th>
+                        <th colspan="4">Slabs Production (After Polishing)</th>
+                        <th colspan="2">Short/Damage (Between Processes)</th>
+                        <th colspan="8">Stock Categories Before Sale</th>
+                        <th colspan="4">Closing Stock Qty. (Before Sale)</th>
+                        <th colspan="2">Slabs Short/Damage</th>
+                        <th colspan="8">Sales</th>
+                        <th colspan="8">Closing Stock Qty. (After Sale)</th>
+                        <th colspan="2">Personnel</th>
+                    </tr>
+                    <tr class="sub-header">
+                        <!-- Basic Information -->
+                        <th>Date of Polishing</th>
+                        <th>Block No.</th>
+                        <th>Block Colour</th>
+                        <th>Block Part</th>
+                        
+                        <!-- Production After Granding -->
+                        <th>PCS</th>
+                        <th>SFT</th>
+                        <th>Thickness</th>
+                        
+                        <!-- Slabs Production -->
+                        <th>Length</th>
+                        <th>Height</th>
+                        <th>No. of Pcs</th>
+                        <th>Qty. (sft)</th>
+                        
+                        <!-- Short/Damage -->
+                        <th>Short PCs</th>
+                        <th>Short (sft)</th>
+                        
+                        <!-- Stock Categories Before Sale -->
+                        <th>Fresh No. of Pcs</th>
+                        <th>Fresh SFT</th>
+                        <th>Semi-Fresh No. of Pcs</th>
+                        <th>Semi-Fresh SFT</th>
+                        <th>Commrl No. of Pcs</th>
+                        <th>Commrl SFT</th>
+                        <th>TOTAL QTY. No. of Pcs</th>
+                        <th>TOTAL QTY. SFT</th>
+                        
+                        <!-- Closing Stock Before Sale -->
+                        <th>Total No. of Pcs</th>
+                        <th>Total SFT</th>
+                        <th>TOTAL QTY. No. of Pcs</th>
+                        <th>TOTAL QTY. SFT</th>
+                        
+                        <!-- Slabs Short/Damage -->
+                        <th>No. of Pcs</th>
+                        <th>SFT</th>
+                        
+                        <!-- Sales Section -->
+                        <th>Fresh No. of Pcs</th>
+                        <th>Fresh SFT</th>
+                        <th>Semi-Fresh No. of Pcs</th>
+                        <th>Semi-Fresh SFT</th>
+                        <th>Commrl No. of Pcs</th>
+                        <th>Commrl SFT</th>
+                        <th>TOTAL QTY. No. of Pcs</th>
+                        <th>TOTAL QTY. SFT</th>
+                        
+                        <!-- Closing Stock After Sale -->
+                        <th>Fresh No. of Pcs</th>
+                        <th>Fresh SFT</th>
+                        <th>Semi-Fresh No. of Pcs</th>
+                        <th>Semi-Fresh SFT</th>
+                        <th>Commrl No. of Pcs</th>
+                        <th>Commrl SFT</th>
+                        <th>TOTAL QTY. No. of Pcs</th>
+                        <th>TOTAL QTY. SFT</th>
+                        
+                        <!-- Personnel -->
+                        <th>Supervisor Name</th>
+                        <th>Incharge Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data will be populated dynamically -->
+                </tbody>
+                <tfoot>
+    <tr>
+        <!-- Basic Information (4 columns) -->
+        <th style="text-align:center">Totals:</th>
+		<th></th>
+        <th></th>
+		<th></th>
+        <!-- Production After Granding (3 columns) -->
+        <th id="totalProductionPcs" style="text-align:center">0</th>
+        <th id="totalProductionSft" style="text-align:center">0.00</th>
+        <th style="text-align:center">-</th>
+        
+        <!-- Slabs Production (4 columns) -->
+        <th style="text-align:center">-</th>
+        <th style="text-align:center">-</th>
+        <th id="totalSlabsPcs" style="text-align:center">0</th>
+        <th id="totalSlabsSft" style="text-align:center">0.00</th>
+        
+        <!-- Short/Damage (2 columns) -->
+        <th id="totalShortPcs" style="text-align:center">0</th>
+        <th id="totalShortSft" style="text-align:center">0.00</th>
+        
+        <!-- Stock Categories Before Sale (8 columns) -->
+        <th id="totalFreshPcs" style="text-align:center">0</th>
+        <th id="totalFreshSft" style="text-align:center">0.00</th>
+        <th id="totalSemiFreshPcs" style="text-align:center">0</th>
+        <th id="totalSemiFreshSft" style="text-align:center">0.00</th>
+        <th id="totalCommrlPcs" style="text-align:center">0</th>
+        <th id="totalCommrlSft" style="text-align:center">0.00</th>
+        <th id="totalStockPcs" style="text-align:center">0</th>
+        <th id="totalStockSft" style="text-align:center">0.00</th>
+        
+        <!-- Closing Stock Before Sale (4 columns) -->
+        <th id="totalClosingBeforePcs" style="text-align:center">0</th>
+        <th id="totalClosingBeforeSft" style="text-align:center">0.00</th>
+        <th id="totalClosingBeforeTotalPcs" style="text-align:center">0</th>
+        <th id="totalClosingBeforeTotalSft" style="text-align:center">0.00</th>
+        
+        <!-- Slabs Short/Damage (2 columns) -->
+        <th id="totalSlabsShortPcs" style="text-align:center">0</th>
+        <th id="totalSlabsShortSft" style="text-align:center">0.00</th>
+        
+        <!-- Sales (8 columns) -->
+        <th id="totalSaleFreshPcs" style="text-align:center">0</th>
+        <th id="totalSaleFreshSft" style="text-align:center">0.00</th>
+        <th id="totalSaleSemiFreshPcs" style="text-align:center">0</th>
+        <th id="totalSaleSemiFreshSft" style="text-align:center">0.00</th>
+        <th id="totalSaleCommrlPcs" style="text-align:center">0</th>
+        <th id="totalSaleCommrlSft" style="text-align:center">0.00</th>
+        <th id="totalSalePcs" style="text-align:center">0</th>
+        <th id="totalSaleSft" style="text-align:center">0.00</th>
+        
+        <!-- Closing Stock After Sale (8 columns) -->
+        <th id="totalClosingFreshPcs" style="text-align:center">0</th>
+        <th id="totalClosingFreshSft" style="text-align:center">0.00</th>
+        <th id="totalClosingSemiFreshPcs" style="text-align:center">0</th>
+        <th id="totalClosingSemiFreshSft" style="text-align:center">0.00</th>
+        <th id="totalClosingCommrlPcs" style="text-align:center">0</th>
+        <th id="totalClosingCommrlSft" style="text-align:center">0.00</th>
+        <th id="totalClosingPcs" style="text-align:center">0</th>
+        <th id="totalClosingSft" style="text-align:center">0.00</th>
+        
+        <!-- Personnel (2 columns) -->
+        <th style="text-align:center">-</th>
+        <th style="text-align:center">-</th>
+    </tr>
+</tfoot>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+    // Declare table variable in the document scope
+    var table;
+
+    // Initialize DataTable
+    function initializeDataTable() {
+        table = $('#example').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'csv',
+                    text: 'Download CSV',
+                    className: 'btn btn-primary',
+                    exportOptions: {
+                        columns: ':visible',
+                        format: {
+                            header: function (data, columnIdx) {
+                                if (columnIdx === 0) return 'Basic Information|Date of Polishing';
+                                if (columnIdx === 1) return 'Basic Information|Block No.';
+                                return data;
+                            }
+                        }
+                    },
+                    title: 'Slabs_Auto_Polishing_Report'
+                }
+            ],
+            scrollX: true,
+            fixedHeader: {
+                header: true,
+                footer: true
+            },
+            initComplete: function () {
+                $('.group-header').css('background-color', '#1b4f72');
+                $('.sub-header').css('background-color', '#2980b9');
+                loadData();
+            }
+        });
+    }
+
+    // Initialize the DataTable first
+    initializeDataTable();
+
+    // Function to safely get nested properties
+    function getNestedValue(obj, ...path) {
+        return path.reduce((current, key) => (current && current[key] !== undefined ? current[key] : null), obj);
+    }
+
+    // Function to load data
+    function loadData() {
+        $('#example tbody').html('<tr><td colspan="50" style="text-align:center">Loading data...</td></tr>');
+        
+        // Sample data structure that matches your JSON
+        const sampleData = [{
+            "id": "9503",
+            "stage": "1",
+            "date_of_marking": "8/22/2023",
+            "recd_date": "11/1/2023",
+            "supplier_name": "PSR Granites",
+            "blocks": {
+                "block_color": "PSR - TB",
+                "length": "300",
+                "width": "95",
+                "height": "180"
+            },
+            "dressing": {
+                "part_a": {
+                    "slabs_auto_polishing": {
+                        "date_of_polishing": "11/5/2023",
+                        "slabs_production": {
+                            "thickness": "18",
+                            "length": "120",
+                            "height": "39",
+                            "production_pcs": "44",
+                            "production_sft": "1430"
+                        },
+                        "slabs_after_polishing": {
+                            "polished_no_of_pcs": "40",
+                            "polished_sft": "1118.056",
+                            "polished_short_pcs": "-4",
+                            "polished_short_sft": "-311.944"
+                        }
+                    },
+                    "marking_sales_particulars": {
+                        "fresh": {
+                            "fresh_pcs": "20",
+                            "fresh_sft": "700.000"
+                        },
+                        "semi_fresh": {
+                            "semi_fresh_pcs": "10",
+                            "semi_fresh_sft": "100.000"
+                        },
+                        "commercial": {
+                            "commercial_pcs": "7",
+                            "commercial_sft": "253.958"
+                        },
+                        "closing_stock_qty": "37",
+                        "closing_stock_sft": "1,053.958",
+                        "slabs_short_pcs": "-3",
+                        "slabs_short_sft": "-64.098"
+                    },
+                    "sales_report": {
+                        "fresh": {
+                            "sale_fresh_pcs": "16",
+                            "sale_fresh_sft": "600.000"
+                        },
+                        "semi_fresh": {
+                            "sale_semi_fresh_pcs": "8",
+                            "sale_semi_fresh_sft": "70.000"
+                        },
+                        "commercial": {
+                            "sale_commercial_pcs": "4",
+                            "sale_commercial_sft": "153.000"
+                        },
+                        "closing_stock_after_sale": {
+                            "fresh": {
+                                "closing_fresh_pcs": "4",
+                                "closing_fresh_sft": "100.000"
+                            },
+                            "semi_fresh": {
+                                "closing_semi_fresh_pcs": "2",
+                                "closing_semi_fresh_sft": "30.000"
+                            },
+                            "commercial": {
+                                "closing_commercial_pcs": "3",
+                                "closing_commercial_sft": "100.958"
+                            }
+                        },
+                        "supervisor_name": "John Doe",
+                        "incharge_name": "Jane Smith"
+                    }
+                }
+            }
+        }];
+        
+        //processData(sampleData);
+        
+         //In production, use this AJAX call instead:
+        $.ajax({
+            url: 'https://shivadb-f348.restdb.io/rest/plm-products-db',
+            type: 'GET',
+            headers: {'x-api-key': '657c53fe63ede92cdbf17208'},
+            success: function(response) {
+                processData(response);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading data:', error);
+                $('#example tbody').html('<tr><td colspan="50" style="text-align:center;color:red">Error loading data. Please try again.</td></tr>');
+            }
+        });
+        
+    }
+
+    function processData(data) {
+    if (!table) {
+        console.error('DataTable not initialized');
+        return;
+    }
+    
+    try {
+        table.clear();
+        
+        data.forEach(function(record) {
+            // Process each part (part_a, part_b, part_c)
+            ['part_a', 'part_b', 'part_c'].forEach(function(part) {
+                const partData = getNestedValue(record, 'dressing', part);
+                if (!partData) return; // Skip if part doesn't exist
+                
+                const slabsAutoPolishing = getNestedValue(partData, 'slabs_auto_polishing') || {};
+                const polishedSlabs = getNestedValue(slabsAutoPolishing, 'slabs_after_polishing') || {};
+                const markingSales = getNestedValue(partData, 'marking_sales_particulars') || {};
+                const salesReport = getNestedValue(partData, 'sales_report') || {};
+                const closingAfterSale = getNestedValue(salesReport, 'closing_stock_after_sale') || {};
+                const slabsProduction = getNestedValue(partData, 'slabs_production') || {};
+
+                // Calculate totals
+                const freshPcs = parseInt(getNestedValue(markingSales, 'fresh', 'fresh_pcs') || 0);
+                const freshSft = parseFloat(getNestedValue(markingSales, 'fresh', 'fresh_sft') || 0);
+                const semiFreshPcs = parseInt(getNestedValue(markingSales, 'semi_fresh', 'semi_fresh_pcs') || 0);
+                const semiFreshSft = parseFloat(getNestedValue(markingSales, 'semi_fresh', 'semi_fresh_sft') || 0);
+                const commrlPcs = parseInt(getNestedValue(markingSales, 'commercial', 'commercial_pcs') || 0);
+                const commrlSft = parseFloat(getNestedValue(markingSales, 'commercial', 'commercial_sft') || 0);
+                
+                const totalStockPcs = freshPcs + semiFreshPcs + commrlPcs;
+                const totalStockSft = (freshSft + semiFreshSft + commrlSft).toFixed(2);
+                
+                const saleFreshPcs = parseInt(getNestedValue(salesReport, 'fresh', 'sale_fresh_pcs') || 0);
+                const saleFreshSft = parseFloat(getNestedValue(salesReport, 'fresh', 'sale_fresh_sft') || 0);
+                const saleSemiFreshPcs = parseInt(getNestedValue(salesReport, 'semi_fresh', 'sale_semi_fresh_pcs') || 0);
+                const saleSemiFreshSft = parseFloat(getNestedValue(salesReport, 'semi_fresh', 'sale_semi_fresh_sft') || 0);
+                const saleCommrlPcs = parseInt(getNestedValue(salesReport, 'commercial', 'sale_commercial_pcs') || 0);
+                const saleCommrlSft = parseFloat(getNestedValue(salesReport, 'commercial', 'sale_commercial_sft') || 0);
+                
+                const totalSalePcs = saleFreshPcs + saleSemiFreshPcs + saleCommrlPcs;
+                const totalSaleSft = (saleFreshSft + saleSemiFreshSft + saleCommrlSft).toFixed(2);
+                
+                const closingFreshPcs = parseInt(getNestedValue(closingAfterSale, 'fresh', 'closing_fresh_pcs') || 0);
+                const closingFreshSft = parseFloat(getNestedValue(closingAfterSale, 'fresh', 'closing_fresh_sft') || 0);
+                const closingSemiFreshPcs = parseInt(getNestedValue(closingAfterSale, 'semi_fresh', 'closing_semi_fresh_pcs') || 0);
+                const closingSemiFreshSft = parseFloat(getNestedValue(closingAfterSale, 'semi_fresh', 'closing_semi_fresh_sft') || 0);
+                const closingCommrlPcs = parseInt(getNestedValue(closingAfterSale, 'commercial', 'closing_commercial_pcs') || 0);
+                const closingCommrlSft = parseFloat(getNestedValue(closingAfterSale, 'commercial', 'closing_commercial_sft') || 0);
+                
+                const totalClosingPcs = closingFreshPcs + closingSemiFreshPcs + closingCommrlPcs;
+                const totalClosingSft = (closingFreshSft + closingSemiFreshSft + closingCommrlSft).toFixed(2);
+
+                // Add row to DataTable for each part
+                table.row.add([
+                    /* Basic Information */
+                    getNestedValue(slabsAutoPolishing, 'date_of_polishing') || "",
+                    record.id || "",
+                    getNestedValue(record, 'blocks', 'block_color') || "",
+                    "Part " + part.charAt(part.length-1).toUpperCase(), // Shows "Part A", "Part B", etc.
+                    
+                    /* Production After Granding */
+                    getNestedValue(slabsProduction, 'production_pcs') || "",
+                    getNestedValue(slabsProduction, 'production_sft') || "",
+                    getNestedValue(slabsProduction, 'thickness') || "",
+                    
+                    /* Slabs Production */
+                    getNestedValue(polishedSlabs, 'polished_length') || "",
+                    getNestedValue(polishedSlabs, 'polished_height') || "",
+                    getNestedValue(polishedSlabs, 'polished_no_of_pcs') || "",
+                    getNestedValue(polishedSlabs, 'polished_sft') || "",
+                    
+                    /* Short/Damage */
+                    getNestedValue(polishedSlabs, 'polished_short_pcs') || "",
+                    getNestedValue(polishedSlabs, 'polished_short_sft') || "",
+                    
+                    /* Stock Categories Before Sale */
+                    freshPcs || "",
+                    freshSft ? freshSft.toFixed(2) : "",
+                    semiFreshPcs || "",
+                    semiFreshSft ? semiFreshSft.toFixed(2) : "",
+                    commrlPcs || "",
+                    commrlSft ? commrlSft.toFixed(2) : "",
+                    totalStockPcs || "",
+                    totalStockSft || "",
+                    
+                    /* Closing Stock Before Sale */
+                    getNestedValue(markingSales, 'closing_stock_qty') || "",
+                    getNestedValue(markingSales, 'closing_stock_sft') ? 
+                        parseFloat((getNestedValue(markingSales, 'closing_stock_sft') || "0").replace(/,/g, '')).toFixed(2) : "",
+                    totalStockPcs || "",
+                    totalStockSft || "",
+                    
+                    /* Slabs Short/Damage */
+                    getNestedValue(markingSales, 'slabs_short_pcs') || "",
+                    getNestedValue(markingSales, 'slabs_short_sft') || "",
+                    
+                    /* Sales Section */
+                    saleFreshPcs || "",
+                    saleFreshSft ? saleFreshSft.toFixed(2) : "",
+                    saleSemiFreshPcs || "",
+                    saleSemiFreshSft ? saleSemiFreshSft.toFixed(2) : "",
+                    saleCommrlPcs || "",
+                    saleCommrlSft ? saleCommrlSft.toFixed(2) : "",
+                    totalSalePcs || "",
+                    totalSaleSft || "",
+                    
+                    /* Closing Stock After Sale */
+                    closingFreshPcs || "",
+                    closingFreshSft ? closingFreshSft.toFixed(2) : "",
+                    closingSemiFreshPcs || "",
+                    closingSemiFreshSft ? closingSemiFreshSft.toFixed(2) : "",
+                    closingCommrlPcs || "",
+                    closingCommrlSft ? closingCommrlSft.toFixed(2) : "",
+                    totalClosingPcs || "",
+                    totalClosingSft || "",
+                    
+                    /* Personnel */
+                    getNestedValue(salesReport, 'supervisor_name') || "",
+                    getNestedValue(salesReport, 'incharge_name') || ""
+                ]);
+            });
+        });
+        
+        table.draw();
+        updateFooterTotals();
+    } catch (e) {
+        console.error('Error processing data:', e);
+        $('#example tbody').html('<tr><td colspan="50" style="text-align:center;color:red">Error processing data</td></tr>');
+    }
+}
+
+    function updateFooterTotals() {
+    if (!table) return;
+    
+    const columnSum = (columnIndex) => {
+        return table.column(columnIndex, {search: 'applied'}).data()
+            .reduce((sum, value) => {
+                // Treat empty strings and non-numeric values as 0 for calculations
+                if (value === "" || value === "-") return sum;
+                const numValue = parseFloat(value) || 0;
+                return sum + numValue;
+            }, 0);
+    };
+
+    // Update all footer totals
+    $('#totalProductionPcs').text(columnSum(4).toFixed(0));
+    $('#totalProductionSft').text(columnSum(5).toFixed(2));
+    $('#totalSlabsPcs').text(columnSum(9).toFixed(0));
+    $('#totalSlabsSft').text(columnSum(10).toFixed(2));
+    $('#totalShortPcs').text(columnSum(11).toFixed(0));
+    $('#totalShortSft').text(columnSum(12).toFixed(2));
+    $('#totalFreshPcs').text(columnSum(13).toFixed(0));
+    $('#totalFreshSft').text(columnSum(14).toFixed(2));
+    $('#totalSemiFreshPcs').text(columnSum(15).toFixed(0));
+    $('#totalSemiFreshSft').text(columnSum(16).toFixed(2));
+    $('#totalCommrlPcs').text(columnSum(17).toFixed(0));
+    $('#totalCommrlSft').text(columnSum(18).toFixed(2));
+    $('#totalStockPcs').text(columnSum(19).toFixed(0));
+    $('#totalStockSft').text(columnSum(20).toFixed(2));
+    $('#totalClosingBeforePcs').text(columnSum(21).toFixed(0));
+    $('#totalClosingBeforeSft').text(columnSum(22).toFixed(2));
+    $('#totalClosingBeforeTotalPcs').text(columnSum(23).toFixed(0));
+    $('#totalClosingBeforeTotalSft').text(columnSum(24).toFixed(2));
+    $('#totalSlabsShortPcs').text(columnSum(25).toFixed(0));
+    $('#totalSlabsShortSft').text(columnSum(26).toFixed(2));
+    $('#totalSaleFreshPcs').text(columnSum(27).toFixed(0));
+    $('#totalSaleFreshSft').text(columnSum(28).toFixed(2));
+    $('#totalSaleSemiFreshPcs').text(columnSum(29).toFixed(0));
+    $('#totalSaleSemiFreshSft').text(columnSum(30).toFixed(2));
+    $('#totalSaleCommrlPcs').text(columnSum(31).toFixed(0));
+    $('#totalSaleCommrlSft').text(columnSum(32).toFixed(2));
+    $('#totalSalePcs').text(columnSum(33).toFixed(0));
+    $('#totalSaleSft').text(columnSum(34).toFixed(2));
+    $('#totalClosingFreshPcs').text(columnSum(35).toFixed(0));
+    $('#totalClosingFreshSft').text(columnSum(36).toFixed(2));
+    $('#totalClosingSemiFreshPcs').text(columnSum(37).toFixed(0));
+    $('#totalClosingSemiFreshSft').text(columnSum(38).toFixed(2));
+    $('#totalClosingCommrlPcs').text(columnSum(39).toFixed(0));
+    $('#totalClosingCommrlSft').text(columnSum(40).toFixed(2));
+    $('#totalClosingPcs').text(columnSum(41).toFixed(0));
+    $('#totalClosingSft').text(columnSum(42).toFixed(2));
+}
+    // Date Range Filtering
+    $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+        var min = $('#min').datepicker("getDate");
+        var max = $('#max').datepicker("getDate");
+        var startDate = new Date(data[0]); // Date is in first column
+
+        if (
+            (min === null && max === null) ||
+            (min === null && startDate <= max) ||
+            (min <= startDate && max === null) ||
+            (min <= startDate && startDate <= max)
+        ) {
+            return true;
+        }
+        return false;
+    });
+
+    // Initialize Date Picker
+    $("#min, #max").datepicker({
+        dateFormat: "yy-mm-dd",
+        onSelect: function () {
+            table.draw();
+            updateFooterTotals();
+        }
+    });
+
+    // Trigger filtering when dates change
+    $('#min, #max').on('change', function () {
+        table.draw();
+        updateFooterTotals();
+    });
+
+    // Block Number Search Functionality
+    $('#blockNumber').on('keyup', function () {
+        table.column(1).search(this.value).draw();
+        updateFooterTotals();
+    });
+
+    // Radio Button Toggle Logic
+    $('input[type=radio][name=filterType]').change(function () {
+        if (this.value === 'dateRange') {
+            $('#dateRangeInputs').show();
+            $('#blockNumberInput').hide();
+        } else if (this.value === 'blockNumber') {
+            $('#dateRangeInputs').hide();
+            $('#blockNumberInput').show();
+        }
+    });
+
+    // Update totals whenever the table is redrawn
+    table.on('draw', function () {
+        updateFooterTotals();
+    });
+});
+    </script>
+</body>
+</html>
