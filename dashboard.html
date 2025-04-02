@@ -142,6 +142,8 @@
                 <li class="nav-item"><a class="nav-link" href="productList.html">Search & Edit</a></li>
                 <li class="nav-item"><a class="nav-link" href="productSale.html">Sell</a></li>
                 <li class="nav-item"><a class="nav-link" href="salesreport.html">Sales Report</a></li>
+                <li class="nav-item"><a class="nav-link" href="slabsReport.html">Slabs Report</a></li>
+                <li class="nav-item"><a class="nav-link" href="graphReport.html">Graph Report</a></li>
             </ul>
         </div>
         <!--page-->
@@ -155,6 +157,10 @@
         <div class="row">
             <div class="box"><a href="#">Sell Products</a></div>
             <div class="box"><a href="#">Sales Report</a></div>
+        </div>
+        <div class="row">
+            <div class="box"><a href="#">Slabs Report</a></div>
+            <div class="box"><a href="#">Graph Report</a></div>
         </div>
     </div>
 	<script>
@@ -173,6 +179,10 @@
 						sellProducts();
 					} else if (this.textContent.includes("Sales Report")) {
 						salesReport();
+					}else if (this.textContent.includes("Slabs Report")) {
+						slabsReport();
+					}else if (this.textContent.includes("Graph Report")) {
+						graphReport();
 					}
 				});
 			});
@@ -195,6 +205,15 @@
 		function salesReport() {
 			window.location.href = "salesreport.html";
 		}
+
+        function slabsReport() {
+			window.location.href = "slabsReport.html";
+		}
+
+        function graphReport() {
+			window.location.href = "graphReport.html";
+		}
+
 	</script>
 </body>
 </html>
