@@ -128,7 +128,6 @@
             word-wrap: break-word;
         }
         th {
-            
             color: black;
             font-weight: bold;
         }
@@ -166,34 +165,40 @@
             border-color: #1b4f72 !important;
             box-shadow: none !important;
         }
+        .part-select {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #1b4f72;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
-        <!--header section-->
+    <!--header section-->
     <header>
-		<img src="logocct.jpg" style="width:100px; height:80px" alt="Company Logo" />
-		<div class="company-name">
-			<h2>CCT Stonexa</h2>  
-			<h4>Karimnagar</h4>
-		</div>
-	</header>
-	<!--navbar section-->
-	<div class="navbar-section">
-            <ul class="nav justify-content-center">
-                <li class="nav-item"><a class="nav-link" href="dashboard.html">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="stageOne.html">Add Product</a></li>
-                <li class="nav-item"><a class="nav-link" href="productList.html">Search & Edit</a></li>
-                <li class="nav-item"><a class="nav-link" href="productSale.html">Sell</a></li>
-                <li class="nav-item"><a class="nav-link" href="salesreport.html">Sales Report</a></li>
-                <li class="nav-item"><a class="nav-link" href="slabsReport.html">Slabs Report</a></li>
-                <li class="nav-item"><a class="nav-link" href="graphReport.html">Graph Report</a></li>
-            </ul>
+        <img src="logocct.jpg" style="width:100px; height:80px" alt="Company Logo" />
+        <div class="company-name">
+            <h2>CCT Stonexa</h2>  
+            <h4>Karimnagar</h4>
         </div>
+    </header>
+    <!--navbar section-->
+    <div class="navbar-section">
+        <ul class="nav justify-content-center">
+            <li class="nav-item"><a class="nav-link" href="dashboard.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="stageOne.html">Add Product</a></li>
+            <li class="nav-item"><a class="nav-link" href="productList.html">Search & Edit</a></li>
+            <li class="nav-item"><a class="nav-link" href="productSale.html">Sell</a></li>
+            <li class="nav-item"><a class="nav-link" href="salesreport.html">Sales Report</a></li>
+            <li class="nav-item"><a class="nav-link" href="slabsReport.html">Slabs Report</a></li>
+            <li class="nav-item"><a class="nav-link" href="graphReport.html">Graph Report</a></li>
+        </ul>
+    </div>
     <div class="container">
         <h1 style="font-weight: bold; font-size: 30px; text-align: center; margin-bottom: 20px;color:#1b4f72">Sales Report</h1>
         <div class="container mt-4">
             <div class="input-group mb-3">
-                <input type="text" id="searchInput" class="form-control" placeholder="Enter Block Number" >
+                <input type="text" id="searchInput" class="form-control" placeholder="Enter Block Number">
                 <button class="btn btn-primary" onclick="searchBlock()" style="background-color: #1b4f72;">Search</button>
             </div>
         </div>
@@ -206,11 +211,20 @@
                     <table>
                         <tr><th>Block No.</th><td><label id="block_no"></label></td></tr>
                         <tr><th>Block Colour</th><td><label id="block_colour"></label></td></tr>
-                        <tr><th>Block Part</th><td><label id="block_parts">Part-A</label></td></tr>
+                        <tr><th>Block Part</th>
+                            <td>
+                                <select id="block_parts_select" class="part-select" onchange="changePart()" style="width: 20%">
+                                    <option value="part_a">Part-A</option>
+                                    <option value="part_b">Part-B</option>
+                                    <option value="part_c">Part-C</option>
+                                </select>
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>
 
+            <!-- Rest of your accordion sections remain the same -->
             <!--Second Accordian  -->
             <button type="button" class="accordion">Marking/Sales Particulars</button>
             <div class="panel">
@@ -343,193 +357,215 @@
     </div>
 
     <script>
+        // Global variable to store the current block data
+        let currentBlockData = null;
+
         document.addEventListener("DOMContentLoaded", function () {
-        // Extract block_id from the URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const blockId = urlParams.get('block_id');
+            // Extract block_id from the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const blockId = urlParams.get('block_id');
 
-        if (blockId) {
-            // If block_id is present in the URL, fetch and populate the data automatically
-            fetchBlockDetails(blockId);
-        }
+            if (blockId) {
+                // If block_id is present in the URL, fetch and populate the data automatically
+                fetchBlockDetails(blockId);
+            }
 
-        // Event listener for the search button
-        document.querySelector(".btn-primary").addEventListener("click", function () {
-            searchBlock();
+            // Event listener for the search button
+            document.querySelector(".btn-primary").addEventListener("click", function () {
+                searchBlock();
+            });
+
+            // Initialize accordion functionality
+            initializeAccordions();
         });
 
-        // Initialize accordion functionality
-        initializeAccordions();
-    });
-
-    // Function to initialize accordions and keep track of them
-    function initializeAccordions() {
-        var acc = document.getElementsByClassName("accordion");
-        for (var i = 0; i < acc.length; i++) {
-            acc[i].addEventListener("click", function () {
-                toggleAccordion(this);
-            });
-        }
-    }
-
-    // Function to toggle accordion state
-    function toggleAccordion(accordion) {
-        accordion.classList.toggle("active");
-        var panel = accordion.nextElementSibling;
-        if (panel.style.display === "block") {
-            panel.style.display = "none";
-        } else {
-            panel.style.display = "block";
-        }
-    }
-
-    // Function to open all accordions
-    function openAllAccordions() {
-        var acc = document.getElementsByClassName("accordion");
-        for (var i = 0; i < acc.length; i++) {
-            acc[i].classList.add("active");
-            acc[i].nextElementSibling.style.display = "block";
-        }
-    }
-
-    // Function to fetch block details from the database
-    function fetchBlockDetails(blockId) {
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    let blockData = JSON.parse(xhr.responseText);
-                    populateFormFields([blockData], "part_a"); // Default to Part A
-                    document.getElementById("dataTable").style.display = "block"; // Show the table
-                    openAllAccordions(); // Open all accordions after data loads
-                } else if (xhr.status === 404) {
-                    alert("Error: Block not found. Please check the Block ID.");
-                } else {
-                    alert("Error fetching block details. Status: " + xhr.status);
-                }
+        // Function to change part and update data
+        function changePart() {
+            if (currentBlockData) {
+                const partSelect = document.getElementById("block_parts_select");
+                populateFormFields(currentBlockData, partSelect.value);
             }
-        };
-
-        xhr.open("GET", `https://shivadb-f348.restdb.io/rest/plm-products-db/${blockId}`);
-        xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
-        xhr.send();
-    }
-
-    // Function to search for a block by block number
-    function searchBlock() {
-        let searchValue = document.getElementById("searchInput").value.trim();
-        let table = document.getElementById("dataTable");
-
-        if (!searchValue) {
-            table.style.display = "none";
-            alert("Please enter a block number to search!");
-            return;
         }
 
-        // Fetch all blocks and filter by block number
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    let allBlocks = JSON.parse(xhr.responseText);
-                    let foundBlock = allBlocks.find(block => block.id === searchValue);
+        // Function to initialize accordions and keep track of them
+        function initializeAccordions() {
+            var acc = document.getElementsByClassName("accordion");
+            for (var i = 0; i < acc.length; i++) {
+                acc[i].addEventListener("click", function () {
+                    toggleAccordion(this);
+                });
+            }
+        }
 
-                    if (foundBlock) {
-                        populateFormFields([foundBlock], "part_a"); // Default to Part A
-                        table.style.display = "block"; // Show the table
-                        openAllAccordions(); // Open all accordions after data loads
+        // Function to toggle accordion state
+        function toggleAccordion(accordion) {
+            accordion.classList.toggle("active");
+            var panel = accordion.nextElementSibling;
+            if (panel.style.display === "block") {
+                panel.style.display = "none";
+            } else {
+                panel.style.display = "block";
+            }
+        }
+
+        // Function to open all accordions
+        function openAllAccordions() {
+            var acc = document.getElementsByClassName("accordion");
+            for (var i = 0; i < acc.length; i++) {
+                acc[i].classList.add("active");
+                acc[i].nextElementSibling.style.display = "block";
+            }
+        }
+
+        // Function to fetch block details from the database
+        function fetchBlockDetails(blockId) {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        currentBlockData = JSON.parse(xhr.responseText);
+                        const partSelect = document.getElementById("block_parts_select");
+                        populateFormFields(currentBlockData, partSelect.value);
+                        document.getElementById("dataTable").style.display = "block";
+                        openAllAccordions();
+                    } else if (xhr.status === 404) {
+                        alert("Error: Block not found. Please check the Block ID.");
                     } else {
-                        table.style.display = "none";
-                        alert("Block number " + searchValue + " not found!");
+                        alert("Error fetching block details. Status: " + xhr.status);
                     }
-                } else {
-                    alert("Error fetching block details. Status: " + xhr.status);
                 }
+            };
+
+            xhr.open("GET", `https://shivadb-f348.restdb.io/rest/plm-products-db/${blockId}`);
+            xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
+            xhr.send();
+        }
+
+        // Function to search for a block by block number
+        function searchBlock() {
+            let searchValue = document.getElementById("searchInput").value.trim();
+            let table = document.getElementById("dataTable");
+
+            if (!searchValue) {
+                table.style.display = "none";
+                alert("Please enter a block number to search!");
+                return;
             }
-        };
 
-        xhr.open("GET", `https://shivadb-f348.restdb.io/rest/plm-products-db`);
-        xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
-        xhr.send();
-    }
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        let allBlocks = JSON.parse(xhr.responseText);
+                        currentBlockData = allBlocks.find(block => block.id === searchValue);
 
+                        if (currentBlockData) {
+                            const partSelect = document.getElementById("block_parts_select");
+                            populateFormFields(currentBlockData, partSelect.value);
+                            table.style.display = "block";
+                            openAllAccordions();
+                        } else {
+                            table.style.display = "none";
+                            alert("Block number " + searchValue + " not found!");
+                        }
+                    } else {
+                        alert("Error fetching block details. Status: " + xhr.status);
+                    }
+                }
+            };
 
+            xhr.open("GET", `https://shivadb-f348.restdb.io/rest/plm-products-db`);
+            xhr.setRequestHeader("x-api-key", "657c53fe63ede92cdbf17208");
+            xhr.send();
+        }
+		
+		let previousPart = "part_a";
+		
+        // Function to populate the form fields with data
+        function populateFormFields(record, part) {
+            if (record) {
+				
+				if (!record.dressing?.[part]?.marking_sales_particulars) {
+					alert(`No data found for ${part.toUpperCase()}. Please select another part.`);
+					document.getElementById("block_parts_select").value = previousPart || "part_a";
+					return;
+				}
+				previousPart = part;
+				
+                // Populate Basic Details
+                document.getElementById("block_no").textContent = record.id || "";
+                document.getElementById("block_colour").textContent = record.blocks?.block_color || "";
 
-		// Function to populate the form fields with data
-		function populateFormFields(data, part) {
-			if (data) { // Check if data exists (not null or undefined)
-				let record = data[0]; // Use the data object directly
+                // Update the selected part in the dropdown
+                const partSelect = document.getElementById("block_parts_select");
+                partSelect.value = part;
 
-				// Populate Basic Details
-				document.getElementById("block_no").textContent = record.id || "";
-				document.getElementById("block_colour").textContent = record.blocks?.block_color || "";
+                // Populate Marking/Sales Particulars
+                let markingSales = record.dressing?.[part]?.marking_sales_particulars;
+                document.getElementById("marking_fresh_pcs").textContent = markingSales?.fresh?.fresh_pcs || 0;
+                document.getElementById("marking_fresh_sft").textContent = markingSales?.fresh?.fresh_sft || 0;
+                document.getElementById("marking_semi_fresh_pcs").textContent = markingSales?.semi_fresh?.semi_fresh_pcs || 0;
+                document.getElementById("marking_semi_fresh_sft").textContent = markingSales?.semi_fresh?.semi_fresh_sft || 0;
+                document.getElementById("Marking_comrcl_fresh_pcs").textContent = markingSales?.commercial?.commercial_pcs || 0;
+                document.getElementById("Marking_comrcl_fresh_sft").textContent = markingSales?.commercial?.commercial_sft || 0;
+                document.getElementById("short_pcs").textContent = markingSales?.slabs_short_pcs || 0;
+                document.getElementById("short_sft").textContent = markingSales?.slabs_short_sft || 0;
 
-				// Populate Marking/Sales Particulars
-				let markingSales = record.dressing?.[part]?.marking_sales_particulars;
-				document.getElementById("marking_fresh_pcs").textContent = markingSales?.fresh?.fresh_pcs || 0;
-				document.getElementById("marking_fresh_sft").textContent = markingSales?.fresh?.fresh_sft || 0;
-				document.getElementById("marking_semi_fresh_pcs").textContent = markingSales?.semi_fresh?.semi_fresh_pcs || 0;
-				document.getElementById("marking_semi_fresh_sft").textContent = markingSales?.semi_fresh?.semi_fresh_sft || 0;
-				document.getElementById("Marking_comrcl_fresh_pcs").textContent = markingSales?.commercial?.commercial_pcs || 0;
-				document.getElementById("Marking_comrcl_fresh_sft").textContent = markingSales?.commercial?.commercial_sft || 0;
-				document.getElementById("short_pcs").textContent = markingSales?.slabs_short_pcs || 0;
-				document.getElementById("short_sft").textContent = markingSales?.slabs_short_sft || 0;
+                // Calculate and populate total marking particulars
+                let totalMarkingPcs = (parseInt(markingSales?.fresh?.fresh_pcs) || 0) +
+                                      (parseInt(markingSales?.semi_fresh?.semi_fresh_pcs) || 0) +
+                                      (parseInt(markingSales?.commercial?.commercial_pcs) || 0);
+                let totalMarkingSft = (parseFloat(markingSales?.fresh?.fresh_sft) || 0) +
+                                      (parseFloat(markingSales?.semi_fresh?.semi_fresh_sft) || 0) +
+                                      (parseFloat(markingSales?.commercial?.commercial_sft) || 0);
+                document.getElementById("Marking_total_fresh_pcs").textContent = totalMarkingPcs;
+                document.getElementById("Marking_total_fresh_sft").textContent = totalMarkingSft.toFixed(3);
 
-				// Calculate and populate total marking particulars
-				let totalMarkingPcs = (parseInt(markingSales?.fresh?.fresh_pcs) || 0) +
-									  (parseInt(markingSales?.semi_fresh?.semi_fresh_pcs) || 0) +
-									  (parseInt(markingSales?.commercial?.commercial_pcs) || 0);
-				let totalMarkingSft = (parseFloat(markingSales?.fresh?.fresh_sft) || 0) +
-									  (parseFloat(markingSales?.semi_fresh?.semi_fresh_sft) || 0) +
-									  (parseFloat(markingSales?.commercial?.commercial_sft) || 0);
-				document.getElementById("Marking_total_fresh_pcs").textContent = totalMarkingPcs;
-				document.getElementById("Marking_total_fresh_sft").textContent = totalMarkingSft.toFixed(3); // Display with 3 decimal places
+                // Populate Sale Details
+                let salesReport = record.dressing?.[part]?.sales_report;
+                document.getElementById("sale_fresh_pcs").textContent = salesReport?.fresh?.sale_fresh_pcs || 0;
+                document.getElementById("sale_fresh_sft").textContent = salesReport?.fresh?.sale_fresh_sft || 0;
+                document.getElementById("sale_semi_fresh_pcs").textContent = salesReport?.semi_fresh?.sale_semi_fresh_pcs || 0;
+                document.getElementById("sale_semi_fresh_sft").textContent = salesReport?.semi_fresh?.sale_semi_fresh_sft || 0;
+                document.getElementById("sale_commercial_pcs").textContent = salesReport?.commercial?.sale_commercial_pcs || 0;
+                document.getElementById("sale_commercial_sft").textContent = salesReport?.commercial?.sale_commercial_sft || 0;
 
-				// Populate Sale Details
-				let salesReport = record.dressing?.[part]?.sales_report;
-				document.getElementById("sale_fresh_pcs").textContent = salesReport?.fresh?.sale_fresh_pcs || 0;
-				document.getElementById("sale_fresh_sft").textContent = salesReport?.fresh?.sale_fresh_sft || 0;
-				document.getElementById("sale_semi_fresh_pcs").textContent = salesReport?.semi_fresh?.sale_semi_fresh_pcs || 0;
-				document.getElementById("sale_semi_fresh_sft").textContent = salesReport?.semi_fresh?.sale_semi_fresh_sft || 0;
-				document.getElementById("sale_commercial_pcs").textContent = salesReport?.commercial?.sale_commercial_pcs || 0;
-				document.getElementById("sale_commercial_sft").textContent = salesReport?.commercial?.sale_commercial_sft || 0;
+                // Calculate and populate total sale details
+                let totalSalePcs = (parseInt(salesReport?.fresh?.sale_fresh_pcs) || 0) +
+                                   (parseInt(salesReport?.semi_fresh?.sale_semi_fresh_pcs) || 0) +
+                                   (parseInt(salesReport?.commercial?.sale_commercial_pcs) || 0);
+                let totalSaleSft = (parseFloat(salesReport?.fresh?.sale_fresh_sft) || 0) +
+                                   (parseFloat(salesReport?.semi_fresh?.sale_semi_fresh_sft) || 0) +
+                                   (parseFloat(salesReport?.commercial?.sale_commercial_sft) || 0);
+                document.getElementById("sale_total_pcs").textContent = totalSalePcs;
+                document.getElementById("sale_total_sft").textContent = totalSaleSft.toFixed(3);
 
-				// Calculate and populate total sale details
-				let totalSalePcs = (parseInt(salesReport?.fresh?.sale_fresh_pcs) || 0) +
-								   (parseInt(salesReport?.semi_fresh?.sale_semi_fresh_pcs) || 0) +
-								   (parseInt(salesReport?.commercial?.sale_commercial_pcs) || 0);
-				let totalSaleSft = (parseFloat(salesReport?.fresh?.sale_fresh_sft) || 0) +
-								   (parseFloat(salesReport?.semi_fresh?.sale_semi_fresh_sft) || 0) +
-								   (parseFloat(salesReport?.commercial?.sale_commercial_sft) || 0);
-				document.getElementById("sale_total_pcs").textContent = totalSalePcs;
-				document.getElementById("sale_total_sft").textContent = totalSaleSft.toFixed(3); // Display with 3 decimal places
+                // Populate Closing Stock Details
+                let closingStock = record.dressing?.[part]?.sales_report?.closing_stock_after_sale;
+                document.getElementById("closing_fresh_pcs").textContent = closingStock?.fresh?.closing_fresh_pcs || 0;
+                document.getElementById("Closing_fresh_sft").textContent = closingStock?.fresh?.closing_fresh_sft || 0;
+                document.getElementById("closing_semi_fresh_pcs").textContent = closingStock?.semi_fresh?.closing_semi_fresh_pcs || 0;
+                document.getElementById("Closing_semi_fresh_sft").textContent = closingStock?.semi_fresh?.closing_semi_fresh_sft || 0;
+                document.getElementById("Closing_commercial_pcs").textContent = closingStock?.commercial?.closing_commercial_pcs || 0;
+                document.getElementById("Closing_commercial_sft").textContent = closingStock?.commercial?.closing_commercial_sft || 0;
 
-				// Populate Closing Stock Details
-				let closingStock = record.dressing?.[part]?.sales_report?.closing_stock_after_sale;
-				document.getElementById("closing_fresh_pcs").textContent = closingStock?.fresh?.closing_fresh_pcs || 0;
-				document.getElementById("Closing_fresh_sft").textContent = closingStock?.fresh?.closing_fresh_sft || 0;
-				document.getElementById("closing_semi_fresh_pcs").textContent = closingStock?.semi_fresh?.closing_semi_fresh_pcs || 0;
-				document.getElementById("Closing_semi_fresh_sft").textContent = closingStock?.semi_fresh?.closing_semi_fresh_sft || 0;
-				document.getElementById("Closing_commercial_pcs").textContent = closingStock?.commercial?.closing_commercial_pcs || 0;
-				document.getElementById("Closing_commercial_sft").textContent = closingStock?.commercial?.closing_commercial_sft || 0;
+                // Calculate and populate total closing stock details
+                let totalClosingPcs = (parseInt(closingStock?.fresh?.closing_fresh_pcs) || 0) +
+                                      (parseInt(closingStock?.semi_fresh?.closing_semi_fresh_pcs) || 0) +
+                                      (parseInt(closingStock?.commercial?.closing_commercial_pcs) || 0);
+                let totalClosingSft = (parseFloat(closingStock?.fresh?.closing_fresh_sft) || 0) +
+                                      (parseFloat(closingStock?.semi_fresh?.closing_semi_fresh_sft) || 0) +
+                                      (parseFloat(closingStock?.commercial?.closing_commercial_sft) || 0);
+                document.getElementById("Closing_total_pcs").textContent = totalClosingPcs;
+                document.getElementById("Closing_total_sft").textContent = totalClosingSft.toFixed(3);
 
-				// Calculate and populate total closing stock details
-				let totalClosingPcs = (parseInt(closingStock?.fresh?.closing_fresh_pcs) || 0) +
-									  (parseInt(closingStock?.semi_fresh?.closing_semi_fresh_pcs) || 0) +
-									  (parseInt(closingStock?.commercial?.closing_commercial_pcs) || 0);
-				let totalClosingSft = (parseFloat(closingStock?.fresh?.closing_fresh_sft) || 0) +
-									  (parseFloat(closingStock?.semi_fresh?.closing_semi_fresh_sft) || 0) +
-									  (parseFloat(closingStock?.commercial?.closing_commercial_sft) || 0);
-				document.getElementById("Closing_total_pcs").textContent = totalClosingPcs;
-				document.getElementById("Closing_total_sft").textContent = totalClosingSft.toFixed(3); // Display with 3 decimal places
-
-				// Populate Incharge Information
-				document.getElementById("supervisor_name").textContent = salesReport?.supervisor_name || "";
-				document.getElementById("incharge_name").textContent = salesReport?.incharge_name || "";
-			} else {
-				alert("No data found for the given block number!");
-			}
-		}
+                // Populate Incharge Information
+                document.getElementById("supervisor_name").textContent = salesReport?.supervisor_name || "";
+                document.getElementById("incharge_name").textContent = salesReport?.incharge_name || "";
+            } else {
+                alert("No data found for the given block number!");
+            }
+        }
     </script>
 </body>
 </html>
