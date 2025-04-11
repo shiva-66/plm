@@ -270,11 +270,11 @@
 									<table>
 										<tr>
 											<th>Short PCs</th>
-											<td><input type="number" step="0.01" name="polishing_short_pcs" id="polishing_short_pcs" min="0"></td>
+											<td><input  style="background-color: #FFC2D0";type="number" step="0.01" name="polishing_short_pcs" id="polishing_short_pcs" min="0"></td>
 										</tr>
 										<tr>
 											<th>Short (SFT)</th>
-											<td><input type="number" step="0.001" name="polishing_short_sft" id="polishing_short_sft" min="0"></td>
+											<td><input  style="background-color: #FFC2D0"; type="number" step="0.001" name="polishing_short_sft" id="polishing_short_sft" min="0"></td>
 										</tr>
 									</table>
 								</fieldset>
@@ -287,11 +287,13 @@
 			<!-- Third Accordion: Stock Summary -->
 			<button type="button" class="accordion">Stock Summary</button>
 			<div class="panel">
-				<div class="scroll-table">
-					<table>
-						<tr>
-							<th colspan="5">Marking/Sales Particulars</th>
-						</tr>
+			<div class="scroll-table">
+            <table>
+				<tr>
+                <th colspan="2">
+                    <Fieldset>
+							<legend>Marking/Sales Particulars</legend> 
+						<table>
 						<tr>
 							<th>Type</th>
 							<th colspan="2">No of Pcs</th>
@@ -318,18 +320,22 @@
 							<td colspan="2"><input type="number" step="0.001" name="closing_stock_sft" id="closing_stock_sft"></td>
 						</tr>
 						<tr>
-							<th colspan="5">Short/Damage</th>
+							<th colspan="5" style="font-size: 20px;">Short/Damage</th>
 						</tr>
 						<tr>
 							<th>Short PCs</th>
-							<td colspan="4"><input type="number" step="0.01" name="slabs_short_pcs" id="slabs_short_pcs"></td>
+							<td colspan="4"><input  style="background-color: #FFC2D0"; type="number" step="0.01" name="slabs_short_pcs" id="slabs_short_pcs"></td>
 						</tr>
 						<tr>
 							<th>Short (SFT)</th>
-							<td colspan="4"><input type="number" step="0.001" name="slabs_short_sft" id="slabs_short_sft"></td>
+							<td colspan="4"><input  style="background-color: #FFC2D0"; type="number" step="0.001" name="slabs_short_sft" id="slabs_short_sft"></td>
 						</tr>
-					</table>
-				</div>
+					    </table>
+                    </fieldset>
+                </th>
+                </tr>
+            </table>
+			</div>
 			</div>
 
 		<br>
