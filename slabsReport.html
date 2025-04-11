@@ -119,7 +119,7 @@
 
         /* Complex Header Styling */
         #example thead tr.group-header {
-            background-color: #1b4f72;
+            background-color: #7fb3d5;
             color: white;
             text-align: center;
             font-weight: bold;
@@ -136,6 +136,7 @@
             padding: 8px;
             white-space: nowrap;
             text-align: center;
+            border-right: 2px solid black;
             vertical-align: middle;
             position: sticky;
             top: 0;
@@ -241,7 +242,6 @@
                 <thead>
                     <tr class="group-header">
                         <th colspan="4">Basic Information</th>
-                        <!-- Removed Opening Stock columns -->
                         <th colspan="3">Production After Granding (Qty.)</th>
                         <th colspan="4">Slabs Production (After Polishing)</th>
                         <th colspan="2">Short/Damage (Between Processes)</th>
@@ -426,8 +426,8 @@
                 footer: true
             },
             initComplete: function () {
-                $('.group-header').css('background-color', '#1b4f72');
-                $('.sub-header').css('background-color', '#2980b9');
+                $('.group-header').css('background-color', '#5fa9d1');
+                $('.sub-header').css('background-color', ' #d6eaf8');
                 loadData();
             }
         });
@@ -530,7 +530,6 @@
         
         //processData(sampleData);
         
-         //In production, use this AJAX call instead:
         $.ajax({
             url: 'https://shivadb-f348.restdb.io/rest/plm-products-db',
             type: 'GET',
@@ -559,7 +558,7 @@
             // Process each part (part_a, part_b, part_c)
             ['part_a', 'part_b', 'part_c'].forEach(function(part) {
                 const partData = getNestedValue(record, 'dressing', part);
-                if (!partData) return; // Skip if part doesn't exist
+                if (!partData) return; 
                 
                 const slabsAutoPolishing = getNestedValue(partData, 'slabs_auto_polishing') || {};
                 const polishedSlabs = getNestedValue(slabsAutoPolishing, 'slabs_after_polishing') || {};
