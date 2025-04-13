@@ -86,13 +86,13 @@
         .form-section {
             background-color: #aed6f1;
             padding: 20px;
-			width: 50%;
+            width: 50%;
             border-radius: 8px;
             border: 1px solid #1b4f72;
             margin-bottom: 30px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-			margin-left: 25%;
-			margin-right: 20px;
+            margin-left: 25%;
+            margin-right: 20px;
         }
         .form-group {
             margin-bottom: 15px;
@@ -130,19 +130,14 @@
             margin-bottom: 20px;
             color: #1b4f72;
         }
-        .charts-row {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-        }
         .chart-wrapper {
             width: 100%;
-            max-width: 800px;
+            max-width: 1000px;
+            margin: 0 auto;
         }
         .chart-container {
             width: 100%;
-            height: 450px;
+            height: 500px;
             background-color: #d6eaf8;
             border:1px solid #1b4f72 ;
             padding: 20px;
@@ -174,9 +169,6 @@
         }
         
         @media (max-width: 768px) {
-            .charts-row {
-                flex-direction: column;
-            }
             .chart-wrapper {
                 max-width: 100%;
             }
@@ -197,6 +189,10 @@
             .nav-link {
                 font-size: 16px;
                 padding: 8px 12px;
+            }
+            .form-section {
+                width: 90%;
+                margin-left: 5%;
             }
         }
     </style>
@@ -256,31 +252,22 @@
             <i class="fas fa-spinner spinner"></i> Loading data, please wait...
         </div>
 
-        <!-- Charts Container -->
-        <div class="charts-row">
-            <div class="chart-wrapper">
-                <div class="chart-container">
-                    <canvas id="stockChartSft"></canvas>
-                    <div class="no-data" id="noDataSft">Please enter a block number and click "Generate Report" to view data</div>
-                </div>
-            </div>
-            <div class="chart-wrapper">
-                <div class="chart-container">
-                    <canvas id="stockChartPcs"></canvas>
-                    <div class="no-data" id="noDataPcs">Please enter a block number and click "Generate Report" to view data</div>
-                </div>
+        <!-- Chart Container -->
+        <div class="chart-wrapper">
+            <div class="chart-container">
+                <canvas id="combinedChart"></canvas>
+                <div class="no-data" id="noData">Please enter a block number and click "Generate Report" to view data</div>
             </div>
         </div>
     </div>
 
     <script>
-        // Initialize charts with empty data
-        let stockChartSft, stockChartPcs;
+        // Initialize chart
+        let combinedChart;
 
-        function initializeCharts() {
-            // Square Feet Chart
-            const ctxSft = document.getElementById('stockChartSft').getContext('2d');
-            stockChartSft = new Chart(ctxSft, {
+        function initializeChart() {
+            const ctx = document.getElementById('combinedChart').getContext('2d');
+            combinedChart = new Chart(ctx, {
                 type: "bar",
                 plugins: [ChartDataLabels],
                 data: {
@@ -291,21 +278,84 @@
                             data: [],
                             backgroundColor: "#3498db",
                             borderColor: "#2980b9",
-                            borderWidth: 1
+                            borderWidth: 1,
+                            datalabels: {
+                                display: true,
+                                color: '#000',
+                                anchor: 'end',
+                                align: 'top',
+                                formatter: function(value, context) {
+                                    const pcsValue = context.chart.data.datasets[3].data[context.dataIndex];
+                                    return `${value.toLocaleString()} (${pcsValue.toLocaleString()} pcs)`;
+                                },
+                                font: {
+                                    weight: 'bold'
+                                }
+                            }
                         },
                         {
                             label: "Sold Stock (sft)",
                             data: [],
                             backgroundColor: "#2ecc71",
                             borderColor: "#27ae60",
-                            borderWidth: 1
+                            borderWidth: 1,
+                            datalabels: {
+                                display: true,
+                                color: '#000',
+                                anchor: 'end',
+                                align: 'top',
+                                formatter: function(value, context) {
+                                    const pcsValue = context.chart.data.datasets[4].data[context.dataIndex];
+                                    return `${value.toLocaleString()} (${pcsValue.toLocaleString()} pcs)`;
+                                },
+                                font: {
+                                    weight: 'bold'
+                                }
+                            }
                         },
                         {
                             label: "Closing Stock (sft)",
                             data: [],
                             backgroundColor: "#f39c12",
                             borderColor: "#d35400",
-                            borderWidth: 1
+                            borderWidth: 1,
+                            datalabels: {
+                                display: true,
+                                color: '#000',
+                                anchor: 'end',
+                                align: 'top',
+                                formatter: function(value, context) {
+                                    const pcsValue = context.chart.data.datasets[5].data[context.dataIndex];
+                                    return `${value.toLocaleString()} (${pcsValue.toLocaleString()} pcs)`;
+                                },
+                                font: {
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        {
+                            label: "Total Stock (pcs)",
+                            data: [],
+                            backgroundColor: "#3498db",
+                            borderColor: "#2980b9",
+                            borderWidth: 1,
+                            hidden: true // Hide the pcs datasets as we're showing them in brackets
+                        },
+                        {
+                            label: "Sold Stock (pcs)",
+                            data: [],
+                            backgroundColor: "#2ecc71",
+                            borderColor: "#27ae60",
+                            borderWidth: 1,
+                            hidden: true
+                        },
+                        {
+                            label: "Closing Stock (pcs)",
+                            data: [],
+                            backgroundColor: "#f39c12",
+                            borderColor: "#d35400",
+                            borderWidth: 1,
+                            hidden: true
                         }
                     ]
                 },
@@ -318,27 +368,38 @@
                             labels: {
                                 font: {
                                     size: 14
+                                },
+                                filter: function(item, chart) {
+                                    // Only show sft in legend (datasets 0-2)
+                                    return item.datasetIndex < 3;
                                 }
                             }
                         },
                         title: {
                             display: true,
-                            text: 'Stock Overview (Square Feet)',
+                            text: 'Stock Overview (Square Feet with Piece Count in Brackets)',
                             font: {
                                 size: 16,
                                 weight: 'bold'
                             }
                         },
-                        datalabels: {
-                            display: true,
-                            color: '#000',
-                            anchor: 'end',
-                            align: 'top',
-                            formatter: function(value) {
-                                return value.toLocaleString();
-                            },
-                            font: {
-                                weight: 'bold'
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.datasetIndex < 3) {
+                                        // For sft datasets, show both sft and pcs in tooltip
+                                        const pcsValue = context.chart.data.datasets[context.datasetIndex + 3].data[context.dataIndex];
+                                        label += `${context.parsed.y.toLocaleString()} sft (${pcsValue.toLocaleString()} pcs)`;
+                                    } else {
+                                        // For pcs datasets (shouldn't show in tooltip as they're hidden)
+                                        label += `${context.parsed.y.toLocaleString()} pcs`;
+                                    }
+                                    return label;
+                                }
                             }
                         }
                     },
@@ -368,101 +429,9 @@
                     }
                 }
             });
-
-            // Piece Count Chart
-            const ctxPcs = document.getElementById('stockChartPcs').getContext('2d');
-            stockChartPcs = new Chart(ctxPcs, {
-                type: "bar",
-                plugins: [ChartDataLabels],
-                data: {
-                    labels: ["Fresh", "Semi-Fresh", "Commercial"],
-                    datasets: [
-                        {
-                            label: "Total Stock (pcs)",
-                            data: [],
-                            backgroundColor: "#3498db",
-                            borderColor: "#2980b9",
-                            borderWidth: 1
-                        },
-                        {
-                            label: "Sold Stock (pcs)",
-                            data: [],
-                            backgroundColor: "#2ecc71",
-                            borderColor: "#27ae60",
-                            borderWidth: 1
-                        },
-                        {
-                            label: "Closing Stock (pcs)",
-                            data: [],
-                            backgroundColor: "#f39c12",
-                            borderColor: "#d35400",
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: "top",
-                            labels: {
-                                font: {
-                                    size: 14
-                                }
-                            }
-                        },
-                        title: {
-                            display: true,
-                            text: 'Stock Overview (Piece Count)',
-                            font: {
-                                size: 16,
-                                weight: 'bold'
-                            }
-                        },
-                        datalabels: {
-                            display: true,
-                            color: '#000',
-                            anchor: 'end',
-                            align: 'top',
-                            formatter: function(value) {
-                                return value.toLocaleString();
-                            },
-                            font: {
-                                weight: 'bold'
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Number of Pieces',
-                                font: {
-                                    weight: 'bold'
-                                }
-                            },
-                            ticks: {
-                                callback: function(value) {
-                                    return value.toLocaleString();
-                                }
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                font: {
-                                    size: 14
-                                }
-                            }
-                        }
-                    }
-                }
-            });
             
-            // Hide charts initially
-            document.getElementById('stockChartSft').style.display = 'none';
-            document.getElementById('stockChartPcs').style.display = 'none';
+            // Hide chart initially
+            document.getElementById('combinedChart').style.display = 'none';
         }
 
         // Function to fetch data from API
@@ -500,8 +469,8 @@
             }
         }
 
-        // Function to update charts with new data
-        function updateCharts(blockData, selectedPart) {
+        // Function to update chart with new data
+        function updateChart(blockData, selectedPart) {
             let partsToShow = [];
             
             if (selectedPart) {
@@ -569,75 +538,68 @@
                 }
             });
             
-            // Show charts and hide "no data" messages
-            document.getElementById('stockChartSft').style.display = 'block';
-            document.getElementById('stockChartPcs').style.display = 'block';
-            document.getElementById('noDataSft').style.display = 'none';
-            document.getElementById('noDataPcs').style.display = 'none';
+            // Show chart and hide "no data" message
+            document.getElementById('combinedChart').style.display = 'block';
+            document.getElementById('noData').style.display = 'none';
             
-            // Update Square Feet chart data
-            stockChartSft.data.datasets[0].data = [
+            // Update Square Feet chart data (datasets 0-2)
+            combinedChart.data.datasets[0].data = [
                 totalsSft.fresh.total,
                 totalsSft.semi_fresh.total,
                 totalsSft.commercial.total
             ];
             
-            stockChartSft.data.datasets[1].data = [
+            combinedChart.data.datasets[1].data = [
                 totalsSft.fresh.sold,
                 totalsSft.semi_fresh.sold,
                 totalsSft.commercial.sold
             ];
             
-            stockChartSft.data.datasets[2].data = [
+            combinedChart.data.datasets[2].data = [
                 totalsSft.fresh.closing,
                 totalsSft.semi_fresh.closing,
                 totalsSft.commercial.closing
             ];
             
-            // Update Piece Count chart data
-            stockChartPcs.data.datasets[0].data = [
+            // Update Piece Count chart data (datasets 3-5)
+            combinedChart.data.datasets[3].data = [
                 totalsPcs.fresh.total,
                 totalsPcs.semi_fresh.total,
                 totalsPcs.commercial.total
             ];
             
-            stockChartPcs.data.datasets[1].data = [
+            combinedChart.data.datasets[4].data = [
                 totalsPcs.fresh.sold,
                 totalsPcs.semi_fresh.sold,
                 totalsPcs.commercial.sold
             ];
             
-            stockChartPcs.data.datasets[2].data = [
+            combinedChart.data.datasets[5].data = [
                 totalsPcs.fresh.closing,
                 totalsPcs.semi_fresh.closing,
                 totalsPcs.commercial.closing
             ];
             
-            // Update chart titles based on selection
+            // Update chart title based on selection
             let chartTitleSuffix = selectedPart ? ` (${selectedPart.replace('_', '-').toUpperCase()})` : ' (All Parts)';
+            combinedChart.options.plugins.title.text = `Stock Overview - Square Feet with Piece Count${chartTitleSuffix}`;
             
-            stockChartSft.options.plugins.title.text = `Stock Overview - Square Feet${chartTitleSuffix}`;
-            stockChartPcs.options.plugins.title.text = `Stock Overview - Piece Count${chartTitleSuffix}`;
-            
-            stockChartSft.update();
-            stockChartPcs.update();
+            combinedChart.update();
         }
 
-        // Reset form and charts
+        // Reset form and chart
         function resetForm() {
             document.getElementById('blockNumber').value = '';
             document.getElementById('part').value = '';
             
-            // Hide charts and show "no data" messages
-            document.getElementById('stockChartSft').style.display = 'none';
-            document.getElementById('stockChartPcs').style.display = 'none';
-            document.getElementById('noDataSft').style.display = 'flex';
-            document.getElementById('noDataPcs').style.display = 'flex';
+            // Hide chart and show "no data" message
+            document.getElementById('combinedChart').style.display = 'none';
+            document.getElementById('noData').style.display = 'flex';
         }
 
-        // Initialize charts when page loads
+        // Initialize chart when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            initializeCharts();
+            initializeChart();
             
             // Add click event to submit button
             document.getElementById('submitBtn').addEventListener('click', async function() {
@@ -651,7 +613,7 @@
                 
                 const blockData = await fetchBlockData(blockNumber, part);
                 if (blockData) {
-                    updateCharts(blockData, part);
+                    updateChart(blockData, part);
                 }
             });
             
