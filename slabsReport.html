@@ -246,7 +246,7 @@
                         <th colspan="4">Slabs Production (After Polishing)</th>
                         <th colspan="2">Short/Damage (Between Processes)</th>
                         <th colspan="8">Stock Categories Before Sale</th>
-                        <th colspan="4">Closing Stock Qty. (Before Sale)</th>
+                        <th colspan="2">Closing Stock Qty. (Before Sale)</th>
                         <th colspan="2">Slabs Short/Damage</th>
                         <th colspan="8">Sales</th>
                         <th colspan="8">Closing Stock Qty. (After Sale)</th>
@@ -287,8 +287,8 @@
                         <!-- Closing Stock Before Sale -->
                         <th>Total No. of Pcs</th>
                         <th>Total SFT</th>
-                        <th>TOTAL QTY. No. of Pcs</th>
-                        <th>TOTAL QTY. SFT</th>
+                        <!--<th>TOTAL QTY. No. of Pcs</th>
+                        <th>TOTAL QTY. SFT</th>-->
                         
                         <!-- Slabs Short/Damage -->
                         <th>No. of Pcs</th>
@@ -357,8 +357,8 @@
         <!-- Closing Stock Before Sale (4 columns) -->
         <th id="totalClosingBeforePcs" style="text-align:center">0</th>
         <th id="totalClosingBeforeSft" style="text-align:center">0.00</th>
-        <th id="totalClosingBeforeTotalPcs" style="text-align:center">0</th>
-        <th id="totalClosingBeforeTotalSft" style="text-align:center">0.00</th>
+        <!--<th id="totalClosingBeforeTotalPcs" style="text-align:center">0</th>
+        <th id="totalClosingBeforeTotalSft" style="text-align:center">0.00</th>-->
         
         <!-- Slabs Short/Damage (2 columns) -->
         <th id="totalSlabsShortPcs" style="text-align:center">0</th>
@@ -635,8 +635,8 @@
                     getNestedValue(markingSales, 'closing_stock_qty') || "",
                     getNestedValue(markingSales, 'closing_stock_sft') ? 
                         parseFloat((getNestedValue(markingSales, 'closing_stock_sft') || "0").replace(/,/g, '')).toFixed(2) : "",
-                    totalStockPcs || "",
-                    totalStockSft || "",
+                    /*totalStockPcs || "",
+                    totalStockSft || "",*/
                     
                     /* Slabs Short/Damage */
                     getNestedValue(markingSales, 'slabs_short_pcs') || "",
@@ -707,26 +707,26 @@
     $('#totalStockSft').text(columnSum(20).toFixed(2));
     $('#totalClosingBeforePcs').text(columnSum(21).toFixed(0));
     $('#totalClosingBeforeSft').text(columnSum(22).toFixed(2));
-    $('#totalClosingBeforeTotalPcs').text(columnSum(23).toFixed(0));
-    $('#totalClosingBeforeTotalSft').text(columnSum(24).toFixed(2));
-    $('#totalSlabsShortPcs').text(columnSum(25).toFixed(0));
-    $('#totalSlabsShortSft').text(columnSum(26).toFixed(2));
-    $('#totalSaleFreshPcs').text(columnSum(27).toFixed(0));
-    $('#totalSaleFreshSft').text(columnSum(28).toFixed(2));
-    $('#totalSaleSemiFreshPcs').text(columnSum(29).toFixed(0));
-    $('#totalSaleSemiFreshSft').text(columnSum(30).toFixed(2));
-    $('#totalSaleCommrlPcs').text(columnSum(31).toFixed(0));
-    $('#totalSaleCommrlSft').text(columnSum(32).toFixed(2));
-    $('#totalSalePcs').text(columnSum(33).toFixed(0));
-    $('#totalSaleSft').text(columnSum(34).toFixed(2));
-    $('#totalClosingFreshPcs').text(columnSum(35).toFixed(0));
-    $('#totalClosingFreshSft').text(columnSum(36).toFixed(2));
-    $('#totalClosingSemiFreshPcs').text(columnSum(37).toFixed(0));
-    $('#totalClosingSemiFreshSft').text(columnSum(38).toFixed(2));
-    $('#totalClosingCommrlPcs').text(columnSum(39).toFixed(0));
-    $('#totalClosingCommrlSft').text(columnSum(40).toFixed(2));
-    $('#totalClosingPcs').text(columnSum(41).toFixed(0));
-    $('#totalClosingSft').text(columnSum(42).toFixed(2));
+    /*$('#totalClosingBeforeTotalPcs').text(columnSum(23).toFixed(0));
+    $('#totalClosingBeforeTotalSft').text(columnSum(24).toFixed(2));*/
+    $('#totalSlabsShortPcs').text(columnSum(23).toFixed(0));
+    $('#totalSlabsShortSft').text(columnSum(24).toFixed(2));
+    $('#totalSaleFreshPcs').text(columnSum(25).toFixed(0));
+    $('#totalSaleFreshSft').text(columnSum(26).toFixed(2));
+    $('#totalSaleSemiFreshPcs').text(columnSum(27).toFixed(0));
+    $('#totalSaleSemiFreshSft').text(columnSum(28).toFixed(2));
+    $('#totalSaleCommrlPcs').text(columnSum(29).toFixed(0));
+    $('#totalSaleCommrlSft').text(columnSum(30).toFixed(2));
+    $('#totalSalePcs').text(columnSum(31).toFixed(0));
+    $('#totalSaleSft').text(columnSum(32).toFixed(2));
+    $('#totalClosingFreshPcs').text(columnSum(33).toFixed(0));
+    $('#totalClosingFreshSft').text(columnSum(34).toFixed(2));
+    $('#totalClosingSemiFreshPcs').text(columnSum(35).toFixed(0));
+    $('#totalClosingSemiFreshSft').text(columnSum(36).toFixed(2));
+    $('#totalClosingCommrlPcs').text(columnSum(37).toFixed(0));
+    $('#totalClosingCommrlSft').text(columnSum(38).toFixed(2));
+    $('#totalClosingPcs').text(columnSum(39).toFixed(0));
+    $('#totalClosingSft').text(columnSum(40).toFixed(2));
 }
     // Date Range Filtering
     $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
